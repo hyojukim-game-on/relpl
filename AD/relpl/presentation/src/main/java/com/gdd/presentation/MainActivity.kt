@@ -1,4 +1,4 @@
-package com.gdd.relpl
+package com.gdd.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
