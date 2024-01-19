@@ -17,3 +17,4 @@ rootProject.name = "Relpl"
 include(":app")
 include(":presentation")
 include(":data")
+include(":domain")
