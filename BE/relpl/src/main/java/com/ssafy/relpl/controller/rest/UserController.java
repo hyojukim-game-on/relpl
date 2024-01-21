@@ -1,17 +1,15 @@
-package com.ssafy.relpl.controller;
+package com.ssafy.relpl.controller.rest;
 
 import com.ssafy.relpl.dto.User;
 import com.ssafy.relpl.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/mongo")
+@RequestMapping(path = "/api/user")
+@CrossOrigin("*")
 public class UserController {
 
     @Autowired
@@ -21,7 +19,7 @@ public class UserController {
 //    public User saveUser(@RequestParam String name, @RequestParam int age) {
 //        return userService.save(name, age);
 //    }
-    @PostMapping(value = "/save")
+    @PostMapping(value = "/mongo/save")
     public User saveUser(@RequestBody User user) {
         return userService.save(user);
     }

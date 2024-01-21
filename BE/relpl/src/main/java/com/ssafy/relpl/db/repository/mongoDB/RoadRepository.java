@@ -1,4 +1,4 @@
-package com.ssafy.relpl.repository;
+package com.ssafy.relpl.db.repository.mongoDB;
 
 
 import com.ssafy.relpl.dto.Road;

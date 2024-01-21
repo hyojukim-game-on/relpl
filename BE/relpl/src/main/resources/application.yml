@@ -2,6 +2,19 @@ server:
   port: 8080
 
 spring:
+  config:
+    import: env.yml
   data:
     mongodb:
-      uri: mongodb://localhost:27017/relpl
+      uri: mongodb://${SERVER_ADDRESS}:${MONGODB.PORT}/${MONGODB.NAME}
+    postgresql:
+      uri: jdbc:postgresql://${SERVER_ADDRESS}:${POSTGRESQL.PORT}/${POSTGRESQL.NAME}?user=${POSTGRESQL.USER}}&password=${POSTGRESQL.PASSWORD}&ssl=true
+
+# jpa
+    jpa:
+      hibernate:
+        ddl-auto: none
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true

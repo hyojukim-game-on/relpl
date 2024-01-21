@@ -2,7 +2,7 @@ package com.ssafy.relpl.service;
 
 import com.ssafy.relpl.dto.Road;
 import com.ssafy.relpl.dto.RoadInfoRequest;
-import com.ssafy.relpl.repository.RoadRepository;
+import com.ssafy.relpl.db.repository.mongoDB.RoadRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,18 +1,16 @@
-package com.ssafy.relpl.controller;
+package com.ssafy.relpl.controller.rest;
 
 import com.ssafy.relpl.dto.Road;
 import com.ssafy.relpl.dto.RoadInfoRequest;
 import com.ssafy.relpl.service.RoadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequestMapping(path = "/road")
+@CrossOrigin("*")
 public class RoadController {
 
     @Autowired
