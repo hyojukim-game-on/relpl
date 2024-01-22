@@ -104,14 +104,14 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_send"
+        android:id="@+id/btn_verify"
         style="@style/Relpl.FullButton.Signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/signup_phonenumber_send" />
+        android:text="@string/signup_verify_verify" />
 
     <View
         android:layout_width="match_parent"

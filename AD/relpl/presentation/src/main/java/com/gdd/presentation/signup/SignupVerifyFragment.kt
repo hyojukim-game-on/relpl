@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import com.gdd.presentation.R
+import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupVerifyBinding
 
@@ -17,10 +18,21 @@ class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
     FragmentSignupVerifyBinding::bind, R.layout.fragment_signup_verify
 ) {
     private val activityViewModel: SignupViewModel by activityViewModels()
+    private lateinit var signupActivity: SignupActivity
+
     private var verificationCode = ""
     private lateinit var codeArr : Array<EditText>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        signupActivity = _activity as SignupActivity
+
+        initView()
+        onDeleteListener()
+        setCodeOnChangedListener()
+        registerListener()
+    }
+
+    private fun initView(){
         binding.tvVerifyContent.text = "${activityViewModel.phoneNumber}\n ${resources.getString(R.string.signup_verify_content)}"
 
         codeArr = arrayOf(
@@ -31,9 +43,12 @@ class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
             binding.etCode5,
             binding.etCode6
         )
+    }
 
-        onDeleteListener()
-        setCodeOnChangedListener()
+    private fun registerListener(){
+        binding.btnVerify.setOnClickListener {
+            signupActivity.moveToNextPage()
+        }
     }
     private fun onDeleteListener(){
         for (idx in 1 .. 5) codeArr[idx].setOnKeyListener { v, keyCode, event ->
