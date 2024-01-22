@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kapt)
 }
 
 android {
@@ -37,10 +38,27 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
 
+    // Android
     implementation(libs.bundles.androidx)
     testImplementation(libs.bundles.testing)
 
-    implementation(libs.lottie)
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    // Retrofit
+    implementation(libs.bundles.retrofit)
+
+    // UI
+    implementation(libs.lottie) // Lottie
+    implementation(libs.custom.indicator) // Custom Indicator
+
 
 }
