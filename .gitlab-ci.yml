@@ -16,34 +16,62 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
-stages:          # List of stages for jobs, and their order of execution
+stages:
   - build
-  - test
+  - package
   - deploy
 
-build-job:       # This job runs in the build stage, which runs first.
+build:
+  image: azul/zulu-openjdk:17-latest
   stage: build
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    - cd ./backend
+    - chmod +x ./gradlew
+    - ./gradlew clean
+    - ./gradlew build
+  artifacts:
+    paths:
+      - backend/build/libs/*.jar
+    expire_in: 10 min
 
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+package:
+  image: docker:latest
+  stage: package
+  variables:
+    IMAGE_NAME: vadeski/ksh-backend
+  services:
+    - name: docker:dind
+      command: ["--privileged=true", "--tls=false"]
+  before_script:
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
-    - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 60
-    - echo "Code coverage is 90%"
+    - cd ./backend
+    - docker buildx create --use --name mybuilder
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
+    # - docker build -t $IMAGE_NAME:$CI_PIPELINE_IID .
+    # - docker build -t $IMAGE_NAME:latest .
+    # - docker push $IMAGE_NAME:$CI_PIPELINE_IID
+    # - docker push $IMAGE_NAME:latest
+  after_script:
+    - docker logout
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
+deploy-was:
+  stage: deploy
+  variables:
+    IMAGE_NAME: vadeski/ksh-backend
+  tags:
+    - ksh-runner
+  before_script:
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
-    - echo "Linting code... This will take about 10 seconds."
-    - sleep 10
-    - echo "No lint issues found."
-
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - docker stop ksh-backend || true
+    - docker rm ksh-backend || true
+    - docker rmi ksh-backend || true
+    - docker pull $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -p 8081:8080/tcp --name ksh-backend $IMAGE_NAME:latest
+  after_script:
+    - docker logout
+  when: on_success
+  only:
+    - be/develop
