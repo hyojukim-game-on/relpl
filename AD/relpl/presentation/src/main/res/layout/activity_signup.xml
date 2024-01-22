@@ -60,6 +60,23 @@
         android:layout_height="0dp"
         android:layout_weight="3">
 
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:dotsColor="@color/divider_gray"
+            app:dotsCornerRadius="8dp"
+            app:dotsSize="16dp"
+            app:dotsSpacing="7dp"
+            app:dotsWidthFactor="2.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="5dp"
+            app:progressMode="true"
+            app:selectedDotColor="@color/sage_green_text" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

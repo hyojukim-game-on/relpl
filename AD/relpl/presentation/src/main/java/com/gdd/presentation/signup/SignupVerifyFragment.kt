@@ -1,60 +1,56 @@
 package com.gdd.presentation.signup
 
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import com.gdd.presentation.R
+import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.databinding.FragmentSignupVerifyBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
+    FragmentSignupVerifyBinding::bind, R.layout.fragment_signup_verify
+) {
+    private val activityViewModel: SignupViewModel by activityViewModels()
+    private var verificationCode = ""
+    private lateinit var codeArr : Array<EditText>
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.tvVerifyContent.text = "${activityViewModel.phoneNumber}\n ${resources.getString(R.string.signup_verify_content)}"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignupVerifyFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SignupVerifyFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+        codeArr = arrayOf(
+            binding.etCode1,
+            binding.etCode2,
+            binding.etCode3,
+            binding.etCode4,
+            binding.etCode5,
+            binding.etCode6
+        )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        onDeleteListener()
+        setCodeOnChangedListener()
+    }
+    private fun onDeleteListener(){
+        for (idx in 1 .. 5) codeArr[idx].setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DEL){
+                codeArr[idx - 1].requestFocus()
+            }
+            false
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_signup_verify, container, false)
+    private fun setCodeOnChangedListener(){
+        for (idx in 0 until codeArr.size - 1) codeArr[idx].addTextChangedListener{
+            if (codeArr[idx].length() == 1){
+                codeArr[idx+1].requestFocus()
+                codeArr[idx+1].text = null
+            }
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SignupVerifyFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignupVerifyFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
