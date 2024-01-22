@@ -2,10 +2,50 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Relpl" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+         <item name="colorPrimary">@color/sage_green_dark</item>
+        <item name="colorOnPrimary">@color/sage_green_bright</item>
         <item name="android:statusBarColor">@color/white</item>
+        <item name="colorSurfaceContainerHigh">@color/sage_cream</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="Theme.Relpl" parent="Base.Theme.Relpl" />
+    <style name="Theme.Relpl" parent="Base.Theme.Relpl"/>
+
+    <style name="Relpe.Text.Logo" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_extrabold</item>
+        <item name="android:textSize">36sp</item>
+    </style>
+    
+    <style name="Relpl.Text" parent="Theme.Relpl">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
+    </style>
+
+    <style name="Relpl.Text.Button" parent="Theme.Relpl">
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Relpl.Button" parent="Theme.Relpl">
+        <item name="android:textAppearance">@style/Relpl.Text.Button</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+    
+    <style name="Relpl.FullButton.Signin" parent="Theme.Relpl">
+        <item name="android:background">@drawable/bg_full_btn_sage_green_deep</item>
+        <item name="android:textAppearance">@style/Relpl.Text.Button</item>
+    </style>
+
+    <style name="Relpl.FullButton.Signup" parent="Theme.Relpl">
+        <item name="android:background">@drawable/bg_full_btn_sage_green_text</item>
+        <item name="android:textAppearance">@style/Relpl.Text.Button</item>
+    </style>
+
+    <style name="Relpl.FullButton" parent="Theme.Relpl">
+        <item name="android:background">@drawable/bg_full_btn_sage_green_dark</item>
+        <item name="android:textAppearance">@style/Relpl.Text.Button</item>
+    </style>
+
+
 </resources>
