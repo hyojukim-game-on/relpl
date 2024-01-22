@@ -12,3 +12,5 @@ ADD ${JAR_FILE} app.jar
 
 # app.jar 파일을 실행합니다.
 ENTRYPOINT ["java","-Duser.timezone=Asia/Seoul", "-jar","/app.jar"]
+
+#for test

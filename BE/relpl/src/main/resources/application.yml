@@ -1,20 +1,11 @@
 server:
-  port: 8080
+  port: 9090
 
 spring:
-  config:
-    import: env.yml
   data:
     mongodb:
-      uri: mongodb://${SERVER_ADDRESS}:${MONGODB.PORT}/${MONGODB.NAME}
-    postgresql:
-      uri: jdbc:postgresql://${SERVER_ADDRESS}:${POSTGRESQL.PORT}/${POSTGRESQL.NAME}?user=${POSTGRESQL.USER}}&password=${POSTGRESQL.PASSWORD}&ssl=true
+      uri: mongodb://i10d201.p.ssafy.io:27017/ssafy
 
-# jpa
-    jpa:
-      hibernate:
-        ddl-auto: none
-      show-sql: true
-      properties:
-        hibernate:
-          format_sql: true
+tmap:
+  api:
+    key: 0ttiY8tbMp6yynwSOXkfl3EkQnU7rXO877tz4cxX
