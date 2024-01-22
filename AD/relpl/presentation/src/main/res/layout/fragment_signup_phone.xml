@@ -34,13 +34,14 @@
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="20dp"
         android:hint="@string/signup_phonenumber_et_hint"
-        app:helperText="@string/signup_phonenumber_et_err">
+        app:helperText="@string/signup_phonenumber_et_err"
+        app:prefixText="010">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:maxLength="11" />
+            android:maxLength="8" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
