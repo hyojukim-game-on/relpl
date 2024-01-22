@@ -16,19 +16,19 @@ public class ResponseService {
         FAILED(400, "실패");
 
         int output;
-        String msg;
+        String message;
 
-        CommonResponse(int output, String msg) {
+        CommonResponse(int output, String message) {
             this.output = output;
-            this.msg = msg;
+            this.message = message;
         }
 
         public int getOutput() {
             return output;
         }
 
-        public String getMsg() {
-            return msg;
+        public String getMessage() {
+            return message;
         }
     }
     // 단일건 결과를 처리하는 메소드
@@ -50,7 +50,7 @@ public class ResponseService {
     public <T> SingleResult<T> getSingleResult(T data, String msg, int code) {
         SingleResult<T> result = new SingleResult<>();
         result.setCode(code);
-        result.setMsg(msg);
+        result.setMessage(msg);
         result.setData(data);
         return result;
     }
@@ -67,7 +67,7 @@ public class ResponseService {
     public <T> ListResult<T> getListResult(List<T> list, String msg) {
         ListResult<T> result = new ListResult<>();
         result.setData(list);
-        result.setMsg(msg);
+        result.setMessage(msg);
         setSuccessResult(result);
         return result;
     }
@@ -80,7 +80,7 @@ public class ResponseService {
     // 성공 결과만 처리하는 메소드
     public CommonResult getSuccessResult(String msg) {
         CommonResult result = new CommonResult();
-        result.setMsg(msg);
+        result.setMessage(msg);
         setSuccessResultEx(result);
         return result;
     }
@@ -88,33 +88,33 @@ public class ResponseService {
     public CommonResult getFailResult(int code, String msg) {
         CommonResult result = new CommonResult();
         result.setCode(code);
-        result.setMsg(msg);
+        result.setMessage(msg);
         return result;
     }
     // 실패 결과만 처리하는 메소드 + data=null
     public <T> ListResult<T> getFailResult(int code, String msg, List<T> data) {
     	ListResult<T> result = new ListResult<>();
         result.setCode(code);
-        result.setMsg(msg);
+        result.setMessage(msg);
         result.setData(data);
         return result;
     }
     public <T> SingleResult<T> getFailResult(int code, String msg, T data) {
         SingleResult<T> result = new SingleResult<>();
         result.setData(data);
-        result.setMsg(msg);
+        result.setMessage(msg);
         result.setCode(CommonResponse.FAILED.output);
         return result;
     }
     // 결과 모델에 api 요청 성공 데이터를 세팅해주는 메소드
     private void setSuccessResult(CommonResult result) {
         result.setCode(CommonResponse.SUCCESS.getOutput());
-        result.setMsg(CommonResponse.SUCCESS.getMsg());
+        result.setMessage(CommonResponse.SUCCESS.getMessage());
     }
 
     private void setSuccessResultEx(CommonResult result) {
         result.setCode(CommonResponse.SUCCESS.getOutput());
-        result.setMsg(result.getMsg());
+        result.setMessage(result.getMessage());
     }
     
     
