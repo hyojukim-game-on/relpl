@@ -1,4 +1,4 @@
-package com.aga.presentation.base
+package com.gdd.presentation.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
