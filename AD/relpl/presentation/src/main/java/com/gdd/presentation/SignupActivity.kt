@@ -21,7 +21,10 @@ class SignupActivity : BaseActivity<ActivitySignupBinding>(
         super.onCreate(savedInstanceState)
 
         initViewPager()
+        registerListener()
+    }
 
+    private fun registerListener(){
         binding.btnBack.setOnClickListener {
             moveToPrevPage()
         }
