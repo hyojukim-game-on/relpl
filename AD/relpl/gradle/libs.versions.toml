@@ -77,11 +77,11 @@ custom-indicator = {group="com.tbuonomo", name ="dotsindicator", version = "5.0"
 
 [plugins]
 androidApplication = { id = "com.android.application", version = "8.1.3" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version = "1.9.0" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version = "1.8.0" }
 androidLibrary = { id = "com.android.library", version = "8.1.3" }
-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.0" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version = "1.8.0" }
 daggerHilt = { id = "com.google.dagger.hilt.android", version = "2.44" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version = "1.9.0" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version = "1.8.0" }
 
 
 [bundles]
