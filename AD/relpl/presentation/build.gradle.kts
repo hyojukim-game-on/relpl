@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.googleservice)
 }
 
 android {
@@ -60,5 +61,6 @@ dependencies {
     implementation(libs.lottie) // Lottie
     implementation(libs.custom.indicator) // Custom Indicator
 
-
+    // Firebase
+    implementation(platform(libs.firebase.bom))
 }
