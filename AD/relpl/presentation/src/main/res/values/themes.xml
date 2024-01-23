@@ -18,7 +18,7 @@
     </style>
     
     <style name="Relpl.Text" parent="Theme.Relpl">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
         <item name="android:textColor">@color/black</item>
     </style>
@@ -47,6 +47,12 @@
     <style name="Relpl.Text.TextInput.Helper" parent="Relpl.Text">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/et_gray</item>
+    </style>
+
+    <style name="Relpl.Text.Profile.Category" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 
