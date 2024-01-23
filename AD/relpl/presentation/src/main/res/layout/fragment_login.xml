@@ -10,8 +10,7 @@
         android:id="@+id/iv_bg_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_login"
+        android:background="@drawable/bg_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
