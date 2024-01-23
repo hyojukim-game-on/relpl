@@ -43,13 +43,15 @@ package:
     - name: docker:dind
       command: ["--privileged=true", "--tls=false"]
   before_script:
-    - echo $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
+    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
+    - echo "로그인 성공"
     #- cat $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
     - cd ./BE/relpl
     - docker buildx create --use --name mybuilder
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
+    - echo "build complete"
     # - docker build -t $IMAGE_NAME:$CI_PIPELINE_IID .
     # - docker build -t $IMAGE_NAME:latest .
     # - docker push $IMAGE_NAME:$CI_PIPELINE_IID
@@ -64,7 +66,7 @@ deploy-was:
   tags:
     - ksh-runner
   before_script:
-    - cat $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
+    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
     #- echo "$DOCKER_HUB_PW" | docker login --username  --password-stdin
   script:
     - docker stop ksh-backend || true
