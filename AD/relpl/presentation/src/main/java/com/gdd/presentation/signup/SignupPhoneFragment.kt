@@ -48,13 +48,14 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
     private fun registerListener(){
         binding.btnSend.setOnClickListener {
             sendVerificationCode()
+            binding.etPhone.isEnabled = false
 //            signupActivity.moveToNextPage()
         }
 
         binding.etPhone.editText!!.addTextChangedListener (object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (binding.etPhone.editText!!.text.toString().trim().isNotEmpty())
+                if (p0!!.toString().trim().isNotEmpty())
                     activityViewModel.isValidPhone(p0!!.toString().trim())
             }
             override fun afterTextChanged(p0: Editable?) {}
@@ -88,6 +89,7 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
             }
             override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
                 activityViewModel.verificationId = verificationId
+                activityViewModel.phoneNumber = "010"+binding.etPhone.editText!!.text.toString().trim()
                 showToast("인증번호를 발송했습니다. 90초 내에 코드를 입력해 주세요")
                 signupActivity.moveToNextPage()
             }

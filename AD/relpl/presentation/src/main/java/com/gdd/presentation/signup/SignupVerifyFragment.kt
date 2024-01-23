@@ -40,7 +40,7 @@ class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
     }
 
     private fun initView(){
-        binding.tvVerifyContent.text = "${activityViewModel.phoneNumber}\n ${resources.getString(R.string.signup_verify_content)}"
+        binding.tvVerifyContent.text = resources.getString(R.string.signup_verify_content, activityViewModel.phoneNumber)
 
         codeArr = arrayOf(
             binding.etCode1,
@@ -54,11 +54,14 @@ class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
 
     private fun registerListener(){
         binding.btnVerify.setOnClickListener {
-//            signupActivity.moveToNextPage()
             calcCode()
             Log.d(TAG, "registerListener: $verificationCode")
-            val credential = PhoneAuthProvider.getCredential(activityViewModel.verificationId, verificationCode)
-            signInWithPhoneAuthCredential(credential)
+            if(verificationCode.length < 6)
+                showToast("인증코드 형식이 유효하지 않습니다")
+            else{
+                val credential = PhoneAuthProvider.getCredential(activityViewModel.verificationId, verificationCode)
+                signInWithPhoneAuthCredential(credential)
+            }
         }
     }
     private fun onDeleteListener(){

@@ -5,10 +5,10 @@
     <string name="all_id">아이디</string>
     <string name="all_pw">비밀번호</string>
     <string name="all_signin">로그인</string>
+    <string name="all_invalid_input">유효하지 않은 입력 값이 존재합니다</string>
 
 
     <string name="start_sign_up">회원가입</string>
-
 
     <string name="signin_auto_login">자동 로그인</string>
 
@@ -23,17 +23,18 @@
     <string name="signup_phonenumber_send">전송</string>
 
     <string name="signup_verify_main">핸드폰 인증</string>
-    <string name="signup_verify_content">로 보내드린 인증 코드를 입력해 주세요</string>
+    <string name="signup_verify_content">%1$s로\n 보내드린 인증 코드를 입력해 주세요</string>
     <string name="signup_verify_verify">인증</string>
 
     <string name="signup_id_main">아이디를 입력해 주세요</string>
-    <string name="signup_id_content">아이디는 6자 이상으로 영문, 숫자, 특수 문자만\n
-        입력하실 수 있습니다</string>
+    <string name="signup_id_content">아이디는 6자 이상으로 영문, 숫자\n
+        _(언더바) .(점)만 입력하실 수 있습니다</string>
     <string name="signup_id_et_valid">유효한 아이디입니다 :)</string>
 
     <string name="signup_pw_main">비밀번호를 입력해 주세요</string>
     <string name="signup_pw_content">비밀번호는 10자 이상으로 영문, 숫자, 특수 문자가 필수로 포함 되어야 합니다</string>
     <string name="signup_pw_et_valid">유효한 비밀번호입니다 :)</string>
+    <string name="signup_pw_et_hint">비밀번호 입력</string>
     <string name="signup_repw_et_hint">비밀번호 재입력</string>
     <string name="signup_repw_et_err">비밀번호가 일치하지 않습니다 :(</string>
     <string name="signup_repw_et_valid">비밀번호와 일치합니다 :)</string>
@@ -43,7 +44,7 @@
         입력 하실 수 있습니다</string>
     <string name="signup_nickname_et_valid">유효한 닉네임입니다 :)</string>
 
-    <string name="signup_photo_welcome">님 환영합니다!</string>
+    <string name="signup_photo_welcome">%1$s님\n 환영합니다!</string>
     <string name="signup_photo_login">가입하신 아이디로 로그인해 주세요</string>
     <string name="signup_photo_main">프로필 사진을 등록해 보세요</string>
     <string name="signup_photo_content">추후 마이 프로필 화면에서 등록 및 수정이 가능합니다</string>

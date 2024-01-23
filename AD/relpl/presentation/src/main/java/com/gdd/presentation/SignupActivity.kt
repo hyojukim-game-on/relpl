@@ -2,6 +2,7 @@ package com.gdd.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.gdd.presentation.base.BaseActivity
@@ -17,6 +18,8 @@ class SignupActivity : BaseActivity<ActivitySignupBinding>(
     ActivitySignupBinding::inflate
 ) {
     private val viewModel: SignupViewModel by viewModels()
+    //api 달기 전까지 임시로 쓸 변수
+    var nickname = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,7 +46,12 @@ class SignupActivity : BaseActivity<ActivitySignupBinding>(
     fun moveToNextPage(){
         when(binding.vpInput.currentItem){
             4 -> {
-                Toast.makeText(this, "회원가입!", Toast.LENGTH_SHORT).show()
+                binding.tvSignup.visibility = View.GONE
+                binding.btnBack.visibility = View.GONE
+                binding.vpInput.currentItem += 1
+            }
+            5 -> {
+                Toast.makeText(this, "마지막 페이지!", Toast.LENGTH_SHORT).show()
             }
             else -> {
                 binding.vpInput.currentItem += 1

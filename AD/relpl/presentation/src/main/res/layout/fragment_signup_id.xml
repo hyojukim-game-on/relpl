@@ -30,15 +30,15 @@
         style="@style/Relpl.TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:maxLength="11" />
+            android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton

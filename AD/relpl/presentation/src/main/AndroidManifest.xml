@@ -4,7 +4,8 @@
     <application android:theme="@style/Theme.Relpl">
         <activity
             android:name=".SignupActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

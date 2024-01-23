@@ -39,9 +39,10 @@
                 android:textAppearance="@style/Relpl.Text.Logo" />
 
             <TextView
+                android:id="@+id/tv_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/font_wanted_sans_bold"
+                android:fontFamily="@font/font_wanted_sans_semibold"
                 android:text="@string/start_sign_up"
                 android:textColor="@color/black"
                 android:textSize="23sp" />
@@ -64,16 +65,15 @@
             android:id="@+id/indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="20dp"
             app:dotsColor="@color/divider_gray"
             app:dotsCornerRadius="8dp"
-            app:dotsSize="16dp"
-            app:dotsSpacing="7dp"
+            app:dotsSize="14dp"
+            app:dotsSpacing="6dp"
             app:dotsWidthFactor="2.5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="5dp"
             app:progressMode="true"
             app:selectedDotColor="@color/sage_green_text" />
 

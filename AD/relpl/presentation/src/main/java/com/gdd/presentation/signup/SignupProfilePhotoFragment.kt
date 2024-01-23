@@ -1,60 +1,49 @@
 package com.gdd.presentation.signup
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.gdd.presentation.R
+import com.gdd.presentation.SignupActivity
+import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.databinding.FragmentSignupProfilePhotoBinding
+import kotlin.math.log
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "SignupProfilePhotoFragm_Genseong"
+class SignupProfilePhotoFragment : BaseFragment<FragmentSignupProfilePhotoBinding>(
+    FragmentSignupProfilePhotoBinding::bind, R.layout.fragment_signup_profile_photo
+) {
+    private lateinit var signUpActivity: SignupActivity
+    private val activityViewModel: SignupViewModel by activityViewModels()
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignupProfilePhotoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SignupProfilePhotoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        signUpActivity = _activity as SignupActivity
+
+        initView()
+        registerListener()
+        registerObserver()
+    }
+
+    private fun initView(){
+        Log.d(TAG, "initView: ${signUpActivity.nickname}")
+        binding.tvWelcome.text = resources.getString(R.string.signup_photo_welcome, signUpActivity.nickname)
+    }
+
+    private fun registerListener(){
+        binding.btnAddPhoto.setOnClickListener {
+            Log.d(TAG, "registerListener: ${signUpActivity.nickname}")
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_signup_profile_photo, container, false)
-    }
+    private fun registerObserver(){
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SignupProfilePhotoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignupProfilePhotoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

@@ -1,5 +1,6 @@
 package com.gdd.presentation.signup
 
+import android.util.Log
 import android.util.Patterns
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
@@ -12,6 +13,7 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 
+private const val TAG = "SignupViewModel_Genseong"
 @HiltViewModel
 class SignupViewModel @Inject constructor(
 
@@ -57,15 +59,15 @@ class SignupViewModel @Inject constructor(
     }
 
     fun isValidId(id: String){
-        _idValidateResult.value = Pattern.matches(id, ID_REG)
+        _idValidateResult.value = Pattern.matches(ID_REG, id)
     }
 
     fun isValidPw(pw: String){
-        _pwValidateResult.value = Pattern.matches(pw, PW_REG)
+        _pwValidateResult.value = Pattern.matches(PW_REG, pw)
     }
 
     fun isValidNickname(nickname: String){
-        _nicknameValidateResult.value = Pattern.matches(nickname, NICKNAME_REG)
+        _nicknameValidateResult.value = Pattern.matches(NICKNAME_REG, nickname)
     }
 
     fun isDuplicatedPhone(phone: String){
@@ -109,8 +111,8 @@ class SignupViewModel @Inject constructor(
     }
 
     companion object{
-        const val ID_REG = "^[A-Za-z0-9!@#$%^&*()_]{6,}\$"
-        const val PW_REG = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{10,25}$"
-        const val NICKNAME_REG = "^[가-힣A-Za-z0-9]*\$"
+        const val ID_REG = "^[a-zA-Z0-9_.]{6,20}\$"
+        const val PW_REG = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{10,20}$"
+        const val NICKNAME_REG = "^[가-힣A-Za-z0-9]{2,15}$"
     }
 }
