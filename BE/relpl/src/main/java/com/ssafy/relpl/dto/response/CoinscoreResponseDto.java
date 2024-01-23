@@ -16,4 +16,10 @@ public class CoinscoreResponseDto {
 
     private String coinEventDetail; // 상세 내용 VARCHAR(200)
 
+    public CoinscoreResponseDto(String coinEventDate, int coinAmount, String coinEventDetail) {
+        this.coinEventDate = coinEventDate;
+        this.coinAmount = coinAmount;
+        this.coinEventDetail = coinEventDetail;
+    }
+
 }
