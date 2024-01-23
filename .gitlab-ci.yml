@@ -44,7 +44,7 @@ package:
       command: ["--privileged=true", "--tls=false"]
   before_script:
 #    - cat ../DOCKER_TOKEN.txt | docker login --username $DOCKER_HUB_USER --password-stdin
-    - echo $DOCKER_HUB_PW | docker login --username  --password-stdin
+    - echo "$DOCKER_HUB_PW" | docker login --username  --password-stdin
     - echo "로그인 성공"
     #- cat $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
