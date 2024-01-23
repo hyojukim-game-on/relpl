@@ -50,7 +50,7 @@ package:
   script:
     - cd ./BE/relpl
     - docker buildx create --use --name mybuilder
-    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID .
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
     - echo "build complete"
     # - docker build -t $IMAGE_NAME:$CI_PIPELINE_IID .
@@ -70,6 +70,8 @@ deploy-was:
 #    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
     - cat .. /DOCKER_TOKEN.txt | docker login --username $DOCKER_HUB_USER --password-stdin
     #- echo "$DOCKER_HUB_PW" | docker login --username  --password-stdin
+    - echo "DOCKER_HUB_PW: $DOCKER_HUB_PW"
+    - docker login --username $DOCKER_HUB_USER --password--stdin
   script:
     - docker stop ksh-backend || true
     - docker rm ksh-backend || true
