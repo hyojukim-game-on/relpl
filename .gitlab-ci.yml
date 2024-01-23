@@ -81,4 +81,4 @@ deploy-was:
     - docker logout
   when: on_success
   only:
-    - be/feat/cicd
+    - be/develop
