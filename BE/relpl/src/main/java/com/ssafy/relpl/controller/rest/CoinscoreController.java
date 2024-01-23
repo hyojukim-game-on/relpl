@@ -26,8 +26,8 @@ public class CoinscoreController {
 
     private final UserService userService; //??
     private final ResponseService responseService; //??
-    private final CoinService coinService; //
 
+    private final CoinService coinService; //
 
 //    @GetMapping(value = "/save")
 //    public User saveUser(@RequestParam String name, @RequestParam int age) {
@@ -46,9 +46,9 @@ public class CoinscoreController {
         result.setCode(200);
         result.setMessage("포인트 내역 조회 성공");
         result.setData(CoinscoreResponseDto
-                this.coinEventDate()
-                this.coinAmount()
-                this.coinEventDetail());
+                .coinEventDate()
+                .coinAmount()
+                .coinEventDetail());
         return ResponseEntity.ok(result);
 //        return ResponseEntity.ok(responseService.getSingleResult(
 //                SampleResponseDto.builder()
