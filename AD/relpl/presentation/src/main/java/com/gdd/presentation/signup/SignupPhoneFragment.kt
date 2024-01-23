@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +15,21 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupPhoneBinding
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import java.util.concurrent.TimeUnit
 
+private const val TAG = "SignupPhoneFragment_Genseong"
 class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
     FragmentSignupPhoneBinding::bind, R.layout.fragment_signup_phone
 ) {
     private lateinit var signupActivity: SignupActivity
     private val activityViewModel: SignupViewModel by activityViewModels()
+    val auth = Firebase.auth
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,8 +38,6 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
         initView()
         registerListener()
         registerObserver()
-
-
     }
 
     private fun initView(){
@@ -39,14 +47,15 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
 
     private fun registerListener(){
         binding.btnSend.setOnClickListener {
-
+            sendVerificationCode()
+//            signupActivity.moveToNextPage()
         }
 
         binding.etPhone.editText!!.addTextChangedListener (object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (binding.etPhone.editText!!.text.toString().trim().isNotEmpty())
-                    activityViewModel.isValidPhone(binding.etPhone.editText!!.text.toString().trim())
+                    activityViewModel.isValidPhone(p0!!.toString().trim())
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -68,5 +77,31 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
                 binding.etPhone.error = resources.getString(R.string.signup_all_et_err)
             }
         }
+    }
+
+    private fun sendVerificationCode(){
+        val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) { }
+            override fun onVerificationFailed(e: FirebaseException) {
+                showToast("인증번호 전송에 실패했습니다")
+                binding.etPhone.editText?.isEnabled = true
+            }
+            override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                activityViewModel.verificationId = verificationId
+                showToast("인증번호를 발송했습니다. 90초 내에 코드를 입력해 주세요")
+                signupActivity.moveToNextPage()
+            }
+        }
+        val phoneNumber = "+82010${binding.etPhone.editText!!.text.trim()}"
+        Log.d(TAG, "registerListener: $phoneNumber")
+
+        val optionsCompat =  PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(90L, TimeUnit.SECONDS)
+            .setActivity(signupActivity)
+            .setCallbacks(callbacks)
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(optionsCompat)
+        auth.setLanguageCode("kr")
     }
 }

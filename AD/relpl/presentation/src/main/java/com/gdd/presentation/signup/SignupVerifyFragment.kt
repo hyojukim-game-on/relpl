@@ -1,6 +1,7 @@
 package com.gdd.presentation.signup
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,7 +14,12 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupVerifyBinding
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
+private const val TAG = "SignupVerifyFragment_Genseong"
 class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
     FragmentSignupVerifyBinding::bind, R.layout.fragment_signup_verify
 ) {
@@ -22,6 +28,7 @@ class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
 
     private var verificationCode = ""
     private lateinit var codeArr : Array<EditText>
+    private val auth = Firebase.auth
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         signupActivity = _activity as SignupActivity
@@ -47,7 +54,11 @@ class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
 
     private fun registerListener(){
         binding.btnVerify.setOnClickListener {
-            signupActivity.moveToNextPage()
+//            signupActivity.moveToNextPage()
+            calcCode()
+            Log.d(TAG, "registerListener: $verificationCode")
+            val credential = PhoneAuthProvider.getCredential(activityViewModel.verificationId, verificationCode)
+            signInWithPhoneAuthCredential(credential)
         }
     }
     private fun onDeleteListener(){
@@ -66,6 +77,27 @@ class SignupVerifyFragment : BaseFragment<FragmentSignupVerifyBinding>(
                 codeArr[idx+1].text = null
             }
         }
+    }
+
+    private fun calcCode(){
+        verificationCode = ""
+        var code = codeArr.forEach {
+            verificationCode += it.text
+        }
+    }
+
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(signupActivity) { task ->
+                if (task.isSuccessful) {
+                    showToast("인증에 성공했습니다.")
+                    signupActivity.moveToNextPage()
+                }
+                else {
+                    //인증실패
+                    showToast("인증에 실패했습니다.")
+                }
+            }
     }
 
 }

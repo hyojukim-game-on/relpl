@@ -2,6 +2,7 @@ package com.gdd.relpl.module
 
 import com.gdd.data.repository.user.UserRepositoryImpl
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
+import com.gdd.data.repository.user.remote.UserRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +14,5 @@ import javax.inject.Singleton
 abstract class DataSourceModule {
     @Singleton
     @Binds
-    abstract fun bindUserRemoteDataSource(userRepositoryImpl: UserRepositoryImpl): UserRemoteDataSource
+    abstract fun bindUserRemoteDataSource(userRemoteDataSourceImpl: UserRemoteDataSourceImpl): UserRemoteDataSource
 }

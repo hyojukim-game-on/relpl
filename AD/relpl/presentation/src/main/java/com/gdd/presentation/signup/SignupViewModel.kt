@@ -20,6 +20,7 @@ class SignupViewModel @Inject constructor(
     var id = ""
     var pw = ""
     var nickname = ""
+    var verificationId = ""
 
     private val _phoneValidateResult = MutableLiveData<Boolean>()
     val phoneValidateResult: LiveData<Boolean>
