@@ -1,16 +1,18 @@
 server:
   port: 9090
 
-
 spring:
+  config:
+    import: env.yml
   datasource:
-    url: jdbc:postgresql://i10d201.p.ssafy.io:5432/relpl
-    username: ssafy
-    password: ~(0dlcK,z2H6#i#N/
+    url: jdbc:postgresql://${SERVER_ADDRESS}:${POSTGRESQL.PORT}/relpl
+    username: ${POSTGRESQL.NAME}
+    password: ${POSTGRESQL.PASSWORD}
     driver-class-name: org.postgresql.Driver
-  data:
-    mongodb:
-      uri: mongodb://i10d201.p.ssafy.io:27017/ssafy
+  data.mongodb:
+    host: ${SERVER_ADDRESS}
+    port: ${MONGODB.PORT}
+    database: ${MONGODB.NAME}
 
 tmap:
   api:
