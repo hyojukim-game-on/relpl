@@ -8,8 +8,6 @@ import lombok.Setter;
 public class CommonResult {
     private int code;
 
-    private String message;
-
-    private T data;
+    private String msg;
 }
 
