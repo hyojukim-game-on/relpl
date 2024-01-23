@@ -69,14 +69,14 @@ deploy-was:
     - ksh-runner
   before_script:
 #    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
-    - docker login -u $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
     #- echo "$DOCKER_HUB_PW" | docker login --username  --password-stdin
   script:
     - docker stop ksh-backend || true
     - docker rm ksh-backend || true
     - docker rmi ksh-backend || true
     - docker pull $IMAGE_NAME:latest
-    - docker run -d --restart always -e TZ=Asia/Seoul -p 8081:8080/tcp --name ksh-backend $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -p 8081:9090/tcp --name ksh-backend $IMAGE_NAME:latest
   after_script:
     - docker logout
   when: on_success
