@@ -17,7 +17,7 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 stages:
-  - build
+  #- build
   - package
   - deploy
 
@@ -44,7 +44,7 @@ package:
       command: ["--privileged=true", "--tls=false"]
   before_script:
     #- echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
-    - cat ~/DOCKER_HUB_PW.txt | docker login --username $DOCKER_HUB_USER --password-stdin
+    - cat $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
     - cd ./BE/relpl
     - docker buildx create --use --name mybuilder
@@ -64,7 +64,7 @@ deploy-was:
   tags:
     - ksh-runner
   before_script:
-    - cat ~/DOCKER_HUB_PW.txt | docker login --username $DOCKER_HUB_USER --password-stdin
+    - cat $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
     #- echo "$DOCKER_HUB_PW" | docker login --username  --password-stdin
   script:
     - docker stop ksh-backend || true
