@@ -6,6 +6,7 @@
     <string name="all_pw">비밀번호</string>
     <string name="all_signin">로그인</string>
     <string name="all_invalid_input">유효하지 않은 입력 값이 존재합니다</string>
+    <string name="all_cancle">취소</string>
 
 
     <string name="start_sign_up">회원가입</string>
@@ -62,4 +63,10 @@
     <string name="profile_report_count">제보 횟수</string>
     <string name="profile_report_history">제보 내역</string>
     <string name="profile_withdrawal"><u>회원 탈퇴</u></string>
+
+    <string name="dialog_change_pw_title">비밀번호 변경</string>
+    <string name="dialog_change_pw_original_pw">기존 비밀번호</string>
+    <string name="dialog_change_pw_new_pw">새로운 비밀번호</string>
+    <string name="dialog_change_pw_new_re">비밀번호 확인</string>
+    <string name="dialog_change_pw_change">변경</string>
 </resources>
