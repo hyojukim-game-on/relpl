@@ -1,5 +1,7 @@
-package com.example.demo.dto.resDTO;
+package com.ssafy.relpl.dto.response;
 
-public class CommonDataResponse<T> extends CommonResponse{
+import com.ssafy.relpl.service.ResponseService;
+
+public class CommonDataResponse<T> extends ResponseService.CommonResponse {
     private RankingData data;
 }

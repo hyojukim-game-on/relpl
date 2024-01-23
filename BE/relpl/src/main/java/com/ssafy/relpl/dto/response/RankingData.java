@@ -1,4 +1,4 @@
-package com.example.demo.dto.resDTO;
+package com.ssafy.relpl.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
