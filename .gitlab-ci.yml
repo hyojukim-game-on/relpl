@@ -43,7 +43,7 @@ package:
     - name: docker:dind
       command: ["--privileged=true", "--tls=false"]
   before_script:
-    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
+    - cat ~/bin/DOCKER_TOKEN.txt | docker login --username $DOCKER_HUB_USER --password-stdin
     - echo "로그인 성공"
     #- cat $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
@@ -66,7 +66,8 @@ deploy-was:
   tags:
     - ksh-runner
   before_script:
-    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
+#    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
+    - cat ~/bin/DOCKER_TOKEN.txt | docker login --username $DOCKER_HUB_USER --password-stdin
     #- echo "$DOCKER_HUB_PW" | docker login --username  --password-stdin
   script:
     - docker stop ksh-backend || true
@@ -78,4 +79,4 @@ deploy-was:
     - docker logout
   when: on_success
   only:
-    - be/develop
+    - be/feat/cicd
