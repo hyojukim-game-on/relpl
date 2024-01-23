@@ -25,13 +25,13 @@ build:
   image: azul/zulu-openjdk:17-latest
   stage: build
   script:
-    - cd ./backend
+    - cd ./BE/relpl
     - chmod +x ./gradlew
     - ./gradlew clean
     - ./gradlew build
   artifacts:
     paths:
-      - backend/build/libs/*.jar
+      - ./BE/relpl/build/libs/*.jar
     expire_in: 10 min
 
 package:
@@ -45,7 +45,7 @@ package:
   before_script:
     - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
-    - cd ./backend
+    - cd ./BE/relpl
     - docker buildx create --use --name mybuilder
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
