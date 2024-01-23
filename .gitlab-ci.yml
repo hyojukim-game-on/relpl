@@ -43,8 +43,7 @@ package:
     - name: docker:dind
       command: ["--privileged=true", "--tls=false"]
   before_script:
-    - echo "$DOCKER_HUB_PW" 
-    - docker login -username $DOCKER_HUB_USER --password-stdin $DOCKER_HUB_PW
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
     - cd ./BE/relpl
     - docker buildx create --use --name mybuilder
