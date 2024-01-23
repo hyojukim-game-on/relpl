@@ -1,5 +1,6 @@
 package com.gdd.relpl.module
 
+import com.gdd.data.api.ApiClient.BASE_URL
 import com.gdd.data.api.UserService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

@@ -51,7 +51,7 @@ class SignupActivity : BaseActivity<ActivitySignupBinding>(
         }
     }
 
-    fun moveToPrevPage(){
+    private fun moveToPrevPage(){
         when(binding.vpInput.currentItem){
             0 -> {
                 Toast.makeText(this, "첫 페이지 입니다", Toast.LENGTH_SHORT).show()
