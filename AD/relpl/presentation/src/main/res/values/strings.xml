@@ -53,6 +53,7 @@
     <string name="profile_profile">프로필</string>
     <string name="profile_nickname">닉네임</string>
     <string name="profile_phone">핸드폰 번호</string>
+    <string name="profile_pw_change">비밀번호 변경</string>
     <string name="profile_point">포인트</string>
     <string name="profile_cur_point">현재 포인트</string>
     <string name="profile_point_history">포인트 내역</string>
