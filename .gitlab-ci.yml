@@ -43,7 +43,7 @@ package:
     - name: docker:dind
       command: ["--privileged=true", "--tls=false"]
   before_script:
-    - cat ~/bin/DOCKER_TOKEN.txt | docker login --username $DOCKER_HUB_USER --password-stdin
+    - cat bin/DOCKER_TOKEN.txt | docker login --username $DOCKER_HUB_USER --password-stdin
     - echo "로그인 성공"
     #- cat $DOCKER_HUB_PW | docker login --username $DOCKER_HUB_USER --password-stdin
   script:
