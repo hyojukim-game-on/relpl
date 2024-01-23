@@ -1,7 +1,13 @@
 server:
   port: 9090
 
+
 spring:
+  datasource:
+    url: jdbc:postgresql://i10d201.p.ssafy.io:5432/relpl
+    username: ssafy
+    password: ~(0dlcK,z2H6#i#N/
+    driver-class-name: org.postgresql.Driver
   data:
     mongodb:
       uri: mongodb://i10d201.p.ssafy.io:27017/ssafy
