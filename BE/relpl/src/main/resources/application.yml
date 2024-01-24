@@ -22,3 +22,17 @@ spring:
 tmap:
   api:
     key: 0ttiY8tbMp6yynwSOXkfl3EkQnU7rXO877tz4cxX
+
+cloud:
+  aws:
+    s3:
+      bucket: ${AWS.BUCKET_NAME}
+      base-url: https://${AWS.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/
+    credentials:
+      access-key: ${AWS.ACCESS_KEY}
+      secret-key: ${AWS.SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
