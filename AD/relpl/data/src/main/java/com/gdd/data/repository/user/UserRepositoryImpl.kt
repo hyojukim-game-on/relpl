@@ -23,4 +23,12 @@ class UserRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun changePassword(
+        userId: Long,
+        currentPassword: String,
+        newPassword: String
+    ) {
+        userRemoteDataSource. changePassword(userId, currentPassword, newPassword)
+    }
+
 }

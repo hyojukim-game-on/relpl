@@ -2,12 +2,14 @@ package com.gdd.data.api
 
 import com.gdd.data.model.DefaultBooleanData
 import com.gdd.data.model.DefaultResponse
+import com.gdd.data.model.profile.ChangePasswordRequest
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.model.signup.SignupResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserService {
@@ -30,4 +32,9 @@ interface UserService {
     suspend fun signUp(
         @Body signupRequest: SignupRequest
     ): Response<DefaultResponse<SignupResponse>>
+
+    @PUT("user/mypage/password")
+    suspend fun changePassword(
+        @Body changePasswordRequest: ChangePasswordRequest
+    )
 }

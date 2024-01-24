@@ -8,4 +8,6 @@ interface UserRepository {
     suspend fun isDuplicatedNickname(nickname: String): Boolean
 
     suspend fun signUp(phone: String, id: String, pw: String, nickname: String)
+
+    suspend fun changePassword(userId: Long, currentPassword: String, newPassword: String)
 }

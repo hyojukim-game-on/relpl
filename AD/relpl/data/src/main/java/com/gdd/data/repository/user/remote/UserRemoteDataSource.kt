@@ -8,4 +8,6 @@ interface UserRemoteDataSource {
     suspend fun isDuplicatedNickname(nickname: String): Boolean
 
     suspend fun signUp()
+
+    suspend fun changePassword(userId: Long, currentPassword: String, newPassword: String)
 }

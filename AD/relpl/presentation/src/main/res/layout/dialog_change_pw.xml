@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="start"
         android:orientation="vertical"
-        android:padding="25dp"
+        android:padding="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,18 @@
             android:layout_height="wrap_content"
             android:text="@string/dialog_change_pw_title"
             android:layout_marginStart="10dp"
-            android:textAppearance="@style/Relpl.Text.Dialog.Title" />
+            android:textAppearance="@style/Relpl.Text.Dialog.Title"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signup_pw_content"
+            android:textAppearance="@style/Relple.Text.Dialog.Content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp"/>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -73,7 +84,7 @@
             android:textAppearance="@style/Relpl.Text.TextInput.Title"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/et_newl_pw_re"
+            android:id="@+id/et_new_pw_re"
             style="@style/Relpl.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,7 +99,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:layout_gravity="end"
             android:paddingLeft="60dp"
             android:paddingRight="20dp">
@@ -111,7 +122,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_change_pw_change"
-                android:textAppearance="@style/Relpl.Text.Dialog.Button"   />
+                android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                android:layout_marginBottom="26dp"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -6,6 +6,7 @@
     <string name="all_pw">비밀번호</string>
     <string name="all_signin">로그인</string>
     <string name="all_invalid_input">유효하지 않은 입력 값이 존재합니다</string>
+    <string name="all_input_everything">모든 값을 입력해 주세요</string>
     <string name="all_cancle">취소</string>
 
 
@@ -33,7 +34,8 @@
     <string name="signup_id_et_valid">유효한 아이디입니다 :)</string>
 
     <string name="signup_pw_main">비밀번호를 입력해 주세요</string>
-    <string name="signup_pw_content">비밀번호는 10자 이상으로 영문, 숫자, 특수 문자가 필수로 포함 되어야 합니다</string>
+    <string name="signup_pw_content">비밀번호는 10자 이상으로 영문, 숫자, 특수 문자가 \n
+        필수로 포함 되어야 합니다</string>
     <string name="signup_pw_et_valid">유효한 비밀번호입니다 :)</string>
     <string name="signup_pw_et_hint">비밀번호 입력</string>
     <string name="signup_repw_et_hint">비밀번호 재입력</string>

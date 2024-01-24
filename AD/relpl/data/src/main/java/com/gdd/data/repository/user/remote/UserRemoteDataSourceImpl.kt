@@ -1,6 +1,7 @@
 package com.gdd.data.repository.user.remote
 
 import com.gdd.data.api.UserService
+import com.gdd.data.model.profile.ChangePasswordRequest
 import javax.inject.Inject
 
 class UserRemoteDataSourceImpl @Inject constructor(
@@ -20,5 +21,17 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun signUp() {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun changePassword(
+        userId: Long,
+        currentPassword: String,
+        newPassword: String
+    ) {
+        userService.changePassword(ChangePasswordRequest(
+            userId,
+            currentPassword,
+            newPassword
+        ))
     }
 }
