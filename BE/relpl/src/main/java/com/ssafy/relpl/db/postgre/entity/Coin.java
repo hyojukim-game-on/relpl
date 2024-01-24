@@ -1,4 +1,4 @@
-package com.ssafy.relpl.db.entity;
+package com.ssafy.relpl.db.postgre.entity;
 
 
 import lombok.Builder;

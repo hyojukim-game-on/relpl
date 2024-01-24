@@ -1,6 +1,6 @@
 package com.ssafy.relpl.db.repository.postGis;
 
-import com.ssafy.relpl.db.entity.Coin;
+import com.ssafy.relpl.db.postgre.entity.Coin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
