@@ -2,6 +2,7 @@ package com.gdd.data.repository.user
 
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
 import com.gdd.domain.repository.UserRepository
+import java.io.File
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -21,6 +22,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(phone: String, id: String, pw: String, nickname: String) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun registerProfileImage(img: File, userId: Long) {
+        return userRemoteDataSource.registerProfileImage(img, userId)
     }
 
 }

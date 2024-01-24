@@ -65,4 +65,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+
+    //Glide
+    implementation(libs.glide)
 }

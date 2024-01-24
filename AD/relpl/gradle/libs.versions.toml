@@ -36,6 +36,8 @@ room = "2.5.2"
 # Firebase
 firebase-bom = "32.7.1"
 
+glide = "4.16.0"
+
 [libraries]
 # AndroidX Libraries
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
@@ -81,6 +83,9 @@ custom-indicator = {group="com.tbuonomo", name ="dotsindicator", version = "5.0"
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-auth = {group = "com.google.firebase", name = "firebase-auth-ktx"}
+
+
+glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
 
 
 [plugins]
