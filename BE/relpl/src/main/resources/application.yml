@@ -9,13 +9,15 @@ spring:
     username: ${POSTGRESQL.NAME}
     password: ${POSTGRESQL.PASSWORD}
     driver-class-name: org.postgresql.Driver
-  data.mongodb:
-    host: ${SERVER_ADDRESS}
-    port: ${MONGODB.PORT}
-    database: ${MONGODB.NAME}
-  redis:
-    host: ${SERVER_ADDRESS}
-    port: ${REDIS.PORT}
+  data:
+    mongodb:
+      url: mongodb://${SERVER_ADDRESS}:${MONGODB.PORT}
+      host: ${SERVER_ADDRESS}
+      port: ${MONGODB.PORT}
+      database: ${MONGODB.NAME}
+    redis:
+      host: ${SERVER_ADDRESS}
+      port: ${REDIS.PORT}
 
 tmap:
   api:
