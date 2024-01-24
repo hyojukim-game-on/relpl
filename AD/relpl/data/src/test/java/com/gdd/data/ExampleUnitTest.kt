@@ -1,5 +1,6 @@
 package com.gdd.data
 
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -11,7 +12,22 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun retrofit_test_adapter() {
+        runBlocking {
+            val result = RetrofitManager.getAgaService().getUserInfoAdapter("cjfwn96")
+            println(result.toString())
+            assertEquals(true,result.isSuccess)
+            assertEquals("cjfwn96",result.getOrNull()?.userId?:"")
+        }
+    }
+
+    @Test
+    fun retrofit_test() {
+        runBlocking {
+            val result = RetrofitManager.getAgaService().getUserInfo("cjfwn96")
+            println(result.toString())
+            assertEquals(true,result.isSuccessful)
+            assertEquals("cjfwn96",result.body()?.data?.userId)
+        }
     }
 }
