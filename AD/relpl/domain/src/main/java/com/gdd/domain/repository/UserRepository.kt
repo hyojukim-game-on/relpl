@@ -12,4 +12,6 @@ interface UserRepository {
     suspend fun signUp(phone: String, id: String, pw: String, nickname: String)
 
     suspend fun registerProfileImage(img: File, userId: Long)
+
+    suspend fun changePassword(userId: Long, currentPassword: String, newPassword: String)
 }

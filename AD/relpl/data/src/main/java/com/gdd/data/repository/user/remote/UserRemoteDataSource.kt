@@ -12,4 +12,6 @@ interface UserRemoteDataSource {
     suspend fun signUp()
 
     suspend fun registerProfileImage(file: File, userId: Long)
+
+    suspend fun changePassword(userId: Long, currentPassword: String, newPassword: String)
 }

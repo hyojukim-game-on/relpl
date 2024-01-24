@@ -6,6 +6,8 @@
     <string name="all_pw">비밀번호</string>
     <string name="all_signin">로그인</string>
     <string name="all_invalid_input">유효하지 않은 입력 값이 존재합니다</string>
+    <string name="all_input_everything">모든 값을 입력해 주세요</string>
+    <string name="all_cancle">취소</string>
 
 
     <string name="start_sign_up">회원가입</string>
@@ -32,7 +34,8 @@
     <string name="signup_id_et_valid">유효한 아이디입니다 :)</string>
 
     <string name="signup_pw_main">비밀번호를 입력해 주세요</string>
-    <string name="signup_pw_content">비밀번호는 10자 이상으로 영문, 숫자, 특수 문자가 필수로 포함 되어야 합니다</string>
+    <string name="signup_pw_content">비밀번호는 10자 이상으로 영문, 숫자, 특수 문자가 \n
+        필수로 포함 되어야 합니다</string>
     <string name="signup_pw_et_valid">유효한 비밀번호입니다 :)</string>
     <string name="signup_pw_et_hint">비밀번호 입력</string>
     <string name="signup_repw_et_hint">비밀번호 재입력</string>
@@ -49,6 +52,23 @@
     <string name="signup_photo_main">프로필 사진을 등록해 보세요</string>
     <string name="signup_photo_content">추후 마이 프로필 화면에서 등록 및 수정이 가능합니다</string>
     <string name="signup_photo_done">완료</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="profile_profile">프로필</string>
+    <string name="profile_nickname">닉네임</string>
+    <string name="profile_phone">핸드폰 번호</string>
+    <string name="profile_pw_change">비밀번호 변경</string>
+    <string name="profile_point">포인트</string>
+    <string name="profile_cur_point">현재 포인트</string>
+    <string name="profile_point_history">포인트 내역</string>
+    <string name="profile_plastic_bag">종량제 봉투와 교환하기</string>
+    <string name="profile_report">제보</string>
+    <string name="profile_report_count">제보 횟수</string>
+    <string name="profile_report_history">제보 내역</string>
+    <string name="profile_withdrawal"><u>회원 탈퇴</u></string>
+
+    <string name="dialog_change_pw_title">비밀번호 변경</string>
+    <string name="dialog_change_pw_original_pw">기존 비밀번호</string>
+    <string name="dialog_change_pw_new_pw">새로운 비밀번호</string>
+    <string name="dialog_change_pw_new_re">비밀번호 확인</string>
+    <string name="dialog_change_pw_change">변경</string>
 </resources>

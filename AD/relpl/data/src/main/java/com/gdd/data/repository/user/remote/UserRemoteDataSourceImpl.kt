@@ -8,6 +8,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import com.gdd.data.model.profile.ChangePasswordRequest
 import javax.inject.Inject
 
 class UserRemoteDataSourceImpl @Inject constructor(
@@ -38,5 +39,17 @@ class UserRemoteDataSourceImpl @Inject constructor(
         map["userId"] = id
 
         userService.registerProfileImage(multipartBody, map)
+    }
+
+    override suspend fun changePassword(
+        userId: Long,
+        currentPassword: String,
+        newPassword: String
+    ) {
+        userService.changePassword(ChangePasswordRequest(
+            userId,
+            currentPassword,
+            newPassword
+        ))
     }
 }

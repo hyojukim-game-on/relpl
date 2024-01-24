@@ -28,4 +28,12 @@ class UserRepositoryImpl @Inject constructor(
         return userRemoteDataSource.registerProfileImage(img, userId)
     }
 
+    override suspend fun changePassword(
+        userId: Long,
+        currentPassword: String,
+        newPassword: String
+    ) {
+        userRemoteDataSource. changePassword(userId, currentPassword, newPassword)
+    }
+
 }
