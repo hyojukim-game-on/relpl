@@ -14,5 +14,5 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 public class ReportController {
 
-    @PostMapping(value = "/regist")
+//    @PostMapping(value = "/regist")
 }
