@@ -1,5 +1,7 @@
 package com.gdd.domain.repository
 
+import java.io.File
+
 interface UserRepository {
     suspend fun isDuplicatedPhone(phone: String): Boolean
 
@@ -8,4 +10,6 @@ interface UserRepository {
     suspend fun isDuplicatedNickname(nickname: String): Boolean
 
     suspend fun signUp(phone: String, id: String, pw: String, nickname: String)
+
+    suspend fun registerProfileImage(img: File, userId: Long)
 }
