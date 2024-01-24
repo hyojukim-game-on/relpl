@@ -21,7 +21,7 @@ spring:
 
 tmap:
   api:
-    key: 0ttiY8tbMp6yynwSOXkfl3EkQnU7rXO877tz4cxX
+    key: ${TMAP_KEY}
 
 cloud:
   aws:
