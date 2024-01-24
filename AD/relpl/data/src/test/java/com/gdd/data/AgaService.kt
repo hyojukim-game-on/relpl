@@ -14,5 +14,5 @@ interface AgaService {
     @GET("users/{userId}")
     suspend fun getUserInfoAdapter(
         @Path("userId") id: String
-    ): Result<User>
+    ): Result<DefaultResponse<User>>
 }

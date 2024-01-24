@@ -17,7 +17,7 @@ class ExampleUnitTest {
             val result = RetrofitManager.getAgaService().getUserInfoAdapter("cjfwn96")
             println(result.toString())
             assertEquals(true,result.isSuccess)
-            assertEquals("cjfwn96",result.getOrNull()?.userId?:"")
+            assertEquals("cjfwn96",result.getOrNull()?.data?.userId?:"")
         }
     }
 

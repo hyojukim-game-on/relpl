@@ -1,4 +1,4 @@
-package com.gdd.data.retrofit
+package com.gdd.retrofit_adapter
 
 class RelplException(
     val code: Int,

@@ -1,6 +1,5 @@
-package com.gdd.data.retrofit
+package com.gdd.retrofit_adapter
 
-import com.gdd.data.model.DefaultResponse
 import okhttp3.Request
 import okio.IOException
 import okio.Timeout
@@ -8,31 +7,23 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ResultCall<T,R>(
+class ResultCall<T>(
     private val callDelegate: Call<T>
-) : Call<Result<R?>> {
+) : Call<Result<T>> {
 
-    override fun enqueue(callback: Callback<Result<R?>>) =
+    override fun enqueue(callback: Callback<Result<T>>) =
         callDelegate.enqueue(object : Callback<T> {
             override fun onResponse(
                 call: Call<T>,
                 response: Response<T>
             ) {
-                if (response.body() !is DefaultResponse<*>){
-                    callback.onResponse(
-                        this@ResultCall,
-                        Response.success(Result.failure(TypeCastException("reponse type is not DefaultResponse")))
-                    )
-                }
-                println(response)
-                val body = response.body() as DefaultResponse<*>
-
+                val body = response.body()
                 if (response.isSuccessful) {
                     if (body != null) {
                         // body and data is not null
                         callback.onResponse(
                             this@ResultCall,
-                            Response.success(Result.success(body.data as R))
+                            Response.success(Result.success(body))
                         )
                     } else {
                         callback.onResponse(
@@ -62,14 +53,14 @@ class ResultCall<T,R>(
             }
         })
 
-    override fun clone(): Call<Result<R?>> {
+    override fun clone(): Call<Result<T>> {
         return ResultCall(callDelegate.clone())
     }
 
-    override fun execute(): Response<Result<R?>> {
+    override fun execute(): Response<Result<T>> {
         val response = callDelegate.execute()
-        return if (response.isSuccessful && response.body() != null && response.body() is DefaultResponse<*> ) {
-            Response.success(Result.success((response.body() as DefaultResponse<*>).data as R))
+        return if (response.isSuccessful && response.body() != null ) {
+            Response.success(Result.success(response.body()!!))
         } else {
             Response.error(response.code(), response.errorBody()!!)
         }

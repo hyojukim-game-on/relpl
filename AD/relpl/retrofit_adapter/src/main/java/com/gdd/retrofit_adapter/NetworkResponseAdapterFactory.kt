@@ -1,11 +1,9 @@
-package com.gdd.data.retrofit
+package com.gdd.retrofit_adapter
 
-import com.gdd.data.model.DefaultResponse
 import com.squareup.moshi.rawType
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
-import java.lang.reflect.Parameter
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -27,6 +25,6 @@ class NetworkResponseAdapterFactory: CallAdapter.Factory() {
         val bodyType = getParameterUpperBound(0,responseType)
         println(bodyType)
 
-        return NetworkResponseAdapter<Any,Any>(bodyType)
+        return NetworkResponseAdapter<Any>(bodyType)
     }
 }
