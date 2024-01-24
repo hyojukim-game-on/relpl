@@ -5,32 +5,32 @@ spring:
   config:
     import: env.yml
   datasource:
-    url: jdbc:postgresql://${SERVER_ADDRESS}:${POSTGRESQL_PORT}/relpl
-    username: ${POSTGRESQL_NAME}
-    password: ${POSTGRESQL_PASSWORD}
+    url: jdbc:postgresql://${SERVER_ADDRESS}:${POSTGRESQL.PORT}/relpl
+    username: ${POSTGRESQL.NAME}
+    password: ${POSTGRESQL.PASSWORD}
     driver-class-name: org.postgresql.Driver
   data:
     mongodb:
-      url: mongodb://${SERVER_ADDRESS}:${MONGODB_PORT}
+      url: mongodb://${SERVER_ADDRESS}:${MONGODB.PORT}
       host: ${SERVER_ADDRESS}
-      port: ${MONGODB_PORT}
-      database: ${MONGODB_NAME}
+      port: ${MONGODB.PORT}
+      database: ${MONGODB.NAME}
     redis:
       host: ${SERVER_ADDRESS}
-      port: ${REDIS_PORT}
+      port: ${REDIS.PORT}
 
 tmap:
   api:
-    key: ${TMAP_KEY}
+    key: 0ttiY8tbMp6yynwSOXkfl3EkQnU7rXO877tz4cxX
 
 cloud:
   aws:
     s3:
-      bucket: ${AWS_BUCKET_NAME}
-      base-url: https://${AWS_BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/
+      bucket: ${AWS.BUCKET_NAME}
+      base-url: https://${AWS.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/
     credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
+      access-key: ${AWS.ACCESS_KEY}
+      secret-key: ${AWS.SECRET_KEY}
     region:
       static: ap-northeast-2
       auto: false
