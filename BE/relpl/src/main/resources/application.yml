@@ -13,6 +13,9 @@ spring:
     host: ${SERVER_ADDRESS}
     port: ${MONGODB.PORT}
     database: ${MONGODB.NAME}
+  redis:
+    host: ${SERVER_ADDRESS}
+    port: ${REDIS.PORT}
 
 tmap:
   api:
