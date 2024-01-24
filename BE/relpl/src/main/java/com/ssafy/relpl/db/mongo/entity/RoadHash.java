@@ -1,4 +1,4 @@
-package com.ssafy.relpl.dto;
+package com.ssafy.relpl.db.mongo.entity;
 
 import lombok.Builder;
 import lombok.Getter;

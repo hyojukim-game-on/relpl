@@ -2,7 +2,7 @@ package com.ssafy.relpl.controller.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.relpl.dto.Road;
+import com.ssafy.relpl.db.mongo.entity.Road;
 import com.ssafy.relpl.dto.response.TmapApiResponseDTO;
 import com.ssafy.relpl.service.TmapService;
 import lombok.RequiredArgsConstructor;

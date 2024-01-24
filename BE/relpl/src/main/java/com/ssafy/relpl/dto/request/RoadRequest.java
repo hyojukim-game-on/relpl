@@ -1,4 +1,4 @@
-package com.ssafy.relpl.dto;
+package com.ssafy.relpl.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
