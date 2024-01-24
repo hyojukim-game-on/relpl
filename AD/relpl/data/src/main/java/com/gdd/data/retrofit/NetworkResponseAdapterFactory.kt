@@ -27,6 +27,6 @@ class NetworkResponseAdapterFactory: CallAdapter.Factory() {
         val bodyType = getParameterUpperBound(0,responseType)
         println(bodyType)
 
-        return NetworkResponseAdapter<Any>(bodyType)
+        return NetworkResponseAdapter<Any,Any>(bodyType)
     }
 }

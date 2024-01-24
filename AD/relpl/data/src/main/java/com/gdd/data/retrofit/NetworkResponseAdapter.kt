@@ -7,12 +7,12 @@ import retrofit2.CallAdapter
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-class NetworkResponseAdapter<T>(
+class NetworkResponseAdapter<T, R>(
     private val successType: Type,
-): CallAdapter<DefaultResponse<T>, Call<Result<T?>>> {
-    override fun responseType() = DefaultResponse(0, "",successType)::class.java.also { println(it) }
+): CallAdapter<T, Call<Result<R?>>> {
+    override fun responseType() = DefaultResponse(0,"",successType)::class.java
 
-    override fun adapt(call: Call<DefaultResponse<T>>): Call<Result<T?>> {
+    override fun adapt(call: Call<T>): Call<Result<R?>> {
         return ResultCall(call)
     }
 }

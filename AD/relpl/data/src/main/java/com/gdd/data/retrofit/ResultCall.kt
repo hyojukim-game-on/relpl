@@ -8,25 +8,31 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ResultCall<T>(
-    private val callDelegate: Call<DefaultResponse<T>>
-) : Call<Result<T?>> {
+class ResultCall<T,R>(
+    private val callDelegate: Call<T>
+) : Call<Result<R?>> {
 
-    override fun enqueue(callback: Callback<Result<T?>>) =
-        callDelegate.enqueue(object : Callback<DefaultResponse<T>> {
+    override fun enqueue(callback: Callback<Result<R?>>) =
+        callDelegate.enqueue(object : Callback<T> {
             override fun onResponse(
-                call: Call<DefaultResponse<T>>,
-                response: Response<DefaultResponse<T>>
+                call: Call<T>,
+                response: Response<T>
             ) {
+                if (response.body() !is DefaultResponse<*>){
+                    callback.onResponse(
+                        this@ResultCall,
+                        Response.success(Result.failure(TypeCastException("reponse type is not DefaultResponse")))
+                    )
+                }
                 println(response)
-                val body = response.body()
+                val body = response.body() as DefaultResponse<*>
 
                 if (response.isSuccessful) {
                     if (body != null) {
                         // body and data is not null
                         callback.onResponse(
                             this@ResultCall,
-                            Response.success(Result.success(body.data))
+                            Response.success(Result.success(body.data as R))
                         )
                     } else {
                         callback.onResponse(
@@ -42,7 +48,7 @@ class ResultCall<T>(
                 }
             }
 
-            override fun onFailure(call: Call<DefaultResponse<T>>, t: Throwable) {
+            override fun onFailure(call: Call<T>, t: Throwable) {
                 println("fail : ${t}")
                 callback.onResponse(
                     this@ResultCall,
@@ -56,14 +62,14 @@ class ResultCall<T>(
             }
         })
 
-    override fun clone(): Call<Result<T?>> {
+    override fun clone(): Call<Result<R?>> {
         return ResultCall(callDelegate.clone())
     }
 
-    override fun execute(): Response<Result<T?>> {
+    override fun execute(): Response<Result<R?>> {
         val response = callDelegate.execute()
-        return if (response.isSuccessful && response.body()?.data != null) {
-            Response.success(Result.success(response.body()!!.data!!))
+        return if (response.isSuccessful && response.body() != null && response.body() is DefaultResponse<*> ) {
+            Response.success(Result.success((response.body() as DefaultResponse<*>).data as R))
         } else {
             Response.error(response.code(), response.errorBody()!!)
         }

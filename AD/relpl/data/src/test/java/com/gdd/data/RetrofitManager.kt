@@ -2,6 +2,7 @@ package com.gdd.data
 
 import com.gdd.data.retrofit.NetworkResponseAdapterFactory
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.addAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
