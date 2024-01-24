@@ -2,8 +2,8 @@ server:
   port: 9090
 
 spring:
-#  config:
-#    import: env.yml
+  config:
+    import: env.yml
   datasource:
     url: jdbc:postgresql://${SERVER_ADDRESS}:${POSTGRESQL_PORT}/relpl
     username: ${POSTGRESQL_NAME}
