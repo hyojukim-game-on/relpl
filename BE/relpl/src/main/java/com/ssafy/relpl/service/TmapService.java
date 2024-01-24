@@ -1,8 +1,8 @@
 package com.ssafy.relpl.service;
-import com.ssafy.relpl.db.repository.mongoDB.RoadHashRepository;
-import com.ssafy.relpl.db.repository.mongoDB.RoadRepository;
-import com.ssafy.relpl.dto.Road;
-import com.ssafy.relpl.dto.RoadHash;
+import com.ssafy.relpl.db.mongo.repository.RoadHashRepository;
+import com.ssafy.relpl.db.mongo.repository.RoadRepository;
+import com.ssafy.relpl.db.mongo.entity.Road;
+import com.ssafy.relpl.db.mongo.entity.RoadHash;
 import com.ssafy.relpl.dto.response.TmapApiResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
