@@ -10,7 +10,7 @@ build:
   script:
     - cat
     - cd ./BE/relpl
-    - cat src/main/resources/env.yml < $ENV_PROPERTIES
+    - touch src/main/resources/env.yml < $ENV_PROPERTIES
     - chmod +x ./gradlew
     - ./gradlew clean
     - ./gradlew build
@@ -32,7 +32,7 @@ package:
     - echo "로그인 성공"
   script:
     - cd ./BE/relpl
-    - cat src/main/resources/env.yml < $ENV_PROPERTIES
+    - touch src/main/resources/env.yml < $ENV_PROPERTIES
     - docker buildx create --use --name mybuilder
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
