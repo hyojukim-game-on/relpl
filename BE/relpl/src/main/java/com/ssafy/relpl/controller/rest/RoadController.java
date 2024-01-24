@@ -1,7 +1,6 @@
 package com.ssafy.relpl.controller.rest;
 
-import com.ssafy.relpl.dto.Road;
-import com.ssafy.relpl.dto.RoadInfoRequest;
+import com.ssafy.relpl.dto.request.SampleRequestDto;
 import com.ssafy.relpl.service.RoadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class RoadController {
 //    }
 
     @PostMapping(value = "/save")
-    public Road saveRoad(@RequestBody RoadInfoRequest request) {
+    public SampleRequestDto.Road saveRoad(@RequestBody SampleRequestDto.RoadInfoRequest request) {
         return roadService.save(request);
     }
 }

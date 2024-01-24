@@ -1,6 +1,6 @@
 package com.ssafy.relpl.controller.rest;
 
-import com.ssafy.relpl.dto.User;
+import com.ssafy.relpl.dto.response.User;
 import com.ssafy.relpl.dto.response.SampleResponseDto;
 import com.ssafy.relpl.dto.response.SampleResponseDto2;
 import com.ssafy.relpl.service.ResponseService;
@@ -8,7 +8,6 @@ import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

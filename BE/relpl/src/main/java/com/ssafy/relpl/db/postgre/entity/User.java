@@ -1,4 +1,4 @@
-package com.ssafy.relpl.db.entity;
+package com.ssafy.relpl.db.postgre.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ssafy.relpl.util.code.JoinCode;

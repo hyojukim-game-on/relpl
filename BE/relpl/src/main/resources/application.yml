@@ -5,6 +5,9 @@ spring:
   data:
     mongodb:
       uri: mongodb://i10d201.p.ssafy.io:27017/ssafy
+    redis:
+      host: i10d201.p.ssafy.io # Redis 서버 호스트 주소
+      port: 6379 # Redis 포트
 
 tmap:
   api:
