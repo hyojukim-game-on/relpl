@@ -65,10 +65,16 @@
     <string name="profile_report_count">제보 횟수</string>
     <string name="profile_report_history">제보 내역</string>
     <string name="profile_withdrawal"><u>회원 탈퇴</u></string>
+    <string name="profile_change">프로필 변경</string>
+    <string name="profile_change_dup_check">중복 확인</string>
+    <string name="profile_change_send_code">인증 코드 발송</string>
+    <string name="profile_change_verification_code">인증 코드</string>
+    <string name="profile_change_verify">인증 코드 확인</string>
 
     <string name="dialog_change_pw_title">비밀번호 변경</string>
     <string name="dialog_change_pw_original_pw">기존 비밀번호</string>
     <string name="dialog_change_pw_new_pw">새로운 비밀번호</string>
     <string name="dialog_change_pw_new_re">비밀번호 확인</string>
     <string name="dialog_change_pw_change">변경</string>
+
 </resources>
