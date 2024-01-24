@@ -1,17 +1,16 @@
 package com.ssafy.relpl.service;
 
-import com.ssafy.relpl.db.repository.postGis.CoinRepository;
+import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import com.ssafy.relpl.db.repository.mongoDB.UserRepository;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CoinService {
 
-    CoinRepository coinRepository;
+//    CoinRepository coinRepository;
 
     private final UserRepository userRepository;
 
