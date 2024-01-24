@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":presentation"))
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":retrofit_adapter"))
 
     // Android
     implementation(libs.bundles.androidx)
