@@ -1,6 +1,7 @@
 package com.ssafy.relpl.controller.rest;
 
 import com.ssafy.relpl.db.entity.User;
+import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.dto.request.CoinBarcodeRequestDto;
 import com.ssafy.relpl.dto.request.CoinScoreRequestDto;
 import com.ssafy.relpl.dto.response.CoinBarcodeResponseDto;
