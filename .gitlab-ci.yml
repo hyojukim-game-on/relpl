@@ -10,6 +10,7 @@ build:
   script:
     - cat
     - cd ./BE/relpl
+    - cat src/main/resources/env.yml < $ENV_PROPERTIES
     - chmod +x ./gradlew
     - ./gradlew clean
     - ./gradlew build
