@@ -37,7 +37,7 @@ public class SampleController {
 
         SingleResult<SampleResponseDto> result = new SingleResult<>();
         result.setCode(200);
-        result.setMsg("뭔가뭔가 성공");
+        result.setMessage("뭔가뭔가 성공");
         result.setData(SampleResponseDto
                 .builder()
                 .test1(path1)
@@ -56,7 +56,7 @@ public class SampleController {
     public ResponseEntity<?> saveUser(@RequestBody User user) {
         SingleResult<SampleResponseDto2> result = new SingleResult<>();
         result.setCode(400);
-        result.setMsg("뭔가뭔가 실패");
+        result.setMessage("뭔가뭔가 실패");
         return ResponseEntity.badRequest().body(result);
     }
 }
