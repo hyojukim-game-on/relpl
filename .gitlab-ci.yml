@@ -10,7 +10,7 @@ build:
   script:
     - cat
     - cd ./BE/relpl
-    - touch src/main/resources/env.yml < $ENV_PROPERTIES
+ #   - touch src/main/resources/env.yml < $ENV_PROPERTIES
     - chmod +x ./gradlew
     - ./gradlew clean
     - ./gradlew build
