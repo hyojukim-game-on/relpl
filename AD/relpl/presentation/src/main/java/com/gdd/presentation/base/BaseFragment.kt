@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseFragment<B : ViewBinding>(
     private val bind: (View) -> B,
@@ -51,6 +52,10 @@ abstract class BaseFragment<B : ViewBinding>(
 
     fun showToast(message: String) {
         Toast.makeText(_activity, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun showSnackBar(message: String){
+        Snackbar.make(binding.root,message,Snackbar.LENGTH_SHORT).show()
     }
 
 }
