@@ -1,123 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".login.LoginFragment">
 
-    <ImageView
-        android:id="@+id/iv_bg_login"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<layout>
 
-    <TextView
-        android:id="@+id/tv_relpl"
-        style="@style/Relpl.Text.Logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        app:layout_constraintBottom_toTopOf="@id/tv_slogan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+    <data>
 
-    <TextView
-        android:id="@+id/tv_slogan"
-        style="@style/Relpl.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/all_slogan"
-        app:layout_constraintBottom_toTopOf="@id/layout_login_inputs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_relpl" />
+        <variable
+            name="loginViewModel"
+            type="com.gdd.presentation.login.LoginViewModel" />
+    </data>
 
-    <LinearLayout
-        android:id="@+id/layout_login_inputs"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="50dp"
-        android:layout_marginTop="55dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/btn_signin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_slogan"
-        tools:visibility="visible">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".login.LoginFragment">
+
+        <ImageView
+            android:id="@+id/iv_bg_login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            style="@style/Relpl.Text"
+            android:id="@+id/tv_relpl"
+            style="@style/Relpl.Text.Logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/font_wanted_sans_semibold"
-            android:text="@string/all_id" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Relpl.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:text="@string/app_name"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/tv_slogan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/tv_slogan"
             style="@style/Relpl.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/font_wanted_sans_semibold"
-            android:text="@string/all_pw" />
+            android:text="@string/all_slogan"
+            app:layout_constraintBottom_toBottomOf="@id/iv_bg_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_relpl" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Relpl.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/layout_login_inputs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_bg_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_bg_login"
+            tools:visibility="visible">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <TextView
+                style="@style/Relpl.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_wanted_sans_semibold"
+                android:text="@string/all_id" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Relpl.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text">
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            style="@style/Relpl.Text"
-            android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:text="@={loginViewModel._id}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Relpl.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_wanted_sans_semibold"
+                android:text="@string/all_pw" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Relpl.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:text="@={loginViewModel._password}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                style="@style/Relpl.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/signin_auto_login" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_signin"
+            style="@style/Relpl.FullButton.Signin"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="@string/signin_auto_login" />
-    </LinearLayout>
+            android:layout_marginHorizontal="20dp"
+            android:text="@string/all_signin"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/btn_signup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_login_inputs" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_signin"
-        style="@style/Relpl.FullButton.Signin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="50dp"
-        android:text="@string/all_signin"
-        app:layout_constraintBottom_toTopOf="@id/btn_signup"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_login_inputs" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_signup"
-        style="@style/Relpl.FullButton.Signup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/start_sign_up"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/btn_signin"
-        app:layout_constraintStart_toStartOf="@id/btn_signin"
-        app:layout_constraintTop_toBottomOf="@id/btn_signin" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_signup"
+            style="@style/Relpl.FullButton.Signup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/start_sign_up"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/btn_signin"
+            app:layout_constraintStart_toStartOf="@id/btn_signin"
+            app:layout_constraintTop_toBottomOf="@id/btn_signin" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+
