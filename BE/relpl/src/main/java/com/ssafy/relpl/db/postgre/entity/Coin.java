@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.Document;
-
+//sl j 머시기 추가
 @Getter
 @Setter
 @Builder

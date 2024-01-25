@@ -29,14 +29,18 @@ public class ReportService {
 //        this.userRepository = userRepository;
 //    }
 
-    public void registerReport(ReportRequestDto reportRequestDto) {
+    public Long registerReport(ReportRequestDto reportRequestDto) {
         // 제보 등록 로직 예시 db에 저장
         Report report = new Report();
         report.setId(reportRequestDto.getUserId());
         report.setReportDate("2024-01-25");
         report.setReportCoordinate(new Point(35.12f, 126.213f));
 //        report.setReportCoordinate(reportRequestDto.getReportCoordinate());
-        reportRepository.save(report);
+        report = reportRepository.save(report);
+        if (report.getId() == 0) {
+            return 0;
+        }
+        return report.getId();
     }
 
 

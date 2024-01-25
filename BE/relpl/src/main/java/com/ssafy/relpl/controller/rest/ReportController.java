@@ -38,7 +38,7 @@ public class ReportController {
     public ResponseEntity<CommonResult> registerReport(@RequestBody ReportRequestDto reportRequestDto) {
         try {
             // 제보 등록 요청 전달
-            reportService.registerReport(reportRequestDto);
+            Long dbResult = reportService.registerReport(reportRequestDto);
 
             // code와 message 받음 (CommonResult 사용)
             CommonResult response = new CommonResult();
