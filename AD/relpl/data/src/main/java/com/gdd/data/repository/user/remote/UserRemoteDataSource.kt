@@ -1,8 +1,12 @@
 package com.gdd.data.repository.user.remote
 
+import com.gdd.data.model.signin.SignInRequest
+import com.gdd.data.model.signin.SignInResponse
 import java.io.File
 
 interface UserRemoteDataSource {
+    suspend fun signIn(signInRequest: SignInRequest): Result<SignInResponse>
+
     suspend fun isDuplicatedPhone(phone: String): Boolean
 
     suspend fun isDuplicatedId(id: String): Boolean

@@ -3,6 +3,8 @@ package com.gdd.data.api
 import com.gdd.data.model.DefaultBooleanData
 import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
+import com.gdd.data.model.signin.SignInRequest
+import com.gdd.data.model.signin.SignInResponse
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.model.signup.SignupResponse
 import okhttp3.MultipartBody
@@ -18,6 +20,11 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserService {
+    @POST("user/login")
+    suspend fun signIn(
+        @Body signinRequest: SignInRequest
+    ): Result<DefaultResponse<SignInResponse>>
+
     @GET("user/isExist/phone/{phone}")
     suspend fun isDuplicatedPhone(
         @Path(value = "phone") phone: String

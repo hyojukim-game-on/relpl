@@ -9,11 +9,18 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import com.gdd.data.model.profile.ChangePasswordRequest
+import com.gdd.data.model.signin.SignInRequest
+import com.gdd.data.model.signin.SignInResponse
+import com.gdd.data.toNonDefault
 import javax.inject.Inject
+import kotlin.math.sign
 
 class UserRemoteDataSourceImpl @Inject constructor(
     private val userService: UserService
 ): UserRemoteDataSource {
+    override suspend fun signIn(signInRequest: SignInRequest): Result<SignInResponse> {
+        return userService.signIn(signInRequest).toNonDefault()
+    }
     override suspend fun isDuplicatedPhone(phone: String): Boolean {
         TODO("Not yet implemented")
     }

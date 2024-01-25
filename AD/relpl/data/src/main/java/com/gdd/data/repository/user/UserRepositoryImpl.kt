@@ -1,13 +1,22 @@
 package com.gdd.data.repository.user
 
+import com.gdd.data.mapper.toUser
+import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
+import com.gdd.domain.User
 import com.gdd.domain.repository.UserRepository
 import java.io.File
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource
-): UserRepository {
+) : UserRepository {
+    override suspend fun signIn(userUid: String, userPasswork: String): Result<User> {
+        return userRemoteDataSource.signIn(
+            SignInRequest(userUid, userPasswork)
+        ).map { it.toUser() }
+    }
+
     override suspend fun isDuplicatedPhone(phone: String): Boolean {
         return userRemoteDataSource.isDuplicatedPhone(phone)
     }
@@ -33,7 +42,7 @@ class UserRepositoryImpl @Inject constructor(
         currentPassword: String,
         newPassword: String
     ) {
-        userRemoteDataSource. changePassword(userId, currentPassword, newPassword)
+        userRemoteDataSource.changePassword(userId, currentPassword, newPassword)
     }
 
 }

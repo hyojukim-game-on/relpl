@@ -1,8 +1,11 @@
 package com.gdd.domain.repository
 
+import com.gdd.domain.User
 import java.io.File
 
 interface UserRepository {
+    suspend fun signIn(userUid: String, userPasswork: String): Result<User>
+
     suspend fun isDuplicatedPhone(phone: String): Boolean
 
     suspend fun isDuplicatedId(id: String): Boolean
