@@ -1,14 +1,16 @@
 package com.ssafy.relpl.dto.response;
 
 
-import com.ssafy.relpl.util.common.LatLng;
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.geo.Point;
 
 @Data
-public class ReportResponseDto {
+@Builder
+public class ReportListResponseDto {
 
     private String reportDate; // yyyy-mm-dd
-    private LatLng reportCoordinate; 
+    private Point reportCoordinate;
 
 
 }
