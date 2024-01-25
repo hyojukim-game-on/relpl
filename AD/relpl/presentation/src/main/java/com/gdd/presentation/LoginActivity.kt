@@ -4,7 +4,9 @@ import android.os.Bundle
 import com.gdd.presentation.base.BaseActivity
 import com.gdd.presentation.databinding.ActivityLoginBinding
 import com.gdd.presentation.login.LoginFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(
     ActivityLoginBinding::inflate
 ) {
