@@ -1,12 +1,15 @@
 package com.gdd.presentation.signup
 
-import android.util.Log
-import android.util.Patterns
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gdd.domain.model.user.SignUpResult
+import com.gdd.domain.usecase.user.IdDuplicatedCheckUseCase
+import com.gdd.domain.usecase.user.NicknameDuplicatedCheckUseCase
+import com.gdd.domain.usecase.user.PhoneDuplicatedCheckUseCase
+import com.gdd.domain.usecase.user.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
@@ -16,7 +19,10 @@ import javax.inject.Inject
 private const val TAG = "SignupViewModel_Genseong"
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-
+    private val idDuplicatedCheckUseCase: IdDuplicatedCheckUseCase,
+    private val nickDuplicatedCheckUseCase: NicknameDuplicatedCheckUseCase,
+    private val phoneDuplicatedCheckUseCase: PhoneDuplicatedCheckUseCase,
+    private val signUpUseCase: SignUpUseCase
 ): ViewModel() {
     var phoneNumber = ""
     var id = ""
@@ -40,18 +46,22 @@ class SignupViewModel @Inject constructor(
     val nicknameValidateResult: LiveData<Boolean>
         get() = _nicknameValidateResult
 
-    private val _phoneDupResult = MutableLiveData<Boolean>()
-    val phoneDupResult: LiveData<Boolean>
+    private val _phoneDupResult = MutableLiveData<Result<Boolean>>()
+    val phoneDupResult: LiveData<Result<Boolean>>
         get() = _phoneDupResult
 
 
-    private val _idDupResult = MutableLiveData<Boolean>()
-    val idDupResult: LiveData<Boolean>
+    private val _idDupResult = MutableLiveData<Result<Boolean>>()
+    val idDupResult: LiveData<Result<Boolean>>
         get() = _idDupResult
 
-    private val _nicknameDupResult = MutableLiveData<Boolean>()
-    val nicknameDupResult: LiveData<Boolean>
+    private val _nicknameDupResult = MutableLiveData<Result<Boolean>>()
+    val nicknameDupResult: LiveData<Result<Boolean>>
         get() = _nicknameDupResult
+
+    private val _signUpResult = MutableLiveData<Result<SignUpResult>>()
+    val signUpResult: LiveData<Result<SignUpResult>>
+        get() = _signUpResult
 
 
     fun isValidPhone(phone: String){
@@ -72,40 +82,41 @@ class SignupViewModel @Inject constructor(
 
     fun isDuplicatedPhone(phone: String){
         viewModelScope.launch {
-            try {
-
-            } catch (e: Exception){
-
+            phoneDuplicatedCheckUseCase.invoke(phone).let {
+                if (it.isSuccess){
+                    this@SignupViewModel.phoneNumber = phone
+                }
+                _phoneDupResult.postValue(it)
             }
         }
     }
 
     fun isDuplicatedId(id: String){
         viewModelScope.launch {
-            try {
-
-            } catch (e: Exception){
-
+            idDuplicatedCheckUseCase(id).let {
+                if (it.isSuccess){
+                    this@SignupViewModel.id = id
+                }
+                _idDupResult.postValue(it)
             }
         }
     }
 
     fun isDuplicatedNickname(nickname: String){
         viewModelScope.launch {
-            try {
-
-            } catch (e: Exception){
-
+            nickDuplicatedCheckUseCase(nickname).let {
+                if (it.isSuccess){
+                    this@SignupViewModel.nickname = nickname
+                }
+                _nicknameDupResult.postValue(it)
             }
         }
     }
 
     fun signUp(){
         viewModelScope.launch {
-            try {
-
-            } catch (e: Exception){
-
+            signUpUseCase(phoneNumber,id, pw, nickname).let {
+                _signUpResult.postValue(it)
             }
         }
     }
