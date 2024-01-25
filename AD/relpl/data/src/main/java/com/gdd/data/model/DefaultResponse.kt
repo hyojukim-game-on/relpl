@@ -13,5 +13,5 @@ class DefaultResponse<T>(
     @Json(name = "message")
     val message: String,
     @Json(name = "data")
-    val data: T?
+    val data: T
 )
