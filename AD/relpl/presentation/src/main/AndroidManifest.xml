@@ -7,7 +7,7 @@
     <application android:theme="@style/Theme.Relpl">
         <activity
             android:name=".LoginActivity"
-            android:exported="false" >
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
