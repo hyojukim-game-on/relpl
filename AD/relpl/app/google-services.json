@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "615882207330",
+    "project_id": "relpl-1b1f9",
+    "storage_bucket": "relpl-1b1f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615882207330:android:5af36fa4db7feca6cde13b",
+        "android_client_info": {
+          "package_name": "com.gdd.relpl"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJa_RBUjhk2Zbb_aMCoBL9iKSyxY7MQdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

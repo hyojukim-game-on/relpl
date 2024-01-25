@@ -2,6 +2,7 @@ package com.gdd.relpl.module
 
 import com.gdd.data.api.ApiClient.BASE_URL
 import com.gdd.data.api.UserService
+import com.gdd.retrofit_adapter.NetworkResponseAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -39,6 +40,7 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
+            .addCallAdapterFactory(NetworkResponseAdapterFactory())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
