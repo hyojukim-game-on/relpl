@@ -21,9 +21,12 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
+
 private const val TAG = "SignupPhoneFragment_Genseong"
+@AndroidEntryPoint
 class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
     FragmentSignupPhoneBinding::bind, R.layout.fragment_signup_phone
 ) {

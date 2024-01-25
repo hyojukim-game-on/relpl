@@ -13,8 +13,9 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupPasswordBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SignupPasswordFragment : BaseFragment<FragmentSignupPasswordBinding>(
     FragmentSignupPasswordBinding::bind, R.layout.fragment_signup_password
 ) {

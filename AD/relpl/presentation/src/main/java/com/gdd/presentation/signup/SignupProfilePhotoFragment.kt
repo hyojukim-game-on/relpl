@@ -25,11 +25,13 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupProfilePhotoBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.util.jar.Manifest
 import kotlin.math.log
 
 private const val TAG = "SignupProfilePhotoFragm_Genseong"
+@AndroidEntryPoint
 class SignupProfilePhotoFragment : BaseFragment<FragmentSignupProfilePhotoBinding>(
     FragmentSignupProfilePhotoBinding::bind, R.layout.fragment_signup_profile_photo
 ) {

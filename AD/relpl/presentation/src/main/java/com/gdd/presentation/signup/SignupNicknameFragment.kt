@@ -13,8 +13,9 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupNicknameBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SignupNicknameFragment : BaseFragment<FragmentSignupNicknameBinding>(
     FragmentSignupNicknameBinding::bind, R.layout.fragment_signup_nickname
 ) {
