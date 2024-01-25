@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="20dp"
     android:paddingTop="20dp"
     tools:context=".MainActivity">
 
@@ -20,13 +19,14 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:fontFamily="@font/wantedsans_bold"
         android:text="relpl"
         android:textSize="34sp"
         android:textStyle="bold"
+        android:textColor="@color/sage_green_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:fontFamily="@font/wantedsans_bold" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/app_des"
@@ -41,94 +41,89 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
-    <LinearLayout
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/profile"
         android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/sage_green_text"
+        app:cardElevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_des">
+        app:layout_constraintTop_toBottomOf="@id/app_des"
+        app:strokeColor="@color/sage_green_text">
 
-        <com.google.android.material.card.MaterialCardView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:backgroundTint="#8DB670"
-            app:strokeColor="@null">
+            android:paddingEnd="20dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingEnd="20dp">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="20dp"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/temp_profile"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginVertical="20dp"
-                    android:layout_marginStart="20dp"
-                    android:src="@drawable/temp_profile"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/ment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/wantedsans_bold"
+                android:text="Welcome Arlene McCoy!"
+                android:textColor="@color/sage_cream"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/point"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
 
-                <TextView
-                    android:id="@+id/ment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/wantedsans_bold"
-                    android:text="Welcome Arlene McCoy!"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/point"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"/>
+            <TextView
+                android:id="@+id/point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/wantedsans_medium"
+                android:text="12,500P"
+                android:textColor="@color/sage_cream"
+                app:layout_constraintBottom_toTopOf="@id/stack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ment" />
 
-                <TextView
-                    android:id="@+id/point"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/wantedsans_medium"
-                    android:text="12,500P"
-                    app:layout_constraintBottom_toTopOf="@id/stack"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ment"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/stack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/wantedsans_medium"
+                android:text="You walked total 1km 420m"
+                android:textColor="@color/sage_cream"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/point" />
 
-                <TextView
-                    android:id="@+id/stack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/wantedsans_medium"
-                    android:text="총 1km 420m 걸으셨습니다"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/point" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/plogging"
-        android:layout_width="0dp"
-        android:layout_height="170dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile">
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/plogging"
+            android:layout_width="0dp"
+            android:layout_height="132dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="20dp"
             android:backgroundTint="#D3ECBC"
-            app:strokeColor="@null">
+            app:cardElevation="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile"
+            app:strokeColor="#D3ECBC">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -151,25 +146,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
+                    android:fontFamily="@font/wantedsans_semibold"
                     android:text="Start Plogging"
                     android:textColor="@color/black"
                     android:textSize="30sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:fontFamily="@font/wantedsans_semibold"/>
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/rank_card"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="#FDF9EC"
+        app:cardElevation="5dp"
         app:layout_constraintDimensionRatio="1.2"
         app:layout_constraintEnd_toStartOf="@id/report_card"
         app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +180,7 @@
                 android:id="@+id/iv_rank"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="44dp"
+                android:layout_margin="30dp"
                 android:src="@drawable/rank"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
@@ -196,14 +192,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:fontFamily="@font/wantedsans_semibold"
                 android:text="Rank"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:fontFamily="@font/wantedsans_semibold"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -213,7 +209,9 @@
         android:id="@+id/report_card"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="10dp"
         android:backgroundTint="#FDF9EC"
+        app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="@id/rank_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/rank_card"
@@ -228,7 +226,7 @@
                 android:id="@+id/iv_record"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="50dp"
+                android:layout_margin="34dp"
                 android:src="@drawable/report"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
@@ -240,14 +238,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:fontFamily="@font/wantedsans_semibold"
                 android:text="Record"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:fontFamily="@font/wantedsans_semibold"/>
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
@@ -255,13 +253,15 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/record_card"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="130dp"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#B1D697"
+        android:backgroundTint="@color/sage_green_deep"
+        app:cardElevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rank_card"
-        app:strokeColor="@null">
+        app:strokeColor="@color/sage_green_deep">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -282,14 +282,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:fontFamily="@font/wantedsans_semibold"
                 android:text="My Plogging Records"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:fontFamily="@font/wantedsans_semibold"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -298,11 +298,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:fontFamily="@font/wantedsans_medium"
         android:text="Copyright © GDD. All rights reserved."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/record_card"
-        android:fontFamily="@font/wantedsans_medium"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
