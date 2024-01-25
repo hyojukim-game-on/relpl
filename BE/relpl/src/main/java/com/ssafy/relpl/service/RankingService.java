@@ -7,6 +7,7 @@ import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.dto.response.RankingEntry;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ public class RankingService {
     * @param : String rankingTime (Path Variable 로 AD 로부터 받음)
     * @return : 성공 or 실패 각각에 따른 응답 (code, msg, data 반환)
     * */
-    public SingleResult<RankingDataDto> getRanking(String rankingTime) {
+    public SingleResult<?> getRanking(String rankingTime) {
 
 
         // rankingTime 타입 변환 (String -> LocalDate)
@@ -38,11 +39,11 @@ public class RankingService {
         // 실패 시 로직 1. rankingTime 누락되었을 경우
         try{
             if (rankingTime.isEmpty()) {
-                return responseService.getFailResult( 400, "rankingTime 필드가 누락되었습니다.", true);
+                return responseService.getFailResult( 400, "rankingTime 필드가 누락되었습니다.");
             }
                 // 실패 시 로직 2. rankingTime 이 미래의 날짜일 경우
             else if (requiredDate.isAfter(LocalDate.now())) {
-                return responseService.getFailResult();
+                return responseService.getFailResult(400, "실패");
             }
                 // 성공 시 로직
             else {

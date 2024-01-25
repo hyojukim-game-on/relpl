@@ -85,12 +85,7 @@ public class ResponseService {
         return result;
     }
     // 실패 결과만 처리하는 메소드
-    public CommonResult getFailResult(int code, String msg) {
-        CommonResult result = new CommonResult();
-        result.setCode(code);
-        result.setMsg(msg);
-        return result;
-    }
+
     // 실패 결과만 처리하는 메소드 + data=null
     public <T> ListResult<T> getFailResult(int code, String msg, List<T> data) {
     	ListResult<T> result = new ListResult<>();
@@ -99,9 +94,8 @@ public class ResponseService {
         result.setData(data);
         return result;
     }
-    public <T> SingleResult<T> getFailResult(int code, String msg, T data) {
+    public <T> SingleResult<T> getFailResult(int code, String msg) {
         SingleResult<T> result = new SingleResult<>();
-        result.setData(data);
         result.setMsg(msg);
         result.setCode(CommonResponse.FAILED.output);
         return result;
