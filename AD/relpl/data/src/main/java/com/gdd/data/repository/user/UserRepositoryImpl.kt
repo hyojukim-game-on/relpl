@@ -1,9 +1,12 @@
 package com.gdd.data.repository.user
 
+import com.gdd.data.mapper.toSignUpResult
 import com.gdd.data.mapper.toUser
 import com.gdd.data.model.signin.SignInRequest
+import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
-import com.gdd.domain.User
+import com.gdd.domain.model.user.SignUpResult
+import com.gdd.domain.model.user.User
 import com.gdd.domain.repository.UserRepository
 import java.io.File
 import javax.inject.Inject
@@ -17,23 +20,29 @@ class UserRepositoryImpl @Inject constructor(
         ).map { it.toUser() }
     }
 
-    override suspend fun isDuplicatedPhone(phone: String): Boolean {
+    override suspend fun isDuplicatedPhone(phone: String): Result<Boolean> {
         return userRemoteDataSource.isDuplicatedPhone(phone)
     }
 
-    override suspend fun isDuplicatedId(id: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isDuplicatedId(id: String): Result<Boolean> {
+        return userRemoteDataSource.isDuplicatedId(id)
     }
 
-    override suspend fun isDuplicatedNickname(nickname: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isDuplicatedNickname(nickname: String): Result<Boolean> {
+        return userRemoteDataSource.isDuplicatedNickname(nickname)
     }
 
-    override suspend fun signUp(phone: String, id: String, pw: String, nickname: String) {
-        TODO("Not yet implemented")
+    override suspend fun signUp(phone: String, id: String, pw: String, nickname: String): Result<SignUpResult>{
+        return userRemoteDataSource.signUp(
+            SignupRequest(
+                id,pw,nickname,phone
+            )
+        ).map {
+            it.toSignUpResult()
+        }
     }
 
-    override suspend fun registerProfileImage(img: File, userId: Long) {
+    override suspend fun registerProfileImage(img: File, userId: Long): Result<Boolean> {
         return userRemoteDataSource.registerProfileImage(img, userId)
     }
 
@@ -41,8 +50,8 @@ class UserRepositoryImpl @Inject constructor(
         userId: Long,
         currentPassword: String,
         newPassword: String
-    ) {
-        userRemoteDataSource.changePassword(userId, currentPassword, newPassword)
+    ): Result<Boolean> {
+        return userRemoteDataSource.changePassword(userId, currentPassword, newPassword)
     }
 
 }

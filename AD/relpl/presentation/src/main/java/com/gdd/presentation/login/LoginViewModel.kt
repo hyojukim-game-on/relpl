@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gdd.domain.User
+import com.gdd.domain.model.user.User
 import com.gdd.domain.usecase.user.SignInUseCase
 import com.gdd.presentation.Event
 import com.gdd.presentation.PrefManager

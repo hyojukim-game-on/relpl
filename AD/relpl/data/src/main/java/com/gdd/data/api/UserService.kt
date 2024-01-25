@@ -1,15 +1,16 @@
 package com.gdd.data.api
 
-import com.gdd.data.model.DefaultBooleanData
+import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
 import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.model.signin.SignInResponse
+import com.gdd.data.model.signup.IsDupPhoneRequest
+import com.gdd.data.model.signup.IsDupUidRequest
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.model.signup.SignupResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -25,35 +26,35 @@ interface UserService {
         @Body signinRequest: SignInRequest
     ): Result<DefaultResponse<SignInResponse>>
 
-    @GET("user/isExist/phone/{phone}")
+    @POST("user/isExist/phone")
     suspend fun isDuplicatedPhone(
-        @Path(value = "phone") phone: String
-    ): Response<DefaultResponse<DefaultBooleanData>>
+        @Body isDupPhoneRequest: IsDupPhoneRequest
+    ): Result<DefaultResponse<ExistBooleanData>>
 
-    @GET("user/isExist/uid/{uid}")
+    @POST("user/isExist/uid")
     suspend fun isDuplicatedId(
-        @Path(value = "uid") uid: String
-    ): Response<DefaultResponse<DefaultBooleanData>>
+        @Body isDupUidRequest: IsDupUidRequest
+    ): Result<DefaultResponse<ExistBooleanData>>
 
     @GET("user/isExist/nickname/{nickname}")
     suspend fun isDuplicatedNickname(
         @Path(value = "nickname") nickname: String
-    ): Response<DefaultResponse<DefaultBooleanData>>
+    ): Result<DefaultResponse<ExistBooleanData>>
 
     @POST("user/signup")
     suspend fun signUp(
         @Body signupRequest: SignupRequest
-    ): Response<DefaultResponse<SignupResponse>>
+    ): Result<DefaultResponse<SignupResponse>>
 
     @Multipart
     @POST("user/mypage/image")
     suspend fun registerProfileImage(
         @Part file: MultipartBody.Part,
         @PartMap data: HashMap<String, RequestBody>
-    )
+    ): Result<DefaultResponse<Boolean>>
 
     @PUT("user/mypage/password")
     suspend fun changePassword(
         @Body changePasswordRequest: ChangePasswordRequest
-    )
+    ): Result<DefaultResponse<Boolean>>
 }
