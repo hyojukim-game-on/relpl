@@ -10,6 +10,7 @@ import androidx.transition.TransitionManager
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.R
+import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentLoginBinding
 import com.gdd.retrofit_adapter.RelplException
@@ -42,6 +43,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 }
             })
 
+        // DataBinding
+        binding.loginViewModel = loginViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         registerListener()
         registerObserve()
     }
@@ -53,6 +58,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
             } else {
                 loginViewModel.login()
             }
+        }
+
+        binding.btnSignup.setOnClickListener {
+            startActivity(Intent(loginActivity,SignupActivity::class.java))
         }
     }
 
@@ -71,12 +80,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                         showToast("네트워크 오류")
                     }
                 }
+                startActivity(Intent(_activity,MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                })
             }
         }
 
         loginViewModel.inputErrorString.observe(viewLifecycleOwner){ event ->
             event.getContentIfNotHandled()?.let {
-                showSnackBar(_activity.getString(R.string.signin_empty_input))
+                if (!it) showSnackBar(_activity.getString(R.string.signin_empty_input))
             }
         }
     }
@@ -88,7 +100,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
             duration = 700L
             interpolator = PathInterpolator(0f, 0f, 0f, 1f)
         }
-        TransitionManager.beginDelayedTransition(binding.root, materialFade)
+        TransitionManager.beginDelayedTransition(binding.layoutRoot, materialFade)
         binding.layoutLoginInputs.visibility = View.VISIBLE
     }
 
