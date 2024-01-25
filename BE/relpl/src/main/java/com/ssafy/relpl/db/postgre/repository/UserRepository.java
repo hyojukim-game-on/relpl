@@ -2,8 +2,12 @@ package com.ssafy.relpl.db.postgre.repository;
 
 import com.ssafy.relpl.db.postgre.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<User, String> {
-    //TODO
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUserUid(String userUid);
 }
+

@@ -1,13 +1,40 @@
 package com.ssafy.relpl.db.postgre.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+
+@Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name="App_User")
 public class User {
+
     @Id
-    @GeneratedValue
-    private Integer id;
-    //TODO
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "user_uid", nullable = false, length = 30)
+    private String userUid;
+
+    @Column(name = "user_nickname", nullable = false, length = 30)
+    private String userNickname;
+
+    @Column(name = "user_password", nullable = false, length = 200)
+    private String userPassword;
+
+    @Column(name = "user_phone", nullable = false, length = 50)
+    private String userPhone;
+
+    @Column(name = "user_image", length = 255)
+    private String userImage;
+
+    @Column(name = "user_isactive", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean userIsActive;
 }
