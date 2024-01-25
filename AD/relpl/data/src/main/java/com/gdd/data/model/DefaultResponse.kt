@@ -15,8 +15,3 @@ class DefaultResponse<T>(
     @Json(name = "data")
     val data: T?
 )
-
-inline fun <reified T> Moshi.adapterFor(): JsonAdapter<T> {
-    val type = Types.newParameterizedType(DefaultResponse::class.java, T::class.java)
-    return adapter(type)
-}
