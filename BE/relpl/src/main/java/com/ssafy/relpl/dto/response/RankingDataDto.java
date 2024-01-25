@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @Builder
 public class RankingDataDto {
-    private List<DailyRanking> dailyRanking;
-    private List<WeeklyRanking> weeklyRanking;
-    private List<MonthlyRanking> monthlyRanking;
+    private List<RankingEntry> dailyRanking;
+    private List<RankingEntry> weeklyRanking;
+    private List<RankingEntry> monthlyRanking;
 }

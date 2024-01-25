@@ -1,6 +1,8 @@
 package com.ssafy.relpl.controller.rest;
 
 
+import com.ssafy.relpl.dto.response.CommonResponse;
+import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.dto.response.RankingResponse;
 import com.ssafy.relpl.service.RankingService;
 import com.ssafy.relpl.service.result.SingleResult;
@@ -19,13 +21,9 @@ public class RankingController {
 
     private final RankingService rankingService;
 
-    public int sumValue(int num1, int num2) {
-        return num1 + num2;
-    }
-
     @GetMapping("/{rankingTime}")
-    public ResponseEntity<SingleResult<RankingDataDto>> getRanking(@PathVariable String rankingTime) {
-        SingleResult<RankingDataDto> result = rankingService.getRanking(rankingTime);
+    public ResponseEntity<CommonResponse<RankingDataDto>> getRanking(@PathVariable String rankingTime) {
+        CommonResponse<RankingDataDto> result = rankingService.getRanking(rankingTime);
         return ResponseEntity.ok(result);
     }
 }
