@@ -6,6 +6,7 @@ import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.reflect.jvm.internal.impl.load.java.JavaClassesTracker.Default
 
 class NetworkResponseAdapterFactory: CallAdapter.Factory() {
     override fun get(
@@ -18,12 +19,10 @@ class NetworkResponseAdapterFactory: CallAdapter.Factory() {
         if (Call::class.java != getRawType(returnType) || returnType !is ParameterizedType) return null
 
         val responseType = getParameterUpperBound(0,returnType)
-        println(responseType)
 
         if (Result::class.java != responseType.rawType || responseType !is ParameterizedType) return null
 
         val bodyType = getParameterUpperBound(0,responseType)
-        println(bodyType)
 
         return NetworkResponseAdapter<Any>(bodyType)
     }
