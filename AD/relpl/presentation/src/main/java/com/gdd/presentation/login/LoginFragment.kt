@@ -12,6 +12,7 @@ import com.gdd.presentation.MainActivity
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentLoginBinding
+import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFade
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,11 +59,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     private fun registerObserve(){
         loginViewModel.loginResult.observe(viewLifecycleOwner){ result ->
             if (result.isSuccess){
+                showSnackBar("로그인에 성공했습니다.")
                 startActivity(Intent(_activity,MainActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 })
             } else {
-
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast("네트워크 오류")
+                    }
+                }
             }
         }
 
