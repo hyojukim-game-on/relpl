@@ -39,8 +39,10 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	// https://mvnrepository.com/artifact/org.jasypt/jasypt
-	// 암호화 관련
-	implementation 'org.jasypt:jasypt:1.9.2'
+	implementation group: 'org.jasypt', name: 'jasypt', version: '1.9.2'
+
+	// https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
 }
 
 tasks.named('test') {
