@@ -26,7 +26,6 @@ public class UserService {
     public ResponseEntity<CommonResult> save(UserSignupRequest request) {
         //사용자가 이미 존재하는지 확인
         Optional<User> find = userRepository.findByUserUid(request.getUserUid());
-        log.info("find.userId : " + find.get().getUserUid());
         if (find.isPresent()){
             //사용자가 이미 있다면 Failed 반환
             CommonResult result = new CommonResult();
