@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<CommonResult> save(UserSignupRequest request) {
         //사용자가 이미 존재하는지 확인
@@ -37,7 +39,7 @@ public class UserService {
         User saved = userRepository.save(User.builder()
                 .userUid(request.getUserUid())
                 .userNickname(request.getUserNickname())
-                .userPassword(request.getUserPassword())
+                .userPassword(passwordEncoder.encode(request.getUserPassword()))
                 .userPhone(request.getUserPhone())
                 .build());
         //회원가입 성공 응답 반환
