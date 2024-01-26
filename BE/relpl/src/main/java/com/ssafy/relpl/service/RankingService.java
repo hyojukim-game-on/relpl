@@ -2,12 +2,10 @@ package com.ssafy.relpl.service;
 
 
 import com.ssafy.relpl.db.redis.repository.RankingRepository;
-import com.ssafy.relpl.dto.response.CommonResponse;
 import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.dto.response.RankingEntry;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -48,9 +46,9 @@ public class RankingService {
                 // 성공 시 로직
             else {
                 // rankingTime 에 따라 다른 랭킹 데이터를 조회
-                List<RankingEntry> dailyRanking = rankingRepository.find(rankingTime);
-                List<RankingEntry> weeklyRanking = rankingRepository.findWeeklyRanking(rankingTime);
-                List<RankingEntry> monthlyRanking = rankingRepository.findMonthlyRanking(rankingTime);
+                List<RankingEntry> dailyRanking = rankingRepository.findDailyRanking();
+                List<RankingEntry> weeklyRanking = rankingRepository.findWeeklyRanking(requiredDate);
+                List<RankingEntry> monthlyRanking = rankingRepository.findMonthlyRanking(requiredDate);
 
                 // RankingDataDto 객체 (API response 의 data key 에 할당될 내용) 생성
                 RankingDataDto rankingData = RankingDataDto.builder()
