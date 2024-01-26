@@ -10,7 +10,6 @@ build:
   script:
     - cat
     - cd ./BE/relpl
- #   - touch src/main/resources/env.yml < $ENV_PROPERTIES
     - chmod +x ./gradlew
     - ./gradlew clean
     - ./gradlew build
@@ -36,10 +35,6 @@ package:
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
     - echo "build complete"
-    # - docker build -t $IMAGE_NAME:$CI_PIPELINE_IID .
-    # - docker build -t $IMAGE_NAME:latest .
-    # - docker push $IMAGE_NAME:$CI_PIPELINE_IID
-    # - docker push $IMAGE_NAME:latest
   after_script:
     - docker logout
 
@@ -58,7 +53,7 @@ deploy-was:
     - docker rm ksh-backend || true
     - docker rmi $IMAGE_NAME || true
     - docker pull $IMAGE_NAME:latest
-    - docker run -d --restart always -e TZ=Asia/Seoul -p 8081:9090/tcp --name ksh-backend $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONBODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_PORT:$SERVER_SPRING_PORT/tcp --name ksh-backend $IMAGE_NAME:latest
   after_script:
     - docker logout
   when: on_success
