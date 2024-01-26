@@ -1,5 +1,7 @@
 package com.gdd.domain.model.user
 
+import java.io.Serializable
+
 data class User(
     val id: Long,
     val nickname: String,
@@ -10,4 +12,4 @@ data class User(
     val imageUri: String,
     val accessToken: String,
     val refreshToken: String,
-)
+): Serializable
