@@ -1,5 +1,6 @@
 package com.ssafy.relpl.db.postgre.entity;
 
+import com.ssafy.relpl.db.redis.entity.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,4 +38,7 @@ public class User {
 
     @Column(name = "user_isactive", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean userIsActive;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
