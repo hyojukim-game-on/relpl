@@ -2,22 +2,21 @@ server:
   port: 9090
 
 spring:
-  config:
-    import: env.yml
+  #postgres
   datasource:
-    url: ENC(Ap/qfYoQ8OOVNCxYSR0Pmmqi54bW6IlAQbi+qQu/GgG51cjwKTPIY0yirro5bubHHSxr0MeR4+k=)
-    username: ENC(iCKopFxndqUdCpf1XdlvKg==)
-    password: ENC(wrJtZ/9N6aB0LpFzgVks3xk+FEk9fvtY1obs0Q394G8=)
+    url: ENC(wuq/JNEohnF+fO3cbBiEvAzV1vDBthdTywA1Em/NZQnSd4Ia4P+Si6qi7uel+oMyGtzORun6UfYtAxXnMez7NA==)
+    username: ENC(FXOIlq05aKyie1Eaei6MYiM/30DGWlU1)
+    password: ENC(lkIo4yXZo/W7voUPLr5NRpCxL6zCtPHHZ0+iP7a9jkQ=)
     driver-class-name: org.postgresql.Driver
   data:
     mongodb:
-      url: ENC(t0R6DFzkBkZG9v5Xy1otnVi52dcn4XqDqwHV9NpUKXJqYnzACRESFTn1Be+2o064)
+      url: ENC(KcJ5FQHY4MxVzUNJ6pqxFT7JOUsoi/NlatlZCHbCM/0=)
       host: ENC(vewwyQ0zMOe77WvwzphNSqF0vAjbkvGP+mkABZCw8to=)
-      port: 27017
+      port: ${MONGODB_PORT}
       database: ENC(QYRSKr0uZOD+6mFChXcyMg==)
     redis:
       host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
-      port: 6379
+      port: ${REDIS_PORT}
 
 tmap:
   api:
