@@ -2,7 +2,9 @@ package com.ssafy.relpl.service;
 
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
+import com.ssafy.relpl.dto.request.UserLoginRequest;
 import com.ssafy.relpl.dto.request.UserSignupRequest;
+import com.ssafy.relpl.dto.response.UserLoginResponse;
 import com.ssafy.relpl.dto.response.UserSignupResponse;
 import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.SingleResult;
@@ -24,6 +26,24 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public ResponseEntity<CommonResult> login(UserLoginRequest request) {
+        //사용자가 존재하고,
+        Optional<User> find = userRepository.findByUserUid(request.getUserUid());
+        if (find.isPresent() && passwordEncoder.matches(request.getUserPassword(), find.get().getUserPassword())){
+            //회원가입 성공 응답 반환
+            SingleResult<UserLoginResponse> result = new SingleResult<>();
+            result.setData(UserLoginResponse.createUserLoginResponse(find.get()));
+            result.setCode(200);
+            result.setMessage("로그인 성공");
+            return ResponseEntity.ok(result);
+        }
+        //사용자가 존재하지 않거나, 비밀번호가 일치하지 않는다면
+        CommonResult result = new CommonResult();
+        result.setCode(400);
+        result.setMessage("로그인 실패");
+        return ResponseEntity.badRequest().body(result);
+    };
 
     public ResponseEntity<CommonResult> save(UserSignupRequest request) {
         //사용자가 이미 존재하는지 확인

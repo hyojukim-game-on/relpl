@@ -1,6 +1,7 @@
 package com.ssafy.relpl.controller.rest;
 
 import com.ssafy.relpl.db.postgre.entity.User;
+import com.ssafy.relpl.dto.request.UserLoginRequest;
 import com.ssafy.relpl.dto.request.UserSignupRequest;
 import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.CommonResult;
@@ -20,5 +21,10 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<CommonResult> save(@RequestBody UserSignupRequest request) {
         return userService.save(request);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<CommonResult> login(@RequestBody UserLoginRequest request) {
+        return userService.login(request);
     }
 }
