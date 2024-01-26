@@ -1,27 +1,33 @@
 package com.ssafy.relpl.db.postgre.entity;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.mapping.Document;
-//sl j 머시기 추가
+//import jakarta.persistence.*;
+import jakarta.persistence.*;
+import lombok.*;
+
+//sl j 4??
 @Getter
 @Setter
 @Builder
-//@Document(collection = "coin")
+
+@AllArgsConstructor
+@NoArgsConstructor // 기본 생성자 추가
+
+
+@Entity
 public class Coin {
 
-    private String id;
-    private String coinEventId;
-    private String coinEventDate;
-    private int coinAmount;
-    private String coinEventDetail;
+    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    // 로깅을 위한 Logger 객체 생성
-    private static final Logger logger = LoggerFactory.getLogger(Coin.class);
+    private Long userId; // 유저 id
+    private String coinEventId; // 포인트 이벤트 id
+    private String coinEventDate; // 포인트 이벤트 발생 날짜
+    private int coinAmount; // 포인트 액수
+    private String coinEventDetail; // 포인트 이벤트 상세 내용
 
+//    // 기본 생성자 추가
+//    public Coin() {
+//    }
 
 }

@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.geo.Point;
 
 
@@ -26,8 +24,6 @@ public class Report {
     private String tmapId;
 
 
-
-    private static final Logger logger = LoggerFactory.getLogger(Report.class);
 
     // 기본 생성자
     public Report() {

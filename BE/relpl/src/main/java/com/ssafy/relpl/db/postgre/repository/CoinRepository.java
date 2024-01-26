@@ -4,8 +4,11 @@ import com.ssafy.relpl.db.postgre.entity.Coin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-//@Repository
-public interface CoinRepository{
-    // db에 저장되는 동전 정보 class
-    // Coin findByName(String id);
+import java.util.List;
+
+@Repository
+public interface CoinRepository extends JpaRepository<Coin, Long> {
+    // 사용자 ID로 코인 조회
+    List<Coin> findAllByUserId(Long userId);
+
 }

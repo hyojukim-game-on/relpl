@@ -3,18 +3,19 @@ package com.ssafy.relpl.controller.rest;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.dto.request.CoinBarcodeRequestDto;
 import com.ssafy.relpl.dto.request.CoinScoreRequestDto;
-import com.ssafy.relpl.dto.response.CoinBarcodeResponseDto;
-import com.ssafy.relpl.dto.response.CoinScoreResponseDto;
-import com.ssafy.relpl.dto.response.SampleResponseDto;
-import com.ssafy.relpl.dto.response.SampleResponseDto2;
+import com.ssafy.relpl.dto.response.*;
 import com.ssafy.relpl.service.CoinService;
 import com.ssafy.relpl.service.ResponseService;
 import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -29,56 +30,54 @@ public class CoinController {
     private final ResponseService responseService;
 
     /**
-     *
      * @param coinscoreRequestDto
      * @return
      */
     @PostMapping(value = "/coinscore")
-    // 겟 샘플그대로 쓰지 마라.. 뭐하는 함수인지도 간략하게 작성.
+    // 포인트 내역 조회 로직
     public ResponseEntity<?> checkCoin(@RequestBody CoinScoreRequestDto coinscoreRequestDto) {
 
-        SingleResult<CoinScoreResponseDto> result = new SingleResult<>();
-        result.setCode(200);
-        log.info(coinscoreRequestDto.getUserId().toString());
+        try {
+            log.info("여기는 컨트롤러. 포인트 내역 조회 요청 받음");
+            coinService.completeProject(coinscoreRequestDto.getUserId());
+            coinService.completePlogging(coinscoreRequestDto.getUserId());
+            coinService.reportLocationFlag(coinscoreRequestDto.getUserId());
 
-        result.setMessage("포인트 내역 조회 성공");
-//        result.setData(CoinScoreResponseDto
-//                this.coinEventDate()
-//                this.coinAmount()
-//                this.coinEventDetail());
-        // 문법오류
+            // 사용자 코인 정보 조회
+            CoinScoreDataResponseDto coinScoreDataResponseDto = coinService.getCoinScoreData(coinscoreRequestDto.getUserId());
 
-        return ResponseEntity.ok(result);
+            // 코인 데이터 삽입 예시
+            coinService.insertCoinData(coinscoreRequestDto.getUserId(), "EVENT_123", "2024-01-24 12:30", 100, "Sample Event Detail");
+
+            // 로오직
+            SingleResult<CoinScoreDataResponseDto> result = responseService.getSingleResult(coinScoreDataResponseDto, "포인트 내역 조회 성공입니둥", 200);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("포인트 내역 조회 중 오류 발생", e);
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "포인트 내역 조회 실패입니둥", null));
+        }
     }
 
-
-    // 성공시
+    // 포인트 바코드 조회 로직
     @PostMapping(value = "/coinbarcode")
-    public ResponseEntity<?> checkCoinBarcode(@RequestBody CoinBarcodeRequestDto coinbarcodeRequestDto) {
+    public ResponseEntity<?> checkBarcode(@RequestBody CoinBarcodeRequestDto coinbarcodeRequestDto) {
+        try {
+            // 바코드 조회 로직 작성
 
-        SingleResult<CoinBarcodeResponseDto> result = new SingleResult<>();
-        result.setCode(200);
-        result.setMessage("포인트 바코드 조회 성공");
-//        result.setData(CoinBarcodeResponseDto
-//                .userTotalCoin()); // 서비스가 줘야한다. 아무것도 없는값에 접근하는중. 어떻게 조회하는지에 대한 공부 필요.
-//문법 오류
+            // 예시 결과 데이터
+            CoinBarcodeResponseDto barcodeResponseDto = new CoinBarcodeResponseDto();
+//            barcodeResponseDto.setBarcode("123456789");
 
+            // 로직
+            SingleResult<CoinBarcodeResponseDto> result = responseService.getSingleResult(barcodeResponseDto, "바코드 조회 성공", 200);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("바코드 조회 중 오류 발생", e);
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "바코드 조회 실패", null));
+        }
 
-        return ResponseEntity.ok(result);
-//        return ResponseEntity.ok(responseService.getSingleResult(
-//                SampleResponseDto.builder()
-//                .test1(path1)
-//                .test2(path2)
-//                .build()));
-    }
-
-    // TODO
-    // 실패시 처리 로직 필요
-    @PostMapping(value = "/post")
-    public ResponseEntity<?> saveUser(@RequestBody User user) {
-        SingleResult<CoinBarcodeResponseDto> result = new SingleResult<>();
-        result.setCode(400);
-        result.setMessage("포인트 조회 실패");
-        return ResponseEntity.badRequest().body(result);
     }
 }
+
+
+
