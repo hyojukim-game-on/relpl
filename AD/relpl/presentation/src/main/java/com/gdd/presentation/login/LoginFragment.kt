@@ -81,7 +81,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                     }
                 }
                 startActivity(Intent(_activity,MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 })
             }
         }
@@ -106,6 +106,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 
     private fun setDefaultUi() {
         binding.btnSignup.visibility = View.VISIBLE
+        val materialFade = MaterialFade().apply {
+            duration = 300L
+            interpolator = PathInterpolator(0f, 0f, 0f, 1f)
+        }
+        TransitionManager.beginDelayedTransition(binding.layoutRoot, materialFade)
         binding.layoutLoginInputs.visibility = View.GONE
     }
 }

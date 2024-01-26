@@ -17,11 +17,13 @@ import androidx.core.view.isNotEmpty
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
+import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentProfileBinding
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "ProfileFragment_Genseong"
@@ -34,6 +36,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
     private val viewModel: ProfileViewModel by viewModels()
 
     private lateinit var pwChangeDialog: AlertDialog
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            scrimColor = Color.TRANSPARENT
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

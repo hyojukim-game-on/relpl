@@ -13,6 +13,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportFragmentManager.beginTransaction().replace(R.id.layout_main_fragment, ProfileFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.layout_main_fragment, HomeFragment()).commit()
     }
 }
