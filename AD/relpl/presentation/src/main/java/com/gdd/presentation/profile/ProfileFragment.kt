@@ -172,13 +172,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
                             etNewPw.editText!!.text.toString().trim())
                     }
                     else{
-                        showToast(resources.getString(R.string.signup_repw_et_err))
+                        showSnackBar(resources.getString(R.string.signup_repw_et_err))
                     }
                 }else{
-                    showToast(resources.getString(R.string.all_invalid_input))
+                    showSnackBar(resources.getString(R.string.all_invalid_input))
                 }
             }else{
-                showToast(resources.getString(R.string.all_input_everything))
+                showSnackBar(resources.getString(R.string.all_input_everything))
             }
         }
     }
