@@ -17,7 +17,7 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyRanking {
-    // 랭킹 데이터 필드 정의
+    // 랭킹 데이터 필드
     @Id
     private Long dailyRankingId;
     private Long userId;
