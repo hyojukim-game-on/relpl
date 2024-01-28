@@ -37,8 +37,10 @@ class SignupPasswordFragment : BaseFragment<FragmentSignupPasswordBinding>(
 
     private fun registerListener(){
         binding.btnNext.setOnClickListener {
-            if (done)
+            if (done) {
+                activityViewModel.pw = binding.etPw.editText!!.text.toString()
                 signupActivity.moveToNextPage()
+            }
             else
                 showToast(resources.getString(R.string.all_invalid_input))
         }

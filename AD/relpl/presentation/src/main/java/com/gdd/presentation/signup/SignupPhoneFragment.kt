@@ -15,6 +15,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupPhoneBinding
+import com.gdd.retrofit_adapter.RelplException
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
@@ -50,9 +51,8 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
 
     private fun registerListener(){
         binding.btnSend.setOnClickListener {
-            sendVerificationCode()
+            activityViewModel.isDuplicatedPhone(binding.etPhone.editText!!.text.toString().trim())
             binding.etPhone.isEnabled = false
-//            signupActivity.moveToNextPage()
         }
 
         binding.etPhone.editText!!.addTextChangedListener (object : TextWatcher{
@@ -79,6 +79,26 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
                 binding.etPhone.helperText = ""
                 binding.etPhone.isErrorEnabled = true
                 binding.etPhone.error = resources.getString(R.string.signup_all_et_err)
+            }
+        }
+
+        activityViewModel.phoneDupResult.observe(viewLifecycleOwner){result ->
+            if (result.isSuccess){
+                if (result.getOrNull()!!){
+                    showToast("사용 가능한 핸드폰번호입니다")
+                    sendVerificationCode()
+                }else{
+                    showToast("이미 가입된 핸드폰번호입니다")
+                    binding.etPhone.isEnabled = true
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showToast(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
             }
         }
     }

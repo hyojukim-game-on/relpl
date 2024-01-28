@@ -87,6 +87,10 @@ class SignupProfilePhotoFragment : BaseFragment<FragmentSignupProfilePhotoBindin
             else
                 galleryPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+
+        binding.btnDone.setOnClickListener {
+            signUpActivity.finish()
+        }
     }
 
     private fun registerObserver(){
