@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.ir.backend.js.compile
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
@@ -69,4 +71,7 @@ dependencies {
 
     //Glide
     implementation(libs.glide)
+
+    // Zxing (Barcode)
+    implementation(libs.zxing)
 }

@@ -87,6 +87,9 @@ firebase-auth = {group = "com.google.firebase", name = "firebase-auth-ktx"}
 
 glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
 
+# zxing Barcode Library (https://github.com/journeyapps/zxing-android-embedded)
+zxing = {group = "com.journeyapps", name = "zxing-android-embedded", version = "4.3.0"}
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version = "8.1.3" }
