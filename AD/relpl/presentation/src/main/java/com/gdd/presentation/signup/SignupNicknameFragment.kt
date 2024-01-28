@@ -13,6 +13,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupNicknameBinding
+import com.gdd.retrofit_adapter.RelplException
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,10 +40,10 @@ class SignupNicknameFragment : BaseFragment<FragmentSignupNicknameBinding>(
         binding.btnSignup.setOnClickListener {
             if (valid){
                 //회원가입 요청 날리기
-                signupActivity.nickname = binding.etNickname.editText!!.text.toString()
-                signupActivity.moveToNextPage()
+                activityViewModel.isDuplicatedNickname(binding.etNickname.editText!!.text.toString().trim())
+                binding.etNickname.isEnabled = false
             }else{
-                showToast(resources.getString(R.string.signup_id_et_valid))
+                showToast(resources.getString(R.string.all_invalid_input))
             }
         }
 
@@ -64,6 +65,45 @@ class SignupNicknameFragment : BaseFragment<FragmentSignupNicknameBinding>(
                 binding.etNickname.helperText = resources.getString(R.string.signup_nickname_et_valid)
             }else{
                 binding.etNickname.error = resources.getString(R.string.signup_all_et_err)
+            }
+        }
+
+        activityViewModel.nicknameDupResult.observe(viewLifecycleOwner){result ->
+            if (result.isSuccess){
+                if (result.getOrNull()!!){
+                    activityViewModel.nickname = binding.etNickname.editText!!.text.toString().trim()
+                    showToast("사용 가능한 닉네임입니다")
+                    activityViewModel.signUp()
+                }else{
+                    showToast("중복된 닉네임입니다")
+                    binding.etNickname.isEnabled = true
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
+
+        activityViewModel.signUpResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+                    activityViewModel.userId = it.id
+                    activityViewModel.userNickname = it.nickname
+                    signupActivity.moveToNextPage()
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
             }
         }
     }

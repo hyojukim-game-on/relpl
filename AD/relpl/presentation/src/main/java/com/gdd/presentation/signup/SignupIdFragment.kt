@@ -13,6 +13,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupIdBinding
+import com.gdd.retrofit_adapter.RelplException
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,7 +38,8 @@ class SignupIdFragment : BaseFragment<FragmentSignupIdBinding>(
 
     private fun registerListener(){
         binding.btnNext.setOnClickListener {
-            signupActivity.moveToNextPage()
+            activityViewModel.isDuplicatedId(binding.etId.editText!!.text.toString().trim())
+            binding.etId.isEnabled = false
         }
 
         binding.etId.editText!!.addTextChangedListener (object : TextWatcher{
@@ -59,6 +61,27 @@ class SignupIdFragment : BaseFragment<FragmentSignupIdBinding>(
                 binding.btnNext.isEnabled = false
                 binding.etId.error = resources.getString(R.string.signup_all_et_err)
                 binding.btnNext.isEnabled = false
+            }
+        }
+
+        activityViewModel.idDupResult.observe(viewLifecycleOwner){result ->
+            if (result.isSuccess){
+                if (result.getOrNull()!!){
+                    activityViewModel.id = binding.etId.editText!!.text.toString().trim()
+                    showToast("사용 가능한 아이디입니다")
+                    signupActivity.moveToNextPage()
+                }else{
+                    showToast("중복된 아이디입니다")
+                    binding.etId.isEnabled = true
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
             }
         }
     }
