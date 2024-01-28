@@ -1,6 +1,8 @@
 package com.gdd.data.repository.user.remote
 
 import com.gdd.data.api.UserService
+import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
 import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.model.signin.SignInResponse
@@ -73,6 +75,20 @@ class UserRemoteDataSourceImpl @Inject constructor(
                 currentPassword,
                 newPassword
             )
+        ).toNonDefault()
+    }
+
+    override suspend fun getCurrentPoint(userId: Long): Result<Int> {
+        return userService.getCurrentPointByUserId(
+            UserIdRequest(userId)
+        ).toNonDefault().map {
+            it.userTotalCoin
+        }
+    }
+
+    override suspend fun getPointRecord(userId: Long): Result<PointRecordResponse> {
+        return userService.getPointRecordByUserId(
+            UserIdRequest(userId)
         ).toNonDefault()
     }
 }

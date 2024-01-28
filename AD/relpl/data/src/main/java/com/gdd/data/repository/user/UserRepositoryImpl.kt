@@ -1,10 +1,12 @@
 package com.gdd.data.repository.user
 
+import com.gdd.data.mapper.toPointRecord
 import com.gdd.data.mapper.toSignUpResult
 import com.gdd.data.mapper.toUser
 import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
+import com.gdd.domain.model.point.PointRecord
 import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.model.user.User
 import com.gdd.domain.repository.UserRepository
@@ -54,4 +56,14 @@ class UserRepositoryImpl @Inject constructor(
         return userRemoteDataSource.changePassword(userId, currentPassword, newPassword)
     }
 
+    override suspend fun getCurrentPoint(userId: Long): Result<Int> {
+        return userRemoteDataSource.getCurrentPoint(userId)
+    }
+
+    override suspend fun getPointRecord(userId: Long): Result<PointRecord> {
+        return userRemoteDataSource.getPointRecord(userId)
+            .map {
+                it.toPointRecord()
+            }
+    }
 }

@@ -8,7 +8,9 @@ import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentPointUseBinding
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PointUseFragment : BaseFragment<FragmentPointUseBinding>(
     FragmentPointUseBinding::bind, R.layout.fragment_point_use
 ) {
