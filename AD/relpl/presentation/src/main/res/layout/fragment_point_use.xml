@@ -61,9 +61,8 @@
 
     <ImageView
         android:id="@+id/iv_point_barcode"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
         android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +73,6 @@
         android:id="@+id/tv_center_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
         android:fontFamily="@font/font_wanted_sans_medium"
         android:text="현재 위치와 가까운 행정 복지센터입니다"
         android:textColor="@color/black"

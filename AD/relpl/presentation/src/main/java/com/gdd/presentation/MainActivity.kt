@@ -3,7 +3,6 @@ package com.gdd.presentation
 import android.os.Bundle
 import com.gdd.presentation.base.BaseActivity
 import com.gdd.presentation.databinding.ActivityMainBinding
-import com.gdd.presentation.profile.ProfileFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
