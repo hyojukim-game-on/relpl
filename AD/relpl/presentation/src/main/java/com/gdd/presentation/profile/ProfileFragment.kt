@@ -28,6 +28,7 @@ import com.gdd.presentation.databinding.FragmentProfileBinding
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.DecimalFormat
 
 private const val TAG = "ProfileFragment_Genseong"
 
@@ -79,6 +80,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
 
     private fun registerObserver(){
 
+    }
+
+    fun phoneFormat(phone: String): String{
+        return "${phone.substring(0, 3)} ${phone.substring(3,7)} ${phone.substring(7,11)}"
+    }
+
+    fun pointFormat(point: Int): String{
+        val dec = DecimalFormat("#,###")
+        return "${dec.format(point)} P"
     }
 
     @SuppressLint("MissingInflatedId")

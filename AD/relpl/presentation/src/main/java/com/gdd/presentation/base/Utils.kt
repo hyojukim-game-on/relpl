@@ -18,11 +18,3 @@ fun <T: Serializable> Intent.intentSerializable(key: String, clazz: Class<T>): T
     }
 }
 
-fun String.phoneFormat(): String{
-    return "${this.substring(0, 3)} ${this.substring(3,7)} ${this.substring(7,11)}"
-}
-
-fun Int.pointFormat(): String{
-    val dec = DecimalFormat("#,###")
-    return "${dec.format(this)} P"
-}
