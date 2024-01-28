@@ -9,7 +9,6 @@ import com.gdd.presentation.databinding.FragmentPointRecordBinding
 class PointRecordFragment : BaseFragment<FragmentPointRecordBinding>(
     FragmentPointRecordBinding::bind,R.layout.fragment_point_record
 ) {
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }

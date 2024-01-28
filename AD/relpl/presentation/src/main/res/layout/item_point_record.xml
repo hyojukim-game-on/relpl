@@ -6,6 +6,7 @@
     android:paddingBottom="6dp">
 
     <TextView
+        android:id="@+id/tv_use_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -13,6 +14,7 @@
         tools:text="2024년01월24일" />
 
     <TextView
+        android:id="@+id/tv_use_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -20,6 +22,7 @@
         tools:text="-100P" />
 
     <TextView
+        android:id="@+id/tv_use_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
