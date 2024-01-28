@@ -1,0 +1,46 @@
+server:
+  port: 10201
+
+spring:
+  #postgres
+  mvc:
+    async:
+      request-timeout: -1
+  datasource:
+    url: ENC(wuq/JNEohnF+fO3cbBiEvAzV1vDBthdTywA1Em/NZQnSd4Ia4P+Si6qi7uel+oMyGtzORun6UfYtAxXnMez7NA==)
+    username: ENC(FXOIlq05aKyie1Eaei6MYiM/30DGWlU1)
+    password: ENC(lkIo4yXZo/W7voUPLr5NRpCxL6zCtPHHZ0+iP7a9jkQ=)
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect
+
+  data:
+    mongodb:
+      url: ENC(KcJ5FQHY4MxVzUNJ6pqxFT7JOUsoi/NlatlZCHbCM/0=)
+      host: ENC(vewwyQ0zMOe77WvwzphNSqF0vAjbkvGP+mkABZCw8to=)
+      port: ${MONGODB_PORT}
+      database: ENC(QYRSKr0uZOD+6mFChXcyMg==)
+    redis:
+      host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
+      port: ${REDIS_PORT}
+  jpa:
+    hibernate:
+      generate-ddl: true
+      database: postgresql
+      database-platform: org.hibernate.spatial.dialect.
+
+tmap:
+  api:
+    key: ENC(LWYqblI6wJLRaVTlZfDM9szPGHE2EZ21lIVhOYiFy3QBvYSTOm+l/Y3iyM9T8Bs/Gmo09b1NCvM=)
+
+cloud:
+  aws:
+    s3:
+      bucket: ENC(D3WremaoJraLKEONkOC/jg==)
+      base-url: ENC(Uy/GzWij/acXMHP0+qXHxVBzv4UaNmzgWy/cm11ugTI5knpds9gNlgCeXUZ9WPNnxXJg+r8hp+s=)
+    credentials:
+      access-key: ENC(EZIkbuGlEWiYVEcqEWH7nis9QKLo7rhnsoRy16DwU1s=)
+      secret-key: ENC(TxoY84Jj/3l2kvMtq67vW1Ee2l6HlSR7N81MNWKZLJaBIoI4LMssLe9o3QBICPOe6uSF34UhXY0=)
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
