@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signup_pw_content"
-            android:textAppearance="@style/Relple.Text.Dialog.Content"
+            android:textAppearance="@style/Relpl.Text.Dialog.Content"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginTop="10dp"/>
