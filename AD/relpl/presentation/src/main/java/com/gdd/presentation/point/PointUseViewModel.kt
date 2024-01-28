@@ -3,9 +3,11 @@ package com.gdd.presentation.point
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.gdd.domain.usecase.point.GetCurrentPointUseCase
 import com.gdd.presentation.PrefManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,10 +27,24 @@ class PointUseViewModel @Inject constructor(
     val userId: LiveData<Long>
         get() = _userId
 
-    fun getUserIdForBarcode(){
-        prefManager.getUserId().let {
-            _userId.value = it
+    init {
+        _userId.value = prefManager.getUserId()
+    }
+
+    fun getPointInfo(){
+        viewModelScope.launch {
+            val userId = prefManager.getUserId()
+            if (userId != -1L){
+                getCurrentPointUseCase(userId).let {
+                    _point.postValue(
+                        it.getOrDefault(-1)
+                    )
+                }
+            }
         }
     }
 
+    fun setNickname(nickname: String){
+        _nickname.value = nickname
+    }
 }
