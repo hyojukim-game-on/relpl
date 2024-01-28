@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,7 +47,7 @@ public class RankingService {
                 // 성공 시 로직
             else {
                 // rankingTime 에 따라 다른 랭킹 데이터를 조회
-                List<RankingEntry> dailyRanking = rankingRepository.findDailyRanking();
+                List<RankingEntry> dailyRanking = rankingRepository.findDailyRanking(requiredDate);
                 List<RankingEntry> weeklyRanking = rankingRepository.findWeeklyRanking(requiredDate);
                 List<RankingEntry> monthlyRanking = rankingRepository.findMonthlyRanking(requiredDate);
 
@@ -62,7 +63,7 @@ public class RankingService {
             }
         } // 실패 시 로직 3. "yyyy-MM-dd" 형식이 아닐 경우
         catch (DateTimeParseException e) {
-            return responseService.getFailResult();
+            return responseService.getFailResult(400, "yyyy-MM-dd 형식이 아닙니다.");
         }
 
 

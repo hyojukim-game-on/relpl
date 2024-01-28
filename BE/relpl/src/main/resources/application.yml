@@ -2,13 +2,36 @@ server:
   port: 9090
 
 spring:
+  #postgres
+  datasource:
+    url: ENC(wuq/JNEohnF+fO3cbBiEvAzV1vDBthdTywA1Em/NZQnSd4Ia4P+Si6qi7uel+oMyGtzORun6UfYtAxXnMez7NA==)
+    username: ENC(FXOIlq05aKyie1Eaei6MYiM/30DGWlU1)
+    password: ENC(lkIo4yXZo/W7voUPLr5NRpCxL6zCtPHHZ0+iP7a9jkQ=)
+    driver-class-name: org.postgresql.Driver
   data:
     mongodb:
-      uri: mongodb://i10d201.p.ssafy.io:27017/ssafy
+      url: ENC(KcJ5FQHY4MxVzUNJ6pqxFT7JOUsoi/NlatlZCHbCM/0=)
+      host: ENC(vewwyQ0zMOe77WvwzphNSqF0vAjbkvGP+mkABZCw8to=)
+      port: ${MONGODB_PORT}
+      database: ENC(QYRSKr0uZOD+6mFChXcyMg==)
     redis:
-      host: i10d201.p.ssafy.io # Redis 서버 호스트 주소
-      port: 6379 # Redis 포트
+      host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
+      port: ${REDIS_PORT}
 
 tmap:
   api:
-    key: 0ttiY8tbMp6yynwSOXkfl3EkQnU7rXO877tz4cxX
+    key: ENC(j3VH+078nbLoa1HuTYtNVreeXtj/cODQErEpIUC/NcckXD3SYyhfraK8uCDhTdc3ZCQdbSbDSKYq2/kZPpWQuUpDODD9mggw)
+
+cloud:
+  aws:
+    s3:
+      bucket: ENC(D3WremaoJraLKEONkOC/jg==)
+      base-url: ENC(Uy/GzWij/acXMHP0+qXHxVBzv4UaNmzgWy/cm11ugTI5knpds9gNlgCeXUZ9WPNnxXJg+r8hp+s=)
+    credentials:
+      access-key: ENC(EZIkbuGlEWiYVEcqEWH7nis9QKLo7rhnsoRy16DwU1s=)
+      secret-key: ENC(TxoY84Jj/3l2kvMtq67vW1Ee2l6HlSR7N81MNWKZLJaBIoI4LMssLe9o3QBICPOe6uSF34UhXY0=)
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
