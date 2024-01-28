@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/item"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="15dp"
+    app:cardBackgroundColor="@color/sage_cream"
+    app:strokeColor="@android:color/transparent"
+    app:cardElevation="3dp"
+    android:layout_margin="5dp">
+    
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="17dp">
+        
+        <ImageView
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:src="@drawable/img_sample"/>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            >
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="기간"
+                    android:fontFamily="@font/font_wanted_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="01.14 15:14 ~ 01:14 17:48"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:fontFamily="@font/font_wanted_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="거리"
+                    android:fontFamily="@font/font_wanted_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="1km 420m"
+                    android:layout_gravity="end"
+                    android:fontFamily="@font/font_wanted_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="릴레이 기여도"
+                    android:fontFamily="@font/font_wanted_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_cont"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="45%"
+                    android:layout_gravity="end"
+                    android:fontFamily="@font/font_wanted_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="메모 펼쳐보기"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:fontFamily="@font/font_wanted_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+</com.google.android.material.card.MaterialCardView>
