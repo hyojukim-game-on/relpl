@@ -3,6 +3,7 @@ package com.gdd.presentation.point
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentPointUseBinding
@@ -14,12 +15,24 @@ import dagger.hilt.android.AndroidEntryPoint
 class PointUseFragment : BaseFragment<FragmentPointUseBinding>(
     FragmentPointUseBinding::bind, R.layout.fragment_point_use
 ) {
+    private val pointUseViewModel: PointUseViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        createBarcode()
+
+        // DataBinding
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.pointUseViewModel = pointUseViewModel
+
     }
 
-    private fun createBarcode() {
+    fun registerObserve(){
+        pointUseViewModel.userId.observe(viewLifecycleOwner){
+
+        }
+    }
+
+    private fun createBarcode(content: String) {
         try {
             val widthPx = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 390f,
