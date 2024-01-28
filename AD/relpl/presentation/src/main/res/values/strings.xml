@@ -79,4 +79,7 @@
     <string name="dialog_change_pw_new_re">비밀번호 확인</string>
     <string name="dialog_change_pw_change">변경</string>
 
+    <string name="history_clean_earth">지구를 깨끗하게 해 주셨어요</string>
+    <string name="history_item_project_not_done">프로젝트가 완료되지 못했어요 :(</string>
+
 </resources>

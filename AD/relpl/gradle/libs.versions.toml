@@ -84,8 +84,11 @@ custom-indicator = {group="com.tbuonomo", name ="dotsindicator", version = "5.0"
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-auth = {group = "com.google.firebase", name = "firebase-auth-ktx"}
 
-
+#Glide
 glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
+
+#StickyTimeLine (https://github.com/sangcomz/StickyTimeLine)
+timeline = {group = "io.github.sangcomz", name = "StickyTimeLine", version = "1.0.0"}
 
 
 [plugins]

@@ -69,4 +69,7 @@ dependencies {
 
     //Glide
     implementation(libs.glide)
+
+    //TimeLine
+    implementation(libs.timeline)
 }
