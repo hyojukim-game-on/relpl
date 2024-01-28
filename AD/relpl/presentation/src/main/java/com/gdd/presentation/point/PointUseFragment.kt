@@ -3,6 +3,9 @@ package com.gdd.presentation.point
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentPointUseBinding
@@ -14,12 +17,44 @@ import dagger.hilt.android.AndroidEntryPoint
 class PointUseFragment : BaseFragment<FragmentPointUseBinding>(
     FragmentPointUseBinding::bind, R.layout.fragment_point_use
 ) {
+    private val mainViewModel: MainViewModel by activityViewModels()
+    private val pointUseViewModel: PointUseViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        createBarcode()
+
+        // DataBinding
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.pointUseViewModel = pointUseViewModel
+
+        try {
+            pointUseViewModel.setNickname(mainViewModel.user.nickname)
+        } catch (t: Throwable){
+            showToast("회원 정보 호출에 실패했습니다.")
+        }
+
+        registerObserve()
+
+        pointUseViewModel.getPointInfo()
     }
 
-    private fun createBarcode() {
+    private fun registerObserve(){
+        pointUseViewModel.userId.observe(viewLifecycleOwner){
+            if (it != -1L){
+                createBarcode(it.toString())
+            } else {
+                showToast("회원 정보 호출에 실패했습니다.")
+            }
+        }
+
+        pointUseViewModel.point.observe(viewLifecycleOwner){
+            if (it == -1){
+                showToast("포인트 정보 호출에 실패했습니다.")
+            }
+        }
+    }
+
+    private fun createBarcode(content: String) {
         try {
             val widthPx = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 390f,
@@ -31,7 +66,7 @@ class PointUseFragment : BaseFragment<FragmentPointUseBinding>(
             ).toInt()
             val barcodeEncoder = BarcodeEncoder()
             barcodeEncoder.encodeBitmap(
-                "steelzoo",
+                content,
                 BarcodeFormat.CODE_128,
                 widthPx,
                 heightPx
