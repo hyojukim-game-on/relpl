@@ -256,7 +256,7 @@
                     android:id="@+id/tv_report_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{mainViewModel.user.totalReport}회"
+                    android:text='@{String.valueOf(mainViewModel.user.totalReport)+"회"}'
                     android:textAppearance="@style/Relpl.Text" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
