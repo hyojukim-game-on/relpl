@@ -4,8 +4,6 @@
     android:id="@+id/layout_main_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="20dp"
-    android:paddingTop="20dp"
     tools:context=".MainActivity">
 
 </FrameLayout>

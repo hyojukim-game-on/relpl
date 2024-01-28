@@ -84,4 +84,7 @@
     <string name="history_clean_earth">지구를 깨끗하게 해 주셨어요</string>
     <string name="history_item_project_not_done">프로젝트가 완료되지 못했어요 :(</string>
 
+    <string name="home_welcome">%1$s님 환영합니다!</string>
+    <string name="home_total_distance">총 %1$s 걸으셨습니다</string>
+
 </resources>

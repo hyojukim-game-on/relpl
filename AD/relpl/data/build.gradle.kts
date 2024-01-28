@@ -8,6 +8,7 @@ plugins {
 }
 android.buildFeatures.buildConfig true
 fun getAGAUrlKey(propertyKey: String): String = gradleLocalProperties(rootDir).getProperty(propertyKey)
+fun getBaseUrl(propertyKey: String): String = gradleLocalProperties(rootDir).getProperty(propertyKey)
 
 android {
     namespace = "com.gdd.data"
@@ -20,6 +21,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("String", "AGA_URL", getAGAUrlKey("agaurl"))
+        buildConfigField("String", "BASE_URL", getBaseUrl("baseUrl"))
     }
 
     buildTypes {

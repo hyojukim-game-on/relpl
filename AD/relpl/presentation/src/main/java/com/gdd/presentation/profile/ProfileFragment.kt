@@ -59,6 +59,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainViewModel = mainViewModel
+        binding.fragment = this
 
         mainActivity = _activity as MainActivity
 

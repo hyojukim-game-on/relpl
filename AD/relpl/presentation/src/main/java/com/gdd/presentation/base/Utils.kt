@@ -18,3 +18,14 @@ fun <T: Serializable> Intent.intentSerializable(key: String, clazz: Class<T>): T
     }
 }
 
+fun Int.pointFormat(): String{
+    val dec = DecimalFormat("#,###")
+    return "${dec.format(this)} P"
+}
+
+fun Int.distanceFormat(): String{
+    val km = if (this / 1000 < 1) "" else "${(this/1000)}km"
+    val m = this % 1000
+
+    return "$km ${m}m"
+}
