@@ -78,7 +78,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                     if (it is RelplException){
                         showSnackBar(it.message)
                     } else {
-                        showToast("네트워크 오류")
+                        showToast(resources.getString(R.string.all_net_err))
                     }
                 }
             }

@@ -22,13 +22,16 @@ import com.bumptech.glide.Glide
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
+import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentProfileBinding
+import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
+import javax.inject.Inject
 
 private const val TAG = "ProfileFragment_Genseong"
 
@@ -39,6 +42,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
     private lateinit var mainActivity: MainActivity
     private val viewModel: ProfileViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
+
+    @Inject
+    lateinit var prefManager: PrefManager
 
     private lateinit var pwChangeDialog: AlertDialog
 
@@ -76,10 +82,30 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
          *     }
          */
 
+        binding.llProfileChange.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, ProfileChangeFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
     }
 
     private fun registerObserver(){
-
+        viewModel.pwChangeResult.observe(viewLifecycleOwner){result ->
+            if (result.isSuccess){
+                showSnackBar(resources.getString(R.string.change_pw_success))
+                pwChangeDialog.dismiss()
+            }else {
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
     }
 
     fun phoneFormat(phone: String): String{
@@ -141,6 +167,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
                 if (viewModel.pwValidateResult.value == true){
                     if (etNewPw.editText!!.text.toString() == etNewPwRe.editText!!.text.toString()){
                         //비밀번호 변경 로직 호출
+                        viewModel.changePassword(prefManager.getUserId(),
+                            etOriginalPw.editText!!.text.toString().trim(),
+                            etNewPw.editText!!.text.toString().trim())
                     }
                     else{
                         showToast(resources.getString(R.string.signup_repw_et_err))
