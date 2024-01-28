@@ -90,6 +90,9 @@ glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "gli
 #StickyTimeLine (https://github.com/sangcomz/StickyTimeLine)
 timeline = {group = "io.github.sangcomz", name = "StickyTimeLine", version = "1.0.0"}
 
+# zxing Barcode Library (https://github.com/journeyapps/zxing-android-embedded)
+zxing = {group = "com.journeyapps", name = "zxing-android-embedded", version = "4.3.0"}
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version = "8.1.3" }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.ir.backend.js.compile
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
@@ -72,4 +74,7 @@ dependencies {
 
     //TimeLine
     implementation(libs.timeline)
+
+    // Zxing (Barcode)
+    implementation(libs.zxing)
 }

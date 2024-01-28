@@ -2,6 +2,9 @@ package com.gdd.data.api
 
 import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.DefaultResponse
+import com.gdd.data.model.point.TotalPointResponse
+import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
 import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.model.signin.SignInResponse
@@ -57,4 +60,14 @@ interface UserService {
     suspend fun changePassword(
         @Body changePasswordRequest: ChangePasswordRequest
     ): Result<DefaultResponse<Boolean>>
+
+    @POST("/user/mypage/coinbarcode")
+    suspend fun getCurrentPointByUserId(
+        @Body userIdBody: UserIdRequest
+    ): Result<DefaultResponse<TotalPointResponse>>
+
+    @POST("/user/mypage/coinscore")
+    suspend fun getPointRecordByUserId(
+        @Body userIdBody: UserIdRequest
+    ): Result<DefaultResponse<PointRecordResponse>>
 }
