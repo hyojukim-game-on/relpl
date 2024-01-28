@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.List;
 
 
 @Data
@@ -13,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="App_User")
+@Table(name="ruser")
 public class User {
 
     @Id
@@ -38,7 +41,4 @@ public class User {
 
     @Column(name = "user_isactive", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean userIsActive;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
 }

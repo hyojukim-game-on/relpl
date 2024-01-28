@@ -21,7 +21,6 @@ public class UserSignupRequest {
                 .userNickname(this.userNickname)
                 .userPassword(this.userPassword)
                 .userPhone(this.userPhone)
-                .role(ROLE_ADMIN)
                 .build();
     }
 }
