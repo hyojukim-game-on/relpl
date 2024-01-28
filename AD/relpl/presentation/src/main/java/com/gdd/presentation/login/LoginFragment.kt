@@ -78,12 +78,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                     if (it is RelplException){
                         showSnackBar(it.message)
                     } else {
-                        showToast("네트워크 오류")
+                        showToast(resources.getString(R.string.all_net_err))
                     }
                 }
-                startActivity(Intent(_activity,MainActivity::class.java).apply {
-//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                })
             }
         }
 

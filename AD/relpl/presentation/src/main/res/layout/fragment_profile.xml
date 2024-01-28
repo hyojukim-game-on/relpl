@@ -9,10 +9,6 @@
             type="com.gdd.presentation.MainViewModel" />
 
         <variable
-            name="util"
-            type="com.gdd.presentation.base.UtilsKt" />
-
-        <variable
             name="fragment"
             type="com.gdd.presentation.profile.ProfileFragment" />
     </data>
@@ -48,6 +44,7 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_profile_photo">
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_profile_change"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -106,7 +103,7 @@
                     android:id="@+id/tv_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{util.phoneFormat(mainViewModel.user.phone)}"
+                    android:text="@{fragment.phoneFormat(mainViewModel.user.phone)}"
                     android:textAppearance="@style/Relpl.Text" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -174,7 +171,7 @@
                     android:id="@+id/tv_point_cur"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{util.pointFormat(mainViewModel.user.totalCoin)}"
+                    android:text="@{fragment.pointFormat(mainViewModel.user.totalCoin)}"
                     android:textAppearance="@style/Relpl.Text" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -260,7 +257,7 @@
                     android:id="@+id/tv_report_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{mainViewModel.user.totalReport}회"
+                    android:text='@{String.valueOf(mainViewModel.user.totalReport)+"회"}'
                     android:textAppearance="@style/Relpl.Text" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 

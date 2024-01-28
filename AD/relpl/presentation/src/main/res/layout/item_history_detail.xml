@@ -21,8 +21,7 @@
         
         <ImageView
             android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:src="@drawable/img_sample"/>
+            android:layout_height="85dp"/>
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
