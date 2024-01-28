@@ -71,6 +71,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                 showSnackBar("로그인에 성공했습니다.")
                 startActivity(Intent(_activity,MainActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    putExtra("user", result.getOrNull())
                 })
             } else {
                 result.exceptionOrNull()?.let {

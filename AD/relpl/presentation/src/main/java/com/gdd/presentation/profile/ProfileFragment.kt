@@ -15,10 +15,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isNotEmpty
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
+import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentProfileBinding
@@ -34,6 +37,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
 ) {
     private lateinit var mainActivity: MainActivity
     private val viewModel: ProfileViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private lateinit var pwChangeDialog: AlertDialog
 
@@ -46,6 +50,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.mainViewModel = mainViewModel
+
         mainActivity = _activity as MainActivity
 
         initView()
@@ -54,12 +61,20 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
     }
 
     private fun initView(){
+        if(mainViewModel.user.imageUri != null){
+            Glide.with(binding.ivProfilePhoto)
+                .load(mainViewModel.user.imageUri)
+        }
     }
 
     private fun registerListener(){
-        binding.llPwChange.setOnClickListener{
-            showDeleteGroupDialog()
-        }
+        /**
+         * 데이터 바인딩으로 변경
+         *      binding.llPwChange.setOnClickListener{
+         *         showDeleteGroupDialog()
+         *     }
+         */
+
     }
 
     private fun registerObserver(){
@@ -67,7 +82,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
     }
 
     @SuppressLint("MissingInflatedId")
-    private fun showDeleteGroupDialog(){
+    fun showDeleteGroupDialog(view: View){
         val builder = AlertDialog.Builder(mainActivity)
         val view = LayoutInflater.from(requireContext()).inflate(
             R.layout.dialog_change_pw, mainActivity.findViewById(R.id.cl_change_pw_dialog)

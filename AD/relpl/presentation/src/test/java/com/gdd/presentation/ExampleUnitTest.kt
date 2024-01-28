@@ -14,4 +14,12 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    @Test
+    fun phoneFormat(){
+        val origin = "01012345678"
+        val formatted = "010 1234 5678"
+        val format = "${origin.substring(0, 3)} ${origin.substring(3,7)} ${origin.substring(7,11)}"
+        assertEquals(format, formatted)
+    }
 }
