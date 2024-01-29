@@ -1,8 +1,11 @@
 package com.gdd.presentation.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
@@ -17,6 +20,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
     FragmentHomeBinding::bind, R.layout.fragment_home
 ) {
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,7 +41,10 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         }
 
         binding.ivLogout.setOnClickListener {
-
+            homeViewModel.logout()
+            startActivity(Intent(_activity,LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            })
         }
     }
 

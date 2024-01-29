@@ -56,6 +56,13 @@ class PrefManager(context: Context) {
         return pref.getString(PREF_REFRESHTOKEN, null)
     }
 
+    fun deleteAll(){
+        pref.edit().let {
+            it.clear()
+            it.commit()
+        }
+    }
+
     companion object{
         private const val PREF_USERID = "user_id"
         private const val PREF_ACCESSTOKEN = "access_token"
