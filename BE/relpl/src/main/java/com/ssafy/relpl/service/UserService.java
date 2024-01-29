@@ -56,7 +56,7 @@ public class UserService {
         Optional<User> user = userRepository.findByUserUid(request.getUserUid());
 
         //유저 아이디가 존재하고, 유저 아이디와 비밀번호가 일치하는 경우
-        if(user.isPresent() && passwordEncoder.matches(request.getPassword(), user.get().getUserPassword())) {
+        if(user.isPresent() && passwordEncoder.matches(request.getUserPassword(), user.get().getUserPassword())) {
 
             //totalCoin 조회 필요
             //totalDistance 조회 필요

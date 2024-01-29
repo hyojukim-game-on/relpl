@@ -3,6 +3,7 @@ package com.ssafy.relpl.util;
 import com.ssafy.relpl.service.UserDetailsServiceImpl;
 import com.ssafy.relpl.util.exception.BaseException;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,8 +27,9 @@ public class JwtTokenProvider {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    @Value("${jwt.token.secret}")
-    private static String key;
+//    @Value("${jwt.token.secret}")
+//    private static String key;
+    private static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     @Value("${jwt.token.access-expiration-time}")
     private static long accessExpirationTime;
@@ -48,7 +51,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(key)
                 .compact();
     }
 
@@ -82,10 +85,7 @@ public class JwtTokenProvider {
      * 토큰으로부터 클레임을 만들고, 이를 통해 User 객체 생성해 Authentication 객체 반환
      */
     public Authentication getAuthentication(String token) {
-        String userPrincipal = Jwts.parser().
-                setSigningKey(key)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
+        String userPrincipal = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
         UserDetails userDetails = userDetailsService.loadUserByUsername(userPrincipal);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -107,7 +107,7 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token){
         try{
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch(ExpiredJwtException e) {
             log.error(JwtConstants.EXPIRED_JWT_MESSAGE);

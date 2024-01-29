@@ -28,21 +28,43 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtTokenProvider.resolveToken(request);
         try {
+            // HTTP 요청에서 JWT 토큰 추출
+            String token = jwtTokenProvider.resolveToken(request);
+
+            // JWT 토큰이 존재하고 유효한 경우
             if (token != null && jwtTokenProvider.validateToken(token)) {
+                // 토큰에서 인증 객체 추출
                 Authentication auth = jwtTokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth); // 정상 토큰이면 SecurityContext에 저장
+                // SecurityContext에 인증 객체 설정
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } catch (RedisConnectionFailureException e) {
-            SecurityContextHolder.clearContext();
-            throw new BaseException(JwtConstants.REDIS_ERROR);
         } catch (Exception e) {
-            throw new BaseException(JwtConstants.INVALID_JWT_MESSAGE);
+            // 예외가 발생한 경우 로그 출력
+            log.error("JWT 처리 중 오류 발생: {}", e.getMessage());
         }
 
+        // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
     }
+
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+//        String token = jwtTokenProvider.resolveToken(request);
+//        try {
+//            if (token != null && jwtTokenProvider.validateToken(token)) {
+//                Authentication auth = jwtTokenProvider.getAuthentication(token);
+//                SecurityContextHolder.getContext().setAuthentication(auth); // 정상 토큰이면 SecurityContext에 저장
+//            }
+//        } catch (RedisConnectionFailureException e) {
+//            SecurityContextHolder.clearContext();
+//            throw new BaseException(JwtConstants.REDIS_ERROR);
+//        } catch (Exception e) {
+//            throw new BaseException(JwtConstants.INVALID_JWT_MESSAGE);
+//        }
+//
+//        filterChain.doFilter(request, response);
+//    }
 
 //    @Override
 //    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

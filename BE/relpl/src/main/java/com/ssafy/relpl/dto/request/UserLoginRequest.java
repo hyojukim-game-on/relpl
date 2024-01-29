@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class UserLoginRequest {
     private String userUid;
-    private String password;
+    private String userPassword;
 }
