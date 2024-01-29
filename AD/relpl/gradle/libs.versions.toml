@@ -93,6 +93,9 @@ timeline = {group = "io.github.sangcomz", name = "StickyTimeLine", version = "1.
 # zxing Barcode Library (https://github.com/journeyapps/zxing-android-embedded)
 zxing = {group = "com.journeyapps", name = "zxing-android-embedded", version = "4.3.0"}
 
+# Naver map SDK
+naver-mapsdk = { group = "com.naver.maps", name = "map-sdk", version = "3.17.0" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version = "8.1.3" }

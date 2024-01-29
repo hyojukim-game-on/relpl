@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.kapt)
 }
-android.buildFeatures.buildConfig true
+
 fun getAGAUrlKey(propertyKey: String): String = gradleLocalProperties(rootDir).getProperty(propertyKey)
 fun getBaseUrl(propertyKey: String): String = gradleLocalProperties(rootDir).getProperty(propertyKey)
 

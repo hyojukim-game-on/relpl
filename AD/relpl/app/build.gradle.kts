@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -5,6 +7,8 @@ plugins {
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.googleservice)
 }
+
+fun getProperty(propertyKey: String): String = gradleLocalProperties(rootDir).getProperty(propertyKey)
 
 android {
     namespace = "com.gdd.relpl"
@@ -18,6 +22,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "NAVER_MAP_CLIENT_ID", getProperty("naverMapClientID"))
     }
 
 
@@ -40,6 +46,7 @@ android {
     buildFeatures{
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
 }
 
@@ -67,4 +74,7 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
+
+    // Naver Map
+    implementation(libs.naver.mapsdk)
 }

@@ -77,4 +77,7 @@ dependencies {
 
     // Zxing (Barcode)
     implementation(libs.zxing)
+
+    // Naver Map
+    implementation(libs.naver.mapsdk)
 }
