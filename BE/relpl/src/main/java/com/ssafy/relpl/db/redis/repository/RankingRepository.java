@@ -12,6 +12,10 @@ import java.util.List;
 @Repository
 public class RankingRepository {
 
+
+    // 24.01.29 12:30PM codeReview
+
+
     // 초기 데이터 넣을 때 (20개 반환이 minimum 인데 ?)
     // 만약에 20개 미만이면 있는 거만 보여줄 건지 아니면 20개 될때까지 부족하다고 할 건지
     public List<DailyRanking> createDailyRanking(LocalDate requiredDate) {}

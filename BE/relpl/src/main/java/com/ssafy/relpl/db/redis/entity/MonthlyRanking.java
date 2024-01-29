@@ -19,4 +19,5 @@ public class MonthlyRanking {
     String monthlyEndTime;
     int monthlyDistance;
     // Redis 에 저장되는 랭킹 데이터
+    // 24.01.29 12:30PM codeReview
 }

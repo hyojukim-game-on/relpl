@@ -23,4 +23,5 @@ public class DailyRanking {
     private Long userId;
     private String dailyEndTime; // 만료시간 관련 어떻게 설정할 건지 로직을 생각해야 함
     private int dailyDistance;
+    // 24.01.29 12:30PM codeReview
 }

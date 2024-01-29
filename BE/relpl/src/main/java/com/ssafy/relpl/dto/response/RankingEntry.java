@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class RankingEntry {
+        // 24.01.29 12:30PM codeReview
         private String nickname;
         private int distance;
 }

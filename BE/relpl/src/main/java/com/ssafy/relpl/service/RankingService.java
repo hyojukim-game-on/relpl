@@ -32,6 +32,9 @@ public class RankingService {
     * */
     public SingleResult<?> getRanking(String rankingTime) {
 
+        // 24.01.29 12:30PM codeReview
+
+
         // rankingTime 타입 변환 (String -> LocalDate)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate requiredDate = LocalDate.parse(rankingTime, formatter);

@@ -19,4 +19,5 @@ public class WeeklyRanking {
     String weeklyEndTime;
     int weeklyDistance;
     // Redis 에 저장되는 랭킹 데이터
+    // 24.01.29 12:30PM codeReview
 }
