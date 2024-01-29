@@ -33,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             // 예외가 발생한 경우 로그 출력
-            log.error("JWT 처리 중 오류 발생: {}", e.getMessage());
+            log.error("JWT 처리 중 오류 발생..: {}", e.getMessage());
         }
 
         // 다음 필터로 요청 전달
