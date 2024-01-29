@@ -4,7 +4,7 @@ stages:
   - package
   - deploy
 
-build:
+build-main:
   image: azul/zulu-openjdk:17-latest
   stage: build
   script:
@@ -17,8 +17,26 @@ build:
     paths:
       - ./BE/relpl/build/libs/*.jar
     expire_in: 10 min
+  only:
+    - be/develop
 
-package:
+build-sub:
+  image: azul/zulu-openjdk:17-latest
+  stage: build
+  script:
+    - cat
+    - cd ./BE/initDB_relpl
+    - chmod +x ./gradlew
+    - ./gradlew clean
+    - ./gradlew build
+  artifacts:
+    paths:
+      - ./BE/initDB_relpl/build/libs/*.jar
+    expire_in: 10 min
+  only:
+    - be/feat/tmap
+    
+package-main:
   image: docker:latest
   stage: package
   variables:
@@ -37,6 +55,30 @@ package:
     - echo "build complete"
   after_script:
     - docker logout
+  only:
+    - be/develop    
+
+package-sub:
+  image: docker:latest
+  stage: package
+  variables:
+    IMAGE_NAME: backend_sub
+  services:
+    - name: docker:dind
+      command: ["--privileged=true", "--tls=false"]
+  before_script:
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
+    - echo "로그인 성공"
+  script:
+    - cd ./BE/initDB_relpl
+    - docker buildx create --use --name mybuilder
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
+    - echo "build complete"
+  after_script:
+    - docker logout
+  only:
+    - be/feat/tmap    
 
 deploy-was:
   stage: deploy
@@ -59,3 +101,23 @@ deploy-was:
   when: on_success
   only:
     - be/develop
+    
+deploy-was:
+  stage: deploy
+  variables:
+    IMAGE_NAME: backend_sub
+  tags:
+    - ksh-runner
+  before_script:
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
+  script:
+    - docker stop ksh-backend-sub || true
+    - docker rm ksh-backend-sub || true
+    - docker rmi $IMAGE_NAME || true
+    - docker pull $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONBODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_SUB_PORT:$SPRING_SUB_PORT/tcp --name ksh-backend-sub $IMAGE_NAME:latest
+  after_script:
+    - docker logout
+  when: on_success
+  only:
+    - be/feat/tmap 
