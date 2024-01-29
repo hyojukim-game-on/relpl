@@ -1,11 +1,13 @@
 package com.gdd.data.repository.user
 
+import com.gdd.data.mapper.toHistoryList
 import com.gdd.data.mapper.toPointRecord
 import com.gdd.data.mapper.toSignUpResult
 import com.gdd.data.mapper.toUser
 import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
+import com.gdd.domain.model.history.History
 import com.gdd.domain.model.point.PointRecord
 import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.model.user.User
@@ -79,5 +81,11 @@ class UserRepositoryImpl @Inject constructor(
             userNickname,
             userPhone
         )
+    }
+
+    override suspend fun getHistory(userId: Long): Result<List<History>> {
+        return userRemoteDataSource.getHistory(userId).map{
+            it.toHistoryList()
+        }
     }
 }

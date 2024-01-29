@@ -4,6 +4,7 @@ import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.point.TotalPointResponse
 import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.history.HistoryResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
 import com.gdd.data.model.signin.SignInRequest
@@ -77,4 +78,10 @@ interface UserService {
         @Part userProfilePhoto: MultipartBody.Part?,
         @PartMap data: HashMap<String, RequestBody>
     ): Result<DefaultResponse<Boolean>>
+
+    @GET("user/history")
+    suspend fun getHistory(
+        @Body userIdRequest: UserIdRequest
+    ): Result<DefaultResponse<List<HistoryResponse>>>
+
 }

@@ -10,4 +10,5 @@ class MainViewModel @Inject constructor(
 
 ): ViewModel() {
     lateinit var user: User
+    var historySelectedProjectId = -1L
 }

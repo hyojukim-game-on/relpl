@@ -81,6 +81,31 @@
             app:timeLineWidth="2dp"
             android:layout_margin="20dp"/>
 
+        <TextView
+            android:id="@+id/tv_load_fail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_load_fail"
+            android:textAppearance="@style/Relpl.Text.Logo"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_time_line"
+            app:layout_constraintEnd_toEndOf="@+id/rv_time_line"
+            app:layout_constraintStart_toStartOf="@+id/rv_time_line"
+            app:layout_constraintTop_toTopOf="@+id/rv_time_line"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_no_data"
+            android:textAppearance="@style/Relpl.Text.Logo"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_time_line"
+            app:layout_constraintEnd_toEndOf="@+id/rv_time_line"
+            app:layout_constraintStart_toStartOf="@+id/rv_time_line"
+            app:layout_constraintTop_toTopOf="@+id/rv_time_line"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
