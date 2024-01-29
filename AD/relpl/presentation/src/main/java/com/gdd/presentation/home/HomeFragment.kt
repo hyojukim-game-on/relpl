@@ -13,6 +13,7 @@ import com.gdd.presentation.base.distanceFormat
 import com.gdd.presentation.base.pointFormat
 import com.gdd.presentation.databinding.FragmentHomeBinding
 import com.gdd.presentation.profile.ProfileFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,10 +42,18 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         }
 
         binding.ivLogout.setOnClickListener {
-            homeViewModel.logout()
-            startActivity(Intent(_activity,LoginActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            })
+            MaterialAlertDialogBuilder(_activity)
+                .setMessage("로그아웃 하시겠습니까?")
+                .setNegativeButton("취소") { dialog, which ->
+
+                }
+                .setPositiveButton("확인") { dialog, which ->
+                    homeViewModel.logout()
+                    startActivity(Intent(_activity,LoginActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    })
+                }
+                .show()
         }
     }
 
