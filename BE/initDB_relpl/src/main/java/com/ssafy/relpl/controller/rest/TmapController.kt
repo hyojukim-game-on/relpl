@@ -56,7 +56,7 @@ class TmapController {
                  @RequestParam startLng: Double,
                  @RequestParam endLat: Double,
                  @RequestParam endLng: Double) : ResponseEntity<Any?> {
-        val count = ((startLat - endLat) / 0.0001 * ((endLng - startLng) / 0.0001)).toInt() + 2
+        val count = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
         return ResponseEntity.ok().body(CommonResponse.OK("총 횟수 : $count"))
     }
 }

@@ -29,8 +29,23 @@ spring:
 
 tmap:
   api:
-    key: ENC(LWYqblI6wJLRaVTlZfDM9szPGHE2EZ21lIVhOYiFy3QBvYSTOm+l/Y3iyM9T8Bs/Gmo09b1NCvM=)
+    key1: ENC(LWYqblI6wJLRaVTlZfDM9szPGHE2EZ21lIVhOYiFy3QBvYSTOm+l/Y3iyM9T8Bs/Gmo09b1NCvM=)
+    #sung
 
+    key2: ENC(Vou8Y4Y2eDpfNhplPSq4oOfqh0IsKosCGfNc/vl8Ym1Dc3vZrPnOIfJG9f3oUHzzTNyxDvWZKiw=)
+    #you
+
+    key3: ENC(xhYSzaPhUAd9TujTFBcLdny2hFhPkCcjxVw3/4Z9ugtTZlXDd4/KYvt7g7j7cbqCv8QBDHkdAk0=)
+    #steel
+
+    key4: ENC(ENC(2boMXoSNrZYj24EQnQXd8B4I6McsfnQ7304T3kSuTwb88Dze6hWBYghHMmh/+Daf))
+    #hyo
+
+    key5: ENC(wgB7LJNXtWdMo1KXv2EGQTV2umU8zZd3Ixa2XIFoaSQS7d082hsBUUgfSZ589UT7pYJhfbsb6bw=)
+    #min
+
+#    key6:
+    #choe
 cloud:
   aws:
     s3:

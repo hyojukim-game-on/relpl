@@ -62,15 +62,14 @@ class TmapService {
         var hashVal = 0L
 
         var lat = startLat
-
-        var count = ((startLat - endLat) / 0.0001 * ((endLng - startLng) / 0.0001)).toInt() + 2
+        var count = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
         coroutineScope {
             launch {
                 while (lat >= endLat) {
-                    lat -= 0.0001
+                    lat -= 0.00005
                     var lng = startLng;
                     while (lng <= endLng) {
-                        lng += 0.0001
+                        lng += 0.00005
                         try {
                             val responseData = callTmapApi(lat, lng)
                             val objectMapper = ObjectMapper()
