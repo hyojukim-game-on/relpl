@@ -73,6 +73,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     putExtra("user", result.getOrNull())
                 })
+                loginActivity.finish()
             } else {
                 result.exceptionOrNull()?.let {
                     if (it is RelplException){

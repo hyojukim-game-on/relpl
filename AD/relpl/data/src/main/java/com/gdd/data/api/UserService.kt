@@ -61,13 +61,20 @@ interface UserService {
         @Body changePasswordRequest: ChangePasswordRequest
     ): Result<DefaultResponse<Boolean>>
 
-    @POST("/user/mypage/coinbarcode")
+    @POST("user/mypage/coinbarcode")
     suspend fun getCurrentPointByUserId(
         @Body userIdBody: UserIdRequest
     ): Result<DefaultResponse<TotalPointResponse>>
 
-    @POST("/user/mypage/coinscore")
+    @POST("user/mypage/coinscore")
     suspend fun getPointRecordByUserId(
         @Body userIdBody: UserIdRequest
     ): Result<DefaultResponse<PointRecordResponse>>
+
+    @Multipart
+    @PUT("user/mypage")
+    suspend fun updateProfile(
+        @Part userProfilePhoto: MultipartBody.Part?,
+        @PartMap data: HashMap<String, RequestBody>
+    ): Result<DefaultResponse<Boolean>>
 }

@@ -85,6 +85,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
 
         binding.llProfileChange.setOnClickListener {
             parentFragmentManager.beginTransaction()
+                .addSharedElement(binding.ivProfilePhoto, "profile_image")
                 .replace(R.id.layout_main_fragment, ProfileChangeFragment())
                 .addToBackStack(null)
                 .commit()

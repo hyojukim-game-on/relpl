@@ -19,7 +19,7 @@
     </style>
 
     <style name="Relpl.Text" parent="Theme.Relpl">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
         <item name="android:textColor">@color/black</item>
     </style>
