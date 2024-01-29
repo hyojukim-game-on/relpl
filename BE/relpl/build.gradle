@@ -2,13 +2,13 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.2'
 	id 'io.spring.dependency-management' version '1.1.4'
+
 }
 
 group = 'com.ssafy'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
 }
 
 configurations {
@@ -27,17 +27,44 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	//Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
 	// 시간 자동으로 입력해주는 annotation
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+	// aws 관련
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// https://mvnrepository.com/artifact/org.jasypt/jasypt
+	implementation group: 'org.jasypt', name: 'jasypt', version: '1.9.2'
+
+	// https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
+
+//	// security
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
+//
+//	//jwt
+//	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+//	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+
+
+	// jpa - point 관련
+	implementation "org.hibernate:hibernate-spatial:5.6.11.Final"
+	implementation "org.postgresql:postgresql"
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+//kotlin {
+//	jvmToolchain(17)
+//}

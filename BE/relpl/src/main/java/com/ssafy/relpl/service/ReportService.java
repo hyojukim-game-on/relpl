@@ -33,14 +33,15 @@ public class ReportService {
         log.info("여기는 서비스단이다 . 제보 등록 여부를 확인한다.");
         // 제보 등록 로직 예시 db에 저장
         Report report = new Report();
-        report.setId(reportRegistRequestDto.getUserId());
+        report.setUserId(reportRegistRequestDto.getUserId());
         report.setReportDate(reportRegistRequestDto.getReportDate());
         report.setReportCoordinate(reportRegistRequestDto.getReportCoordinate());
 
+
         report = reportRepository.save(report);
 
-        // report.getId() 값이 null인 경우에 실패로 간주하고 처리
-        if (report.getId() != null) {
+        // report.getUserId() 값이 null인 경우에 실패로 간주하고 처리
+        if (report.getUserId() != null) {
             return responseService.getSingleResult(true, "제보 등록 성공", 200);
         } else {
             return responseService.getFailResult(400, "제보 등록 실패");
@@ -51,7 +52,7 @@ public class ReportService {
 
 
     // 제보 내역 조회 로직
-    public ListResult<ReportListResponseDto> reportLocation(Long id) {
+    public ListResult<ReportListResponseDto> reportLocation(Long userId) {
         log.info("여기는 서비스단이다 . 제보 내역을 조회한다.");
         // 여기 로직을 추가
         try {
