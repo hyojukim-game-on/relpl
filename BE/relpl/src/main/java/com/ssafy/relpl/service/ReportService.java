@@ -2,6 +2,7 @@ package com.ssafy.relpl.service;
 
 
 import com.ssafy.relpl.db.postgre.entity.Report;
+import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.ReportRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.ReportRegistRequestDto;
@@ -11,6 +12,10 @@ import com.ssafy.relpl.service.result.ListResult;
 import com.ssafy.relpl.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
@@ -27,25 +32,51 @@ public class ReportService {
     private final UserRepository userRepository;
     private final ResponseService responseService;
 
-
+    private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
     // 제보 등록하기 로직
     public CommonResult registerReport(ReportRegistRequestDto reportRegistRequestDto) {
         log.info("여기는 서비스단이다 . 제보 등록 여부를 확인한다.");
         // 제보 등록 로직 예시 db에 저장
         Report report = new Report();
-        report.setUserId(reportRegistRequestDto.getUserId());
-        report.setReportDate(reportRegistRequestDto.getReportDate());
-        report.setReportCoordinate(reportRegistRequestDto.getReportCoordinate());
+        //기존부분
+//        report.setUserId(reportRegistRequestDto.getUserId());
 
+        // 수정부분
+        report.setUser(userRepository.findById(String.valueOf(reportRegistRequestDto.getUserId())).orElse(null));
+
+
+        report.setReportDate(reportRegistRequestDto.getReportDate());
+
+        Point start = reportRegistRequestDto.getReportCoordinate();
+        Coordinate coordinate = new Coordinate(start.getX(), start.getY());
+        report.setReportCoordinate(geometryFactory.createPoint(coordinate));
+
+    // ReportRegistRequestDto에서 tmapId 직접 받아오기
+        Long tmapId = reportRegistRequestDto.getTmapId();
+
+        // tmapId가 null이면 기본값인 0L로 설정
+        report.setTmapId(tmapId != null ? tmapId : 0L);
+
+
+//        report.setReportCoordinate(reportRegistRequestDto.getReportCoordinate());
+//        report.setReportId(null);
 
         report = reportRepository.save(report);
 
         // report.getUserId() 값이 null인 경우에 실패로 간주하고 처리
-        if (report.getUserId() != null) {
+//        if (report.getUserId() != null) {
+//            return responseService.getSingleResult(true, "제보 등록 성공", 200);
+//        } else {
+//            return responseService.getFailResult(400, "제보 등록 실패");
+//        }
+
+        if (report.getUser() != null) {
             return responseService.getSingleResult(true, "제보 등록 성공", 200);
         } else {
             return responseService.getFailResult(400, "제보 등록 실패");
         }
+
+
     }
 
 

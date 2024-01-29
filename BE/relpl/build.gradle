@@ -54,11 +54,15 @@ dependencies {
 //	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 //	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+// jpa - point 관련
+// https://mvnrepository.com/artifact/org.hibernate/hibernate-spatial
+	implementation 'org.hibernate:hibernate-spatial:6.4.2.Final'
+	implementation 'org.postgresql:postgresql:42.6.0'
+	runtimeOnly 'org.postgresql:postgresql'
 
-
-	// jpa - point 관련
-	implementation "org.hibernate:hibernate-spatial:5.6.11.Final"
-	implementation "org.postgresql:postgresql"
+//	// jpa - point 관련
+//	implementation "org.hibernate:hibernate-spatial:5.6.11.Final"
+//	implementation "org.postgresql:postgresql"
 
 }
 

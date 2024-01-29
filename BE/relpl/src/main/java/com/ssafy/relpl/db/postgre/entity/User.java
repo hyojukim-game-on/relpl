@@ -1,15 +1,13 @@
 package com.ssafy.relpl.db.postgre.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ruser")
 public class User {
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id; // 기존 건.
+    private Long id; // 기본키의 자료형을 변경
     //TODO
 }

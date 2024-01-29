@@ -92,7 +92,7 @@ public class CoinService {
 
 
     // db 삽입 로직
-    public void insertCoinData(Long userId, String coinEventId, String coinEventDate, int coinAmount, String coinEventDetail) {
+    public void insertCoinData(Long userId, Long coinEventId, String coinEventDate, int coinAmount, String coinEventDetail) {
         log.info("포인트 데이터 삽입: userId={}, coinEventId={}, coinEventDate={}, coinAmount={}, coinEventDetail={}",
                 userId, coinEventId, coinEventDate, coinAmount, coinEventDetail);
 

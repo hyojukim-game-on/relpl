@@ -47,7 +47,7 @@ public class CoinController {
             CoinScoreDataResponseDto coinScoreDataResponseDto = coinService.getCoinScoreData(coinscoreRequestDto.getUserId());
 
             // 코인 데이터 삽입 예시
-            coinService.insertCoinData(coinscoreRequestDto.getUserId(), "EVENT_123", "2024-01-24 12:30", 100, "Sample Event Detail");
+            coinService.insertCoinData(coinscoreRequestDto.getUserId(), 222L, "2024-01-24 12:30", 100, "Sample Event Detail");
 
             // 로오직
             SingleResult<CoinScoreDataResponseDto> result = responseService.getSingleResult(coinScoreDataResponseDto, "포인트 내역 조회 성공입니둥", 200);
