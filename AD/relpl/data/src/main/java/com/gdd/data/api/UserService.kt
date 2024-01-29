@@ -2,8 +2,10 @@ package com.gdd.data.api
 
 import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.DefaultResponse
+import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.point.TotalPointResponse
 import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.history.HistoryDetailSummeryResponse
 import com.gdd.data.model.history.HistoryResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
@@ -83,5 +85,10 @@ interface UserService {
     suspend fun getHistory(
         @Body userIdRequest: UserIdRequest
     ): Result<DefaultResponse<List<HistoryResponse>>>
+
+    @GET("user/history/detail")
+    suspend fun getHistoryDetail(
+        @Body projectIdRequest: ProjectIdRequest
+    ): Result<DefaultResponse<HistoryDetailSummeryResponse>>
 
 }

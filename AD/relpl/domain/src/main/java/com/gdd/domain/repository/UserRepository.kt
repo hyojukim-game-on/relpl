@@ -1,6 +1,7 @@
 package com.gdd.domain.repository
 
 import com.gdd.domain.model.history.History
+import com.gdd.domain.model.history.HistoryDetailInfo
 import com.gdd.domain.model.point.PointRecord
 import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.model.user.User
@@ -28,4 +29,6 @@ interface UserRepository {
     suspend fun updateProfile(userProfilePhoto: File?, userId: Long, userNickname: String, userPhone: String): Result<Boolean>
 
     suspend fun getHistory(userId: Long): Result<List<History>>
+
+    suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailInfo>
 }

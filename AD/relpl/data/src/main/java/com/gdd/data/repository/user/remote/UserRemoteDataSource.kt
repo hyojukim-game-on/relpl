@@ -2,6 +2,7 @@ package com.gdd.data.repository.user.remote
 
 import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.history.HistoryDetailSummeryResponse
 import com.gdd.data.model.history.HistoryResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.point.TotalPointResponse
@@ -35,4 +36,6 @@ interface UserRemoteDataSource {
     suspend fun updateProfile(userProfilePhoto: File?, userId: Long, userNickname: String, userPhone: String): Result<Boolean>
 
     suspend fun getHistory(userId: Long): Result<List<HistoryResponse>>
+
+    suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailSummeryResponse>
 }
