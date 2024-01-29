@@ -7,6 +7,7 @@ import com.gdd.data.model.point.TotalPointResponse
 import com.gdd.data.model.UserIdRequest
 import com.gdd.data.model.history.HistoryDetailSummeryResponse
 import com.gdd.data.model.history.HistoryResponse
+import com.gdd.data.model.history.HistorySummeryResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
 import com.gdd.data.model.signin.SignInRequest
@@ -84,7 +85,7 @@ interface UserService {
     @GET("user/history")
     suspend fun getHistory(
         @Body userIdRequest: UserIdRequest
-    ): Result<DefaultResponse<List<HistoryResponse>>>
+    ): Result<DefaultResponse<HistorySummeryResponse>>
 
     @GET("user/history/detail")
     suspend fun getHistoryDetail(

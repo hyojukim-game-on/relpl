@@ -14,7 +14,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gdd.domain.model.history.History
-import com.gdd.domain.model.relay.Relay
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.PrefManager
@@ -50,9 +49,11 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel.loadHistory(prefManager.getUserId())
 
+        binding.tvUserNickname.text = resources.getString(R.string.history_user_nickname, mainViewModel.user.nickname)
+        // 프로필 이미지 띄우기
+
         registerListener()
         registerObserver()
-        initRecyclerView()
     }
 
     private fun registerListener(){
@@ -63,10 +64,24 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
         viewModel.historyResult.observe(viewLifecycleOwner){ result ->
             if (result.isSuccess){
                 result.getOrNull()?.let{
-                    if (it.isEmpty()){
+
+                    if (it.totalProject == 0){
+                        binding.tvNoDataSummery.visibility = View.VISIBLE
                         binding.tvNoData.visibility = View.VISIBLE
                     }else{
-                        historyList = it
+                        binding.llInfoSummery.visibility = View.GONE
+                        binding.tvTotalProject.text = it.totalProject.toString()
+                        binding.tvTotalDistanceKm.text = (it.userTotalDistance / 1000).toString()
+                        binding.tvTotalDistanceM.text = (it.userTotalDistance % 1000).toString()
+                        val day = it.userTotalTime / (60 * 24)
+                        val hour = (it.userTotalTime - (60*24*day)) / 60
+                        val min = (it.userTotalTime - (60*24*day)) % 60
+
+                        binding.tvTotalTimeDay.text = day.toString()
+                        binding.tvTotalTimeHour.text = hour.toString()
+                        binding.tvTotalTimeMin.text = min.toString()
+
+                        historyList = it.detailList
                         initRecyclerView()
                     }
                 }
@@ -75,7 +90,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
                     if (it is RelplException){
                         showSnackBar(it.message)
                     } else {
-                        showToast(resources.getString(R.string.all_net_err))
+                        showSnackBar(resources.getString(R.string.all_net_err))
                         binding.tvLoadFail.visibility = View.VISIBLE
                     }
                 }

@@ -5,6 +5,7 @@ import com.gdd.data.model.PointResponse
 import com.gdd.data.model.history.HistoryDetailResponse
 import com.gdd.data.model.history.HistoryDetailSummeryResponse
 import com.gdd.data.model.history.HistoryResponse
+import com.gdd.data.model.history.HistorySummeryResponse
 import com.gdd.data.model.point.PointRecordItemResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.signin.SignInResponse
@@ -13,6 +14,7 @@ import com.gdd.domain.model.Point
 import com.gdd.domain.model.history.History
 import com.gdd.domain.model.history.HistoryDetail
 import com.gdd.domain.model.history.HistoryDetailInfo
+import com.gdd.domain.model.history.HistoryInfo
 import com.gdd.domain.model.point.PointRecord
 import com.gdd.domain.model.point.PointRecordListItem
 import com.gdd.domain.model.user.SignUpResult
@@ -62,6 +64,15 @@ fun List<HistoryResponse>.toHistoryList(): List<History>{
              it.totalContributor
          )
     }
+}
+
+fun HistorySummeryResponse.toHistoryInfo(): HistoryInfo{
+    return HistoryInfo(
+        this.totalProject,
+        this.userTotalDistance,
+        this.userTotalTime,
+        this.detailList.toHistoryList()
+    )
 }
 
 fun PointResponse.toPoint(): Point{

@@ -68,6 +68,18 @@
         <item name="android:textColor">@color/sage_green_text_dark</item>
     </style>
 
+    <style name="Relpl.Text.SB.16.Brown" parent="Theme.Relpl">
+        <item name="fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/sage_brown_text</item>
+    </style>
+
+    <style name="Relpl.Text.SB.18.Brown" parent="Theme.Relpl">
+        <item name="fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/sage_brown_text</item>
+    </style>
+
     <style name="Relpl.Text.TextInput.Title" parent="Theme.Relpl">
         <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
         <item name="android:textSize">14sp</item>

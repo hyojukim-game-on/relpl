@@ -47,20 +47,111 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat"
             tools:layout_editor_absoluteX="0dp">
 
-            <TextView
-                android:id="@+id/tv_summery"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_info_summery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="네분께서 2km 427m를 5일 18시간 39분 동안"
-                android:textAppearance="@style/Relpl.Text.Dialog.Content" />
+                android:gravity="end"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/history_clean_earth"
-                android:textAppearance="@style/Relpl.Text.Dialog.Button"
-                android:textColor="@color/sage_brown_text"/>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_total_people"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="14"
+                        android:textAppearance="@style/Relpl.Text.SB.16.Brown" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="분께서"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content" />
+
+                    <TextView
+                        android:id="@+id/tv_total_distance_km"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="13"
+                        android:textAppearance="@style/Relpl.Text.SB.16.Brown" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:text="km"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content" />
+
+                    <TextView
+                        android:id="@+id/tv_total_distance_m"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="420"
+                        android:textAppearance="@style/Relpl.Text.SB.16.Brown" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="m 를"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content" />
+
+                    <TextView
+                        android:id="@+id/tv_total_time_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="14"
+                        android:textAppearance="@style/Relpl.Text.SB.16.Brown" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:text="일"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content" />
+
+                    <TextView
+                        android:id="@+id/tv_total_time_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="18"
+                        android:textAppearance="@style/Relpl.Text.SB.16.Brown" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:text="시간"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content" />
+
+                    <TextView
+                        android:id="@+id/tv_total_time_min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="36"
+                        android:textAppearance="@style/Relpl.Text.SB.16.Brown" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:text="분 동안"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/history_clean_earth"
+                    android:textAppearance="@style/Relpl.Text.SB.18.Brown" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

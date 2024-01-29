@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.history.History
+import com.gdd.domain.model.history.HistoryInfo
 import com.gdd.domain.usecase.history.GetHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,8 +15,8 @@ import javax.inject.Inject
 class HistoryViewModel @Inject constructor(
     private val getHistoryUseCase: GetHistoryUseCase
 ) : ViewModel() {
-    private val _historyResult = MutableLiveData<Result<List<History>>>()
-    val historyResult: LiveData<Result<List<History>>>
+    private val _historyResult = MutableLiveData<Result<HistoryInfo>>()
+    val historyResult: LiveData<Result<HistoryInfo>>
         get() = _historyResult
 
 

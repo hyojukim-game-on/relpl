@@ -3,6 +3,7 @@ package com.gdd.presentation.base
 object Constants {
     val numToKoreanMap = HashMap<Int, String>()
     init {
+        numToKoreanMap[0] = ""
         numToKoreanMap[1] = "한"
         numToKoreanMap[2] = "두"
         numToKoreanMap[3] = "세"

@@ -13,7 +13,9 @@ import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.base.Constants
 import com.gdd.presentation.databinding.FragmentHistoryDetailBinding
+import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,8 +30,9 @@ class HistoryDetailFragment : BaseFragment<FragmentHistoryDetailBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
+        mainViewModel.loadHistoryDetail(mainViewModel.historySelectedProjectId)
 
-        initView()
+        registerObserver()
     }
 
     private fun initView(){
@@ -49,5 +52,39 @@ class HistoryDetailFragment : BaseFragment<FragmentHistoryDetailBinding>(
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.icon = iconList[position]
         }.attach()
+    }
+
+    private fun registerObserver(){
+        mainViewModel.historyDetailResult.observe(viewLifecycleOwner){ result ->
+            if (result != null && result.isSuccess){
+                result.getOrNull()?.let {
+                    val people = "${Constants.numToKoreanMap[it.projectPeople - it.projectPeople%10]}${Constants.numToKoreanMap[it.projectPeople%10]}"
+                    binding.tvTotalPeople.text = people
+                    binding.tvTotalDistanceKm.text = (it.projectDistance / 1000).toString()
+                    binding.tvTotalDistanceM.text = (it.projectDistance % 1000).toString()
+                    val day = it.projectTime / (60 * 24)
+                    val hour = (it.projectTime - (60*24*day)) / 60
+                    val min = (it.projectTime - (60*24*day)) % 60
+
+                    binding.tvTotalTimeDay.text = day.toString()
+                    binding.tvTotalTimeHour.text = hour.toString()
+                    binding.tvTotalTimeMin.text = min.toString()
+                }
+                initView()
+            }else{
+                result?.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainViewModel.clearHistoryDetail()
     }
 }
