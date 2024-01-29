@@ -6,6 +6,7 @@ import com.gdd.domain.model.user.User
 import com.gdd.presentation.base.BaseActivity
 import com.gdd.presentation.base.intentSerializable
 import com.gdd.presentation.databinding.ActivityMainBinding
+import com.gdd.presentation.home.HomeFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

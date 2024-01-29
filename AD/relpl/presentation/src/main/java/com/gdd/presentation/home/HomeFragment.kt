@@ -1,9 +1,10 @@
-package com.gdd.presentation
+package com.gdd.presentation.home
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import com.gdd.presentation.MainViewModel
+import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.distanceFormat
 import com.gdd.presentation.base.pointFormat
@@ -17,17 +18,26 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
 ) {
     private val mainViewModel: MainViewModel by activityViewModels()
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
 
+        registerListener()
+    }
+
+    private fun registerListener(){
         binding.profile.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .addSharedElement(binding.ivProfile,"profile_image")
                 .replace(R.id.layout_main_fragment,ProfileFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        binding.ivLogout.setOnClickListener {
+
         }
     }
 
