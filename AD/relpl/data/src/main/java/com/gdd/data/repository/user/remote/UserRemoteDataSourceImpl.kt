@@ -91,4 +91,30 @@ class UserRemoteDataSourceImpl @Inject constructor(
             UserIdRequest(userId)
         ).toNonDefault()
     }
+
+    override suspend fun updateProfile(
+        userProfilePhoto: File?,
+        userId: Long,
+        userNickname: String,
+        userPhone: String
+    ): Result<Boolean> {
+        val map = HashMap<String, RequestBody>()
+        val id = RequestBody.create("text/plain".toMediaTypeOrNull(), userId.toString())
+        val nickname = RequestBody.create("text/plain".toMediaTypeOrNull(), userNickname)
+        val phone = RequestBody.create("text/plain".toMediaTypeOrNull(), userPhone)
+
+        map["userId"] = id
+        map["userNickname"] = nickname
+        map["userPhone"] = phone
+
+        return if (userProfilePhoto != null) {
+            val image = userProfilePhoto.asRequestBody("image/jpg".toMediaTypeOrNull())
+            val multipartBody =
+                MultipartBody.Part.createFormData("file", userProfilePhoto.name, image)
+
+            userService.updateProfile(multipartBody, map).toNonDefault()
+        }else{
+            userService.updateProfile(null, map).toNonDefault()
+        }
+    }
 }

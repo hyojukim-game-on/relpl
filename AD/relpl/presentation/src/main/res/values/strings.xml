@@ -5,10 +5,14 @@
     <string name="all_id">아이디</string>
     <string name="all_pw">비밀번호</string>
     <string name="all_signin">로그인</string>
-    <string name="all_invalid_input">유효하지 않은 입력 값이 존재합니다</string>
+    <string name="all_invalid_input">유효하지 않은 입력 값이 존재합니다 :(</string>
     <string name="all_input_everything">모든 값을 입력해 주세요</string>
     <string name="all_cancle">취소</string>
-    <string name="all_net_err">네트워크 오류</string>
+    <string name="all_net_err">네트워크 오류입니다 :(</string>
+    <string name="all_verify_send_fail">인증 코드 발송에 실패했습니다 :(</string>
+    <string name="all_verify_send_success">인증 코드를 발송했습니다. 90초 내에 코드를 입력해 주세요</string>
+    <string name="all_verify_success">인증에 성공했습니다 :)</string>
+    <string name="all_verify_fail">인증에 실패했습니다 :(</string>
 
 
     <string name="start_sign_up">회원가입</string>
@@ -68,11 +72,18 @@
     <string name="profile_report_count">제보 횟수</string>
     <string name="profile_report_history">제보 내역</string>
     <string name="profile_withdrawal"><u>회원 탈퇴</u></string>
+
     <string name="profile_change">프로필 변경</string>
     <string name="profile_change_dup_check">중복 확인</string>
     <string name="profile_change_send_code">인증 코드 발송</string>
     <string name="profile_change_verification_code">인증 코드</string>
     <string name="profile_change_verify">인증 코드 확인</string>
+    <string name="profile_change_please_nickname_dup">핸드폰번호 중복 검사를 실시해 주세요</string>
+    <string name="profile_change_usable_nickname">사용 가능한 닉네임입니다 :)</string>
+    <string name="profile_change_dup_nickname">이미 사용 중인 닉네임입니다 :(</string>
+    <string name="profile_change_usable_phone">사용 가능한 핸드폰번호입니다 :)</string>
+    <string name="profile_change_dup_phone">이미 사용 중인 핸드폰번호입니다 :(</string>
+    <string name="profile_change_success">정보가 변경되었습니다 :)</string>
 
     <string name="dialog_change_pw_title">비밀번호 변경</string>
     <string name="dialog_change_pw_original_pw">기존 비밀번호</string>

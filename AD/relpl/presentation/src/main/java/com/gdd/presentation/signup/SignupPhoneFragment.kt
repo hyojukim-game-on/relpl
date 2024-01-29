@@ -85,10 +85,10 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
         activityViewModel.phoneDupResult.observe(viewLifecycleOwner){result ->
             if (result.isSuccess){
                 if (result.getOrNull()!!){
-                    showToast("사용 가능한 핸드폰번호입니다")
+                    showToast(resources.getString(R.string.profile_change_usable_phone))
                     sendVerificationCode()
                 }else{
-                    showToast("이미 가입된 핸드폰번호입니다")
+                    showToast(resources.getString(R.string.profile_change_dup_phone))
                     binding.etPhone.isEnabled = true
                 }
             }else{
@@ -107,13 +107,13 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) { }
             override fun onVerificationFailed(e: FirebaseException) {
-                showToast("인증번호 전송에 실패했습니다")
+                showToast(resources.getString(R.string.all_verify_send_fail))
                 binding.etPhone.editText?.isEnabled = true
             }
             override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
                 activityViewModel.verificationId = verificationId
                 activityViewModel.phoneNumber = "010"+binding.etPhone.editText!!.text.toString().trim()
-                showToast("인증번호를 발송했습니다. 90초 내에 코드를 입력해 주세요")
+                showToast(resources.getString(R.string.all_verify_send_success))
                 signupActivity.moveToNextPage()
             }
         }

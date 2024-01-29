@@ -66,4 +66,18 @@ class UserRepositoryImpl @Inject constructor(
                 it.toPointRecord()
             }
     }
+
+    override suspend fun updateProfile(
+        userProfilePhoto: File?,
+        userId: Long,
+        userNickname: String,
+        userPhone: String
+    ): Result<Boolean> {
+        return userRemoteDataSource.updateProfile(
+            userProfilePhoto,
+            userId,
+            userNickname,
+            userPhone
+        )
+    }
 }

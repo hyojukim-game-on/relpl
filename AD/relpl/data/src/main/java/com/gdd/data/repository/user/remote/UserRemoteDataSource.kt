@@ -30,4 +30,6 @@ interface UserRemoteDataSource {
     suspend fun getCurrentPoint(userId: Long): Result<Int>
 
     suspend fun getPointRecord(userId: Long): Result<PointRecordResponse>
+
+    suspend fun updateProfile(userProfilePhoto: File?, userId: Long, userNickname: String, userPhone: String): Result<Boolean>
 }

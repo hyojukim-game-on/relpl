@@ -23,4 +23,6 @@ interface UserRepository {
     suspend fun getCurrentPoint(userId: Long): Result<Int>
 
     suspend fun getPointRecord(userId: Long): Result<PointRecord>
+
+    suspend fun updateProfile(userProfilePhoto: File?, userId: Long, userNickname: String, userPhone: String): Result<Boolean>
 }
