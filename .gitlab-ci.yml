@@ -62,7 +62,7 @@ package-sub:
   image: docker:latest
   stage: package
   variables:
-    IMAGE_NAME: backend_sub
+    IMAGE_NAME: vadeski/backend_sub
   services:
     - name: docker:dind
       command: ["--privileged=true", "--tls=false"]
@@ -72,7 +72,7 @@ package-sub:
   script:
     - cd ./BE/initDB_relpl
     - docker buildx create --use --name mybuilder
-    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_SOURCE --push .
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
     - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
     - echo "build complete"
   after_script:
@@ -105,7 +105,7 @@ deploy-was:
 deploy-sub:
   stage: deploy
   variables:
-    IMAGE_NAME: backend_sub
+    IMAGE_NAME: vadeski/backend_sub
   tags:
     - ksh-runner
   before_script:
