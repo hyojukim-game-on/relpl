@@ -1,4 +1,4 @@
-package com.ssafy.relpl.util;
+package com.ssafy.relpl.util.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

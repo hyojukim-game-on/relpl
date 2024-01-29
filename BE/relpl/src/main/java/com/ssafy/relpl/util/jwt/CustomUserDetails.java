@@ -1,4 +1,4 @@
-package com.ssafy.relpl.util;
+package com.ssafy.relpl.util.jwt;
 
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.redis.entity.Role;

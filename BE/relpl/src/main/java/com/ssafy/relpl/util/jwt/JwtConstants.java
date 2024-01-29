@@ -1,4 +1,4 @@
-package com.ssafy.relpl.util;
+package com.ssafy.relpl.util.jwt;
 
 public class JwtConstants {
     public static final String EXPIRED_JWT_MESSAGE = "Expired JWT token";

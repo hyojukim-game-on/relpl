@@ -1,4 +1,4 @@
-package com.ssafy.relpl.util;
+package com.ssafy.relpl.util.jwt;
 
 import com.ssafy.relpl.service.UserDetailsServiceImpl;
 import com.ssafy.relpl.util.exception.BaseException;

@@ -7,16 +7,11 @@ import com.ssafy.relpl.dto.request.UserSignupRequest;
 import com.ssafy.relpl.dto.response.UserLoginResponse;
 import com.ssafy.relpl.dto.response.UserSignupResponse;
 import com.ssafy.relpl.service.result.CommonResult;
-import com.ssafy.relpl.util.JwtTokenProvider;
+import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
