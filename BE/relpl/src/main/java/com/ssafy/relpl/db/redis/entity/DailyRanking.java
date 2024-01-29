@@ -1,11 +1,13 @@
 package com.ssafy.relpl.db.redis.entity;
 
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.redis.core.RedisHash;
 
 
@@ -16,12 +18,15 @@ import org.springframework.data.redis.core.RedisHash;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Document
 public class DailyRanking {
     // 랭킹 데이터 필드 정의
-    @Id
+
     private Long dailyRankingId;
     private Long userId;
     private String dailyEndTime; // 만료시간 관련 어떻게 설정할 건지 로직을 생각해야 함
     private int dailyDistance;
+
     // 24.01.29 12:30PM codeReview
 }
