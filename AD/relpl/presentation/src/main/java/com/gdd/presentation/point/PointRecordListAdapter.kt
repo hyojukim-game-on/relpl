@@ -34,7 +34,7 @@ class PointRecordListAdapter(
             binding.tvUseAmount.text = "${if (recordItem.amount > 0) "+" else ""}${recordItem.amount}P"
             binding.tvUseDetail.text = recordItem.eventDetail
             if (recordItem.amount >= 0){
-                binding.root.context.getColor(R.color.sage_green_dark)
+                binding.tvUseAmount.setTextColor(binding.root.context.getColor(R.color.sage_green_dark))
             }
         }
     }
