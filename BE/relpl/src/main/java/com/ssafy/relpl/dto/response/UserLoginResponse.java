@@ -20,19 +20,6 @@ public class UserLoginResponse {
     private String accessToken;
     private String refreshToken;
 
-    public static UserLoginResponse createUserLoginResponse(User user) {
-        return UserLoginResponse.builder()
-                .userId(user.getUserId())
-                .userNickname(user.getUserNickname())
-                .userTotalCoin(1000)
-                .userTotalDistance(2000)
-                .userPhone(user.getUserPhone())
-                .userTotalReport(10)
-                .userImage("jaeseong.jpg")
-                .accessToken("accessToken")
-                .refreshToken("refreshToken")
-                .build();
-    }
     public static UserLoginResponse createUserLoginResponse(User user, String accessToken, String refreshToken) {
         return UserLoginResponse.builder()
                 .userId(user.getUserId())
@@ -41,7 +28,7 @@ public class UserLoginResponse {
                 .userTotalDistance(2000)
                 .userPhone(user.getUserPhone())
                 .userTotalReport(10)
-                .userImage("jaeseong.jpg")
+                .userImage(user.getUserImage())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

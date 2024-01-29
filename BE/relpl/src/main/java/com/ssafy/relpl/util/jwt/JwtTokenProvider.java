@@ -67,7 +67,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(key)
                 .compact();
 
         // redis에 저장

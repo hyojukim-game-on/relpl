@@ -11,7 +11,11 @@ import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +31,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
-//    private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public ResponseEntity<CommonResult> save(UserSignupRequest request) throws BaseException {
         //사용자가 이미 존재하는지 확인
@@ -57,18 +63,17 @@ public class UserService {
             //totalDistance 조회 필요
             //totalReport 조회 필요
 
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(
-//                            request.getUserUid(),
-//                            request.getPassword()
-//                    )
-//            );
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUserUid(),
+                            request.getUserPassword()
+                    )
+            );
             //토큰 생성
-//            String accessToken = jwtTokenProvider.createAccessToken(authentication);
-//            String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
+            String accessToken = jwtTokenProvider.createAccessToken(authentication);
+            String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
 
-//            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), accessToken, refreshToken), "로그인 성공", 200));
-            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get()), "로그인 성공", 200));
+            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), accessToken, refreshToken), "로그인 성공", 200));
         }
 
         //유저 아이디가 존재하지 않거나, 비밀번호가 일치하지 않는 경우
