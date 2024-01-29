@@ -74,7 +74,7 @@ public class RankingService {
             return responseService.getFailResult(400, "yyyy-MM-dd 형식이 아닙니다.");
         }
 
-
+            //// 주석 for commit in gerrit
     }
 
 }
