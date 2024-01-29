@@ -1,7 +1,6 @@
 package com.ssafy.relpl.controller.rest;
 
 
-import com.ssafy.relpl.dto.response.CommonResponse;
 import com.ssafy.relpl.service.RankingService;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,8 @@ public class RankingController {
     private final RankingService rankingService;
 
     @GetMapping("/{rankingTime}")
-    public void getRanking(@PathVariable String rankingTime) {
-        // 서비스 로직 호출
-        SingleResult<?> ranking = rankingService.getRanking(rankingTime);
+    public SingleResult<?> getRanking(@PathVariable String rankingTime) {
+        // 서비스 로직 호출 후 응답 리턴
+        return rankingService.getRanking(rankingTime);
     }
 }

@@ -1,6 +1,9 @@
 package com.ssafy.relpl.service;
 
 
+import com.ssafy.relpl.db.redis.entity.DailyRanking;
+import com.ssafy.relpl.db.redis.entity.MonthlyRanking;
+import com.ssafy.relpl.db.redis.entity.WeeklyRanking;
 import com.ssafy.relpl.db.redis.repository.RankingRepository;
 import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.dto.response.RankingEntry;
@@ -29,7 +32,6 @@ public class RankingService {
     * */
     public SingleResult<?> getRanking(String rankingTime) {
 
-
         // rankingTime 타입 변환 (String -> LocalDate)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate requiredDate = LocalDate.parse(rankingTime, formatter);
@@ -46,10 +48,16 @@ public class RankingService {
             }
                 // 성공 시 로직
             else {
-                // rankingTime 에 따라 다른 랭킹 데이터를 조회
-                List<RankingEntry> dailyRanking = rankingRepository.findDailyRanking(requiredDate);
-                List<RankingEntry> weeklyRanking = rankingRepository.findWeeklyRanking(requiredDate);
-                List<RankingEntry> monthlyRanking = rankingRepository.findMonthlyRanking(requiredDate);
+                // rankingTime 에 따라 다른 랭킹 데이터를 가져오기
+
+                List<DailyRanking> dailyRanking = rankingRepository.getDailyRanking(requiredDate);
+                List<WeeklyRanking> weeklyRanking = rankingRepository.getWeeklyRanking(requiredDate);
+                List<MonthlyRanking> monthlyRanking = rankingRepository.getMonthlyRanking(requiredDate);
+
+                // rankingRepository 에서 꺼낸 데이터는 DailyRanking Entity 형태인데
+                // DailyRanking Entity -> List<RankingEntry> 는 RankingService 에서 수행
+
+
 
                 // RankingDataDto 객체 (API response 의 data key 에 할당될 내용) 생성
                 RankingDataDto rankingData = RankingDataDto.builder()
