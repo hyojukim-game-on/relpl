@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class RoadRequest {
-    private String tmap_id;
+    private Long tmap_id;
     private String type;
     private List<List<Double>> coordinates;
     private int lanetype;
