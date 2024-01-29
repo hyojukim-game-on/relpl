@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +28,9 @@ public class JwtTokenProvider {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-//    @Value("${jwt.token.secret}")
-//    private static String key;
-    private static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @Value("${jwt.token.secret}")
+    private String secretKey;
+//    private static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     @Value("${jwt.token.access-expiration-time}")
     private static long accessExpirationTime;
@@ -47,6 +48,8 @@ public class JwtTokenProvider {
         claims.put("userNickname", authentication.getName());
         claims.put("role", List.of("USER"));
 
+        Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
@@ -62,6 +65,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(authentication.getName());
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + refreshExpirationTime);
+        Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
@@ -85,6 +89,7 @@ public class JwtTokenProvider {
      * 토큰으로부터 클레임을 만들고, 이를 통해 User 객체 생성해 Authentication 객체 반환
      */
     public Authentication getAuthentication(String token) {
+        Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
         String userPrincipal = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
         UserDetails userDetails = userDetailsService.loadUserByUsername(userPrincipal);
 
@@ -107,6 +112,7 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token){
         try{
+            Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch(ExpiredJwtException e) {

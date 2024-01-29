@@ -23,6 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             // HTTP 요청에서 JWT 토큰 추출
             String token = jwtTokenProvider.resolveToken(request);
+            log.info("HTTP Header token: " + token);
 
             // JWT 토큰이 존재하고 유효한 경우
             if (token != null && jwtTokenProvider.validateToken(token)) {
