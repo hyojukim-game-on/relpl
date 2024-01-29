@@ -7,8 +7,10 @@ import com.ssafy.relpl.db.redis.entity.WeeklyRanking;
 import com.ssafy.relpl.db.redis.repository.RankingRepository;
 import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.dto.response.RankingEntry;
+import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,7 +32,7 @@ public class RankingService {
     * @param : String rankingTime (Path Variable 로 AD 로부터 받음)
     * @return : 성공 or 실패 각각에 따른 응답 (code, msg, data 반환)
     * */
-    public SingleResult<?> getRanking(String rankingTime) {
+    public ResponseEntity<CommonResult> getRanking(String rankingTime) {
 
         // 24.01.29 12:30PM codeReview
 
@@ -43,11 +45,11 @@ public class RankingService {
         // 실패 시 로직 1. rankingTime 누락되었을 경우
         try{
             if (rankingTime.isEmpty()) {
-                return responseService.getFailResult( 400, "rankingTime 필드가 누락되었습니다.");
+                return ResponseEntity.badRequest().body(responseService.getFailResult( 400, "rankingTime 필드가 누락되었습니다."));
             }
                 // 실패 시 로직 2. rankingTime 이 미래의 날짜일 경우
             else if (requiredDate.isAfter(LocalDate.now())) {
-                return responseService.getFailResult(400, "실패");
+                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "미래의 날짜에 대한 랭킹을 요청하였습니다."));
             }
                 // 성공 시 로직
             else {
@@ -61,7 +63,6 @@ public class RankingService {
                 // DailyRanking Entity -> List<RankingEntry> 는 RankingService 에서 수행
 
 
-
                 // RankingDataDto 객체 (API response 의 data key 에 할당될 내용) 생성
                 RankingDataDto rankingData = RankingDataDto.builder()
                         .dailyRanking(dailyRanking)
@@ -70,11 +71,11 @@ public class RankingService {
                         .build();
 
                 // 성공했을 때의 결과 반환
-                return responseService.getSingleResult(rankingData, "랭킹 조회에 성공하였습니다.", 200);
+                return ResponseEntity.ok(responseService.getSingleResult(rankingData, "랭킹 조회에 성공하였습니다.", 200));
             }
         } // 실패 시 로직 3. "yyyy-MM-dd" 형식이 아닐 경우
         catch (DateTimeParseException e) {
-            return responseService.getFailResult(400, "yyyy-MM-dd 형식이 아닙니다.");
+                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "yyyy-MM-dd 형식이 아닙니다."));
         }
 
             //// 주석 for commit in gerrit
