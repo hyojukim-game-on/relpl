@@ -13,6 +13,7 @@ import com.gdd.presentation.base.distanceFormat
 import com.gdd.presentation.base.pointFormat
 import com.gdd.presentation.databinding.FragmentHomeBinding
 import com.gdd.presentation.profile.ProfileFragment
+import com.gdd.presentation.report.ReportFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,6 +55,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
                     })
                 }
                 .show()
+        }
+
+        binding.reportCard.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment,ReportFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
