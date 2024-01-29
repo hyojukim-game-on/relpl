@@ -41,6 +41,8 @@ public class SecurityConfig {
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger UI 접근 허용
                             .requestMatchers("/api/user/signup").permitAll() //회원가입 열어둠
                             .requestMatchers("/api/user/login").permitAll() //로그인 열어둠
+                            .requestMatchers("/api/sample/post").permitAll() //로그인 열어둠
+                            .requestMatchers("/api/sample/get/**").permitAll() //로그인 열어둠
                             .anyRequest().authenticated(); //인증 필요
                     })
                 .csrf((csrf) -> csrf.disable())
