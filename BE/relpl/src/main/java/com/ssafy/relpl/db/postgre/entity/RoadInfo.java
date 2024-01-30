@@ -1,6 +1,5 @@
 package com.ssafy.relpl.db.postgre.entity;
 
-import com.ssafy.relpl.db.mongo.entity.Road;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
