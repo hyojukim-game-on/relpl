@@ -1,18 +1,20 @@
 package com.ssafy.relpl.controller.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.ssafy.relpl.dto.request.InsertRoadRequestDto
 import com.ssafy.relpl.dto.response.CommonResponse
 import com.ssafy.relpl.dto.response.TmapApiResponseDTO
 import com.ssafy.relpl.service.TmapService
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/api/tmap")
+@RequestMapping("/api/sub/tmap")
 class TmapController {
 
     val log = LoggerFactory.getLogger(TmapController::class.java)
@@ -20,14 +22,15 @@ class TmapController {
     @Autowired
     private lateinit var tmapService: TmapService
 
+    @Bean()
+    private lateinit var callApiPassword: String
+
     @GetMapping("/insertTmapData")
-    suspend fun insertTmapData(@RequestParam startLat: Double,
-                               @RequestParam startLng: Double,
-                               @RequestParam endLat: Double,
-                               @RequestParam endLng: Double
+    suspend fun insertTmapData(@RequestBody insertRoadRequestDto: InsertRoadRequestDto
     ): ResponseEntity<Any?> {
 
-        log.info("StartLat: $startLat, StartLng: $startLng, EndLat: $endLat, EndLng: $endLng")
+        log.info("StartPoint: ${insertRoadRequestDto.startPoint}, EndPoint: ${insertRoadRequestDto.endPoint}")
+        if (insertRoadRequestDto.callApiPassword == )
 //        var roads = mutableMapOf<String, TmapApiResponseDTO>()
         try {
             coroutineScope {

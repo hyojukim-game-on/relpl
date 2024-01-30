@@ -28,6 +28,7 @@ spring:
       database-platform: org.hibernate.spatial.dialect.
 
 tmap:
+  apiPassword: ENC(nyi1D6j6bWs25+ca+gXJ+XpwTXFK8tyU)
   api:
     key1: ENC(LWYqblI6wJLRaVTlZfDM9szPGHE2EZ21lIVhOYiFy3QBvYSTOm+l/Y3iyM9T8Bs/Gmo09b1NCvM=)
     #sung
