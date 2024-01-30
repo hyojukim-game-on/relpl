@@ -54,24 +54,25 @@ public class UserService {
     };
 
     public ResponseEntity<CommonResult> login(UserLoginRequest request) {
+        log.info("start");
         Optional<User> user = userRepository.findByUserUid(request.getUserUid());
 
         //유저 아이디가 존재하고, 유저 아이디와 비밀번호가 일치하는 경우
         if(user.isPresent() && passwordEncoder.matches(request.getUserPassword(), user.get().getUserPassword())) {
-
             //totalCoin 조회 필요
             //totalDistance 조회 필요
             //totalReport 조회 필요
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getUserUid(),
+                            String.valueOf(user.get().getUserId()),
                             request.getUserPassword()
                     )
             );
+            log.info("createAccessToken authentication: " + authentication);
             //토큰 생성
-            String accessToken = jwtTokenProvider.createAccessToken(authentication);
-            String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
+            String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, authentication, user.get().getUserId());
+            String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, authentication);
 
             return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), accessToken, refreshToken), "로그인 성공", 200));
         }
