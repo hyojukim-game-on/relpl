@@ -21,8 +21,6 @@ public class RankingController {
 
     @GetMapping("/{rankingTime}")
     public ResponseEntity<CommonResult> getRanking(@PathVariable String rankingTime) {
-        // 서비스 로직 호출 후 응답 리턴
-        // 24.01.29 12:30PM codeReview
         return rankingService.getRanking(rankingTime);
     }
 }

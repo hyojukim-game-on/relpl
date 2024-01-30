@@ -2,31 +2,31 @@ package com.ssafy.relpl.db.redis.entity;
 
 
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
+
+import java.util.concurrent.TimeUnit;
 
 
-
-
-@RedisHash("DailyRanking")
+@RedisHash("dailyranking") // JPA 의 @Entity 와 동일한 역할
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Document
+@Builder
 public class DailyRanking {
-    // 랭킹 데이터 필드 정의
+    @Id
+    @GeneratedValue
+    private Long Id;
 
-    private Long dailyRankingId;
-    private Long userId;
-    private String dailyEndTime; // 만료시간 관련 어떻게 설정할 건지 로직을 생각해야 함
-    private int dailyDistance;
+    @Indexed
+    private String nickname;
 
-    // 24.01.29 12:30PM codeReview
+    @Indexed
+    @TimeToLive(unit = TimeUnit.DAYS)
+    private String rankingTime;
+
+    private int moveTotalDistance;
 }

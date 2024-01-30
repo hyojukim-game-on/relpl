@@ -15,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RankingDataDto {
-
-    // 24.01.29 12:30PM codeReview
     private List<RankingEntry> dailyRanking;
     private List<RankingEntry> weeklyRanking;
     private List<RankingEntry> monthlyRanking;
