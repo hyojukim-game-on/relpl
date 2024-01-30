@@ -35,6 +35,7 @@ public class SampleController {
     public ResponseEntity<?> getSample(@PathVariable String path1, @PathVariable String path2) {
 
         SingleResult<SampleResponseDto> result = new SingleResult<>();
+         responseService.getSingleResult("data", "OK", 200);
         result.setCode(200);
         result.setMessage("뭔가뭔가 성공");
         result.setData(SampleResponseDto
