@@ -91,23 +91,10 @@ public class JwtTokenProvider {
     /**
      * 토큰으로부터 클레임을 만들고, 이를 통해 User 객체 생성해 Authentication 객체 반환
      */
-//    public Authentication getAuthentication(String token) {
-//        Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
-//
-//        String nickname = (String) Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("userNickname");
-//        log.info("claim body: " + Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().toString());
-//        log.info("nickname: " + nickname);
-//
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(nickname);
-//        log.info("userDetails: " + userDetails.toString());
-//
-//        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-//    }
     public Authentication getAuthentication(String token) {
         Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
         String username = (String) Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("userId");
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        log.info("userDetails: " + userDetails.toString());
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
@@ -139,19 +126,4 @@ public class JwtTokenProvider {
             throw new BaseException(JwtConstants.INVALID_JWT_MESSAGE);
         }
     }
-
-//    public static boolean isExpired(String token, String key) {
-//        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-//                .getBody().getExpiration().before(new Date());
-//    }
-//
-//    public static String getUserNickname(String token, String key) {
-//        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-//                .getBody().get("userNickname", String.class);
-//    }
-//
-//    public static List<String> getRole(String token, String key) {
-//        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-//        return (List<String>) claims.get("role");
-//    }
 }

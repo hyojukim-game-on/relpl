@@ -62,14 +62,11 @@ public class UserService {
             //totalCoin 조회 필요
             //totalDistance 조회 필요
             //totalReport 조회 필요
-
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            String.valueOf(user.get().getUserId()),
-                            request.getUserPassword()
-                    )
+                    new UsernamePasswordAuthenticationToken(String.valueOf(user.get().getUserId()), request.getUserPassword())
             );
-            log.info("createAccessToken authentication: " + authentication);
+            log.info("UserService authentication: " + authentication);
+
             //토큰 생성
             String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, authentication, user.get().getUserId());
             String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, authentication);

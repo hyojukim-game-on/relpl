@@ -33,12 +33,4 @@ public class UserController {
     public ResponseEntity<CommonResult> userLogin(@RequestBody UserLoginRequest request) throws UnsupportedEncodingException {
         return userService.login(request);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<CommonResult> test() {
-        CommonResult result = new CommonResult();
-        result.setCode(200);
-        result.setMessage("성공");
-        return ResponseEntity.ok(result);
-    }
 }
