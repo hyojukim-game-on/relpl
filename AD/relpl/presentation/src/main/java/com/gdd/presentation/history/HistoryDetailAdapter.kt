@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.gdd.domain.model.relay.RelayDetail
+import com.gdd.domain.model.history.HistoryDetail
 import com.gdd.presentation.databinding.ItemHistoryDetailBinding
 
 class HistoryDetailAdapter(private val layoutInflater: LayoutInflater,
-                         private val detailList: List<RelayDetail>,
+                         private val detailList: List<HistoryDetail>,
                          @param:LayoutRes private val rowLayout: Int,)
     : RecyclerView.Adapter<HistoryDetailAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: ItemHistoryDetailBinding): RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
-        fun bind(item: RelayDetail){
+        fun bind(item: HistoryDetail){
             binding.tvDate.text = "${item.moveStart.format()} ~ ${item.moveEnd.format()}"
             binding.tvDistance.text = item.moveDistance.toDetailDistance()
             binding.tvCont.text = "${item.moveContribution}%"
