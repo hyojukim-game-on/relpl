@@ -19,8 +19,16 @@ public class RankingController {
 
     private final RankingService rankingService;
 
-    @GetMapping("/{rankingTime}")
-    public ResponseEntity<CommonResult> getRanking(@PathVariable String rankingTime) {
-        return rankingService.getRanking(rankingTime);
+//    @GetMapping("/{rankingTime}")
+//    public ResponseEntity<CommonResult> getRanking(@PathVariable String rankingTime) {
+//
+//        return rankingService.getRanking(rankingTime);
+//    }
+
+    @GetMapping("/test/{nickname}/{distance}")
+    public Boolean testRanking(@PathVariable String nickname, @PathVariable double distance) {
+        return rankingService.testRanking(nickname, distance);
     }
+
+
 }

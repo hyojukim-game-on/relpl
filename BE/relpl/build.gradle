@@ -39,6 +39,12 @@ dependencies {
 	// 시간 자동으로 입력해주는 annotation
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	// https://mvnrepository.com/artifact/org.jasypt/jasypt
+	implementation group: 'org.jasypt', name: 'jasypt', version: '1.9.2'
+
+	// https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
 }
 
 tasks.named('test') {
