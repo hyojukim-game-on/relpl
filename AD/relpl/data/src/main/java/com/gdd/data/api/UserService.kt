@@ -16,8 +16,11 @@ import com.gdd.data.model.signup.IsDupPhoneRequest
 import com.gdd.data.model.signup.IsDupUidRequest
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.model.signup.SignupResponse
+import com.gdd.data.model.token.ReissueRequest
+import com.gdd.data.model.token.ReissueResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -91,5 +94,10 @@ interface UserService {
     suspend fun getHistoryDetail(
         @Body projectIdRequest: ProjectIdRequest
     ): Result<DefaultResponse<HistoryDetailSummeryResponse>>
+
+    @POST("user/token/reissue")
+    suspend fun reissueToken(
+        @Body reissueRequest: ReissueRequest
+    ): Result<DefaultResponse<ReissueResponse>>
 
 }

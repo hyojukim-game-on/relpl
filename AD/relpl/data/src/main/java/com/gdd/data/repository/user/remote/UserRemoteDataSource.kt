@@ -11,6 +11,8 @@ import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.model.signin.SignInResponse
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.model.signup.SignupResponse
+import com.gdd.data.model.token.ReissueResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.io.File
@@ -39,4 +41,6 @@ interface UserRemoteDataSource {
     suspend fun getHistory(userId: Long): Result<HistorySummeryResponse>
 
     suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailSummeryResponse>
+
+    suspend fun reissueToken(accessToken: String, refreshToken: String): Result<DefaultResponse<ReissueResponse>>
 }
