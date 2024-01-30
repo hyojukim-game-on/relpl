@@ -1,5 +1,8 @@
 package com.ssafy.relpl.db.postgre.entity;
 
+
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
@@ -18,16 +21,6 @@ public class Report {
     @Column(name = "report_id")
     private Long reportId;
 
-
-    // 수정 부분
-    @ManyToOne(fetch = FetchType.LAZY) // 다대일(N:1) 관계를 표시
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    // 기존부분
-//    @Column(name = "user_id")
-//    private Long userId;
-
     @Column(name = "report_date")
     private String reportDate;
 
@@ -37,14 +30,10 @@ public class Report {
     @Column(name = "tmap_id", nullable = true)
     private Long tmapId;
 
-
-    // 추가부분
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    //외래키
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER) // 다대일(N:1) 관계를 표시
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
