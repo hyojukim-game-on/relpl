@@ -8,6 +8,8 @@
         <item name="colorSurfaceContainerHigh">@color/sage_cream</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:colorBackground">@color/white</item>
+        <item name="textAppearanceHeadlineSmall">@style/Relpl.Text.Signup.Main</item>
+        <item name="textAppearanceBodyMedium">@style/Relpl.Text</item>
     </style>
 
     <style name="Theme.Relpl" parent="Base.Theme.Relpl"/>
