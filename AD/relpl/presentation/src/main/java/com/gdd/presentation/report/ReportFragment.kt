@@ -1,25 +1,21 @@
 package com.gdd.presentation.report
 
 import android.Manifest
-import android.app.AlertDialog
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.databinding.FragmentReportBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 private const val TAG = "ReportFragment_Genseong"
@@ -28,15 +24,52 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
     FragmentReportBinding::bind, R.layout.fragment_report
 ) {
     private lateinit var mainActivity: MainActivity
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
 
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d(TAG, "registerListener: ${bottomSheetBehavior.state}")
+                    if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
+                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    } else {
+                        parentFragmentManager.popBackStack()
+                    }
+                }
+            })
+
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
         checkLocationPermission()
+
+        registerListener()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun registerListener() {
+        binding.layoutBottomSheet.setOnTouchListener { _, _ ->
+            true
+        }
+
+        binding.btnReport.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            Log.d(TAG, "registerListener: ${bottomSheetBehavior.state}")
+        }
     }
 
     private fun checkLocationPermission() {
-        if (!PermissionHelper.checkPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (!PermissionHelper.checkPermission(
+                mainActivity,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
         ) {
             PermissionHelper.requestPermission_fragment(
                 this,
