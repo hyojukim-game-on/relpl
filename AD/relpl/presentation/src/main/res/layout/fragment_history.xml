@@ -31,6 +31,7 @@
                 android:src="@drawable/bg_profile_default_photo" />
 
             <TextView
+                android:id="@+id/tv_user_nickname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -52,18 +53,121 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat">
 
             <TextView
-                android:id="@+id/tv_summery"
+                android:id="@+id/tv_no_data_summery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="14개 릴레이에서 13km 427m를 1일 18시간 38분 동안"
-                android:textAppearance="@style/Relpl.Text.Dialog.Content" />
+                android:text="아직 참여한 릴레이가 없어요"
+                android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                android:textSize="18sp"/>
 
-            <TextView
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_info_summery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/history_clean_earth"
-                android:textAppearance="@style/Relpl.Text.Dialog.Button" />
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_total_project"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                        android:text="14"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content"
+                        android:text="개 릴레이에서"
+                        android:layout_marginEnd="5dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_total_distance_km"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                        android:text="13"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content"
+                        android:text="km"
+                        android:layout_marginEnd="3dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_total_distance_m"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                        android:text="420"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content"
+                        android:text="m 를"
+                        android:layout_marginEnd="5dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_total_time_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                        android:text="14"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content"
+                        android:text="일"
+                        android:layout_marginEnd="3dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_total_time_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                        android:text="18"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content"
+                        android:text="시간"
+                        android:layout_marginEnd="3dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_total_time_min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                        android:text="36"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Relpl.Text.History.Item.Content"
+                        android:text="분 동안"
+                        android:layout_marginEnd="3dp"/>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/history_clean_earth"
+                    android:textAppearance="@style/Relpl.Text.Dialog.Button"
+                    android:textSize="18sp"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -81,6 +185,31 @@
             app:timeLineWidth="2dp"
             android:layout_margin="20dp"/>
 
+        <TextView
+            android:id="@+id/tv_load_fail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_load_fail"
+            android:textAppearance="@style/Relpl.Text.Logo"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_time_line"
+            app:layout_constraintEnd_toEndOf="@+id/rv_time_line"
+            app:layout_constraintStart_toStartOf="@+id/rv_time_line"
+            app:layout_constraintTop_toTopOf="@+id/rv_time_line"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_no_data"
+            android:textAppearance="@style/Relpl.Text.Logo"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_time_line"
+            app:layout_constraintEnd_toEndOf="@+id/rv_time_line"
+            app:layout_constraintStart_toStartOf="@+id/rv_time_line"
+            app:layout_constraintTop_toTopOf="@+id/rv_time_line"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

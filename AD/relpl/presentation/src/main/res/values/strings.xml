@@ -13,6 +13,7 @@
     <string name="all_verify_send_success">인증 코드를 발송했습니다. 90초 내에 코드를 입력해 주세요</string>
     <string name="all_verify_success">인증에 성공했습니다 :)</string>
     <string name="all_verify_fail">인증에 실패했습니다 :(</string>
+    <string name="all_load_fail">정보를 불러오지 못했습니다 :(</string>
 
 
     <string name="start_sign_up">회원가입</string>
@@ -92,10 +93,13 @@
     <string name="dialog_change_pw_change">변경</string>
     <string name="change_pw_success">비밀번호가 변경되었습니다</string>
 
+    <string name="history_user_nickname">%1$s님의 기록입니다</string>
     <string name="history_clean_earth">지구를 깨끗하게 해 주셨어요</string>
     <string name="history_item_project_not_done">프로젝트가 완료되지 못했어요 :(</string>
+    <string name="history_no_data">기록이 존재하지 않습니다</string>
 
     <string name="home_welcome">%1$s님 환영합니다!</string>
     <string name="home_total_distance">총 %1$s 걸으셨습니다</string>
+
 
 </resources>

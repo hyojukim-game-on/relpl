@@ -1,11 +1,17 @@
 package com.gdd.data.repository.user
 
+import com.gdd.data.mapper.toHistoryDetailInfo
+import com.gdd.data.mapper.toHistoryInfo
+import com.gdd.data.mapper.toHistoryList
 import com.gdd.data.mapper.toPointRecord
 import com.gdd.data.mapper.toSignUpResult
 import com.gdd.data.mapper.toUser
 import com.gdd.data.model.signin.SignInRequest
 import com.gdd.data.model.signup.SignupRequest
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
+import com.gdd.domain.model.history.History
+import com.gdd.domain.model.history.HistoryDetailInfo
+import com.gdd.domain.model.history.HistoryInfo
 import com.gdd.domain.model.point.PointRecord
 import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.model.user.User
@@ -79,5 +85,17 @@ class UserRepositoryImpl @Inject constructor(
             userNickname,
             userPhone
         )
+    }
+
+    override suspend fun getHistory(userId: Long): Result<HistoryInfo> {
+        return userRemoteDataSource.getHistory(userId).map{
+            it.toHistoryInfo()
+        }
+    }
+
+    override suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailInfo> {
+        return userRemoteDataSource.getHistoryDetail(projectId).map {
+            it.toHistoryDetailInfo()
+        }
     }
 }

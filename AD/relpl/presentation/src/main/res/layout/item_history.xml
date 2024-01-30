@@ -37,20 +37,20 @@
             android:textAppearance="@style/Relpl.Text.History.Item.Content"/>
 
         <TextView
-            android:id="@+id/tv_duration"
+            android:id="@+id/tv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="총 3일 1시간 45분 동안"
+            android:text="총 2km 130m의 길을"
             android:layout_gravity="end"
             android:textAppearance="@style/Relpl.Text.History.Item.Content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
         <TextView
-            android:id="@+id/tv_distance"
+            android:id="@+id/tv_contributor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="총 2km 150m의 길을 깨끗하게 해주셨어요 :)"
+            android:text="네 분께서 깨끗하게 해주셨어요 :)"
             android:layout_gravity="end"
             android:textAppearance="@style/Relpl.Text.History.Item.Content"/>
 

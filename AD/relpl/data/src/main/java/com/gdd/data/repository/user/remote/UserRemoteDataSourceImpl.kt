@@ -1,7 +1,11 @@
 package com.gdd.data.repository.user.remote
 
 import com.gdd.data.api.UserService
+import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.history.HistoryDetailSummeryResponse
+import com.gdd.data.model.history.HistoryResponse
+import com.gdd.data.model.history.HistorySummeryResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.profile.ChangePasswordRequest
 import com.gdd.data.model.signin.SignInRequest
@@ -116,5 +120,17 @@ class UserRemoteDataSourceImpl @Inject constructor(
         }else{
             userService.updateProfile(null, map).toNonDefault()
         }
+    }
+
+    override suspend fun getHistory(userId: Long): Result<HistorySummeryResponse> {
+        return userService.getHistory(
+            UserIdRequest(userId)
+        ).toNonDefault()
+    }
+
+    override suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailSummeryResponse> {
+        return userService.getHistoryDetail(
+            ProjectIdRequest(projectId)
+        ).toNonDefault()
     }
 }
