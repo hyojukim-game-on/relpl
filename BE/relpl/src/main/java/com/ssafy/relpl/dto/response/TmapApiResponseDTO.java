@@ -7,13 +7,13 @@ import java.util.Arrays;
 @Data
 public class TmapApiResponseDTO {
 
-    private ResultData resultData;
+    public ResultData resultData;
 
     @Data
     public static class ResultData {
 
-        private Header header;
-        private LinkPoint[] linkPoints;
+        public Header header;
+        public LinkPoint[] linkPoints;
 
         @Override
         public String toString() {
@@ -27,18 +27,18 @@ public class TmapApiResponseDTO {
     @Data
     public static class Header {
 
-        private int laneType;
-        private int tollLink;
-        private int speed;
-        private String roadName;
-        private int oneway;
-        private int roadCategory;
-        private String tlinkId;
-        private String linkId;
-        private int linkFacil;
-        private String idxName;
-        private int totalDistance;
-        private int lane;
+        public int laneType;
+        public int tollLink;
+        public int speed;
+        public String roadName;
+        public int oneway;
+        public int roadCategory;
+        public Long tlinkId;
+        public Long linkId;
+        public int linkFacil;
+        public String idxName;
+        public int totalDistance;
+        public int lane;
 
         @Override
         public String toString() {

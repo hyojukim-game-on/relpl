@@ -14,11 +14,11 @@ import com.ssafy.relpl.util.common.TmapData
 import kotlinx.coroutines.*
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.Point
+import org.locationtech.jts.geom.PrecisionModel
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.locationtech.jts.geom.Point
-import org.locationtech.jts.geom.PrecisionModel
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
@@ -40,13 +40,10 @@ class TmapService {
     @Autowired
     lateinit var roadInfoRepository: RoadInfoRepository
 
-    @Value("\${tmap.api.key}")
-    lateinit var apiKey: String
-
     private val baseUrl = "https://apis.openapi.sk.com/tmap/road/nearToRoad"
 
     private val geometryFactory = GeometryFactory(PrecisionModel(), 4326)
-    fun callTmapApi(latitude: Double, longitude: Double): String? {
+    fun callTmapApi(latitude: Double, longitude: Double, apiKey: String): String? {
         val url = "$baseUrl?version=1&appKey=$apiKey&lat=$latitude&lon=$longitude"
         val restTemplate = RestTemplate()
         restTemplate.getForObject(url, String::class.java).let {
@@ -62,7 +59,14 @@ class TmapService {
         var hashVal = 0L
 
         var lat = startLat
+<<<<<<< HEAD
         var count = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
+=======
+        var count = 0
+        var holeCnt = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
+        var i = 0
+        var apiKey = getInstance().get(i++)
+>>>>>>> 58cf2c49a18b79f0f90ad4e17c15aaadd784730b
         coroutineScope {
             launch {
                 while (lat >= endLat) {
@@ -71,10 +75,15 @@ class TmapService {
                     while (lng <= endLng) {
                         lng += 0.00005
                         try {
-                            val responseData = callTmapApi(lat, lng)
+                            ++count
+                            if (count % 20000 == 0) {
+                                count %= 20000
+                                apiKey = getInstance().get(i++)
+                            }
+                            val responseData = callTmapApi(lat, lng, apiKey)
                             val objectMapper = ObjectMapper()
                             val responseDTO: TmapApiResponseDTO = objectMapper.readValue(responseData, TmapApiResponseDTO::class.java)
-                            log.info("count: ${--count}")
+                            log.info("count: ${--holeCnt}")
                             responseDTO.resultData.let {
                                 if (roadSet.add(responseDTO.resultData.header.linkId)) {
                                     log.info(" lat: $lat, lng: $lng, API Call: $responseDTO\"")
@@ -158,5 +167,26 @@ class TmapService {
         }
         roadInfoRepository.saveAll(roadInfoList)
         return pointHashList
+    }
+
+    @Value("\${tmap.api.key1}")
+    lateinit var key1: String
+
+    @Value("\${tmap.api.key2}")
+    lateinit var key2: String
+
+    @Value("\${tmap.api.key3}")
+    lateinit var key3: String
+
+    @Value("\${tmap.api.key4}")
+    lateinit var key4: String
+
+    @Value("\${tmap.api.key5}")
+    lateinit var key5: String
+
+    var keys = mutableListOf<String>()
+    fun getInstance(): List<String> {
+        if (keys.isEmpty()) keys = mutableListOf(key1, key2, key3, key4, key5)
+        return keys
     }
 }

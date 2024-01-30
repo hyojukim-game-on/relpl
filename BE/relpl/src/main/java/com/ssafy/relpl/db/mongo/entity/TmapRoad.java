@@ -20,20 +20,21 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @Document(collection = "road")
-public class Road {
+public class TmapRoad {
 
     @Id
-    private Long id;
-    private Long tmap_id;
+    private String id;
+    private Long tmap_id; // link_id
+    private String road_name;
     private GeoJsonLineString geometry;
     private int lanetype;
     private int speed;
     private int total_distance;
     private int lane;
 
-    private static final Logger logger = LoggerFactory.getLogger(Road.class);
+    private static final Logger logger = LoggerFactory.getLogger(TmapRoad.class);
 
-    public static Road createRoad(TmapApiResponseDTO responseDTO) {
+    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO) {
 
         TmapApiResponseDTO.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
 
@@ -45,8 +46,9 @@ public class Road {
         // List<GeoJsonPoint>로 GeoJsonLineString 생성
         GeoJsonLineString geoJsonLineString = new GeoJsonLineString(geoJsonPoints);
 
-        return Road.builder()
-                .tmap_id(responseDTO.getResultData().getHeader().getTlinkId())
+        return TmapRoad.builder()
+                .tmap_id(responseDTO.getResultData().getHeader().getLinkId())
+                .road_name(responseDTO.getResultData().getHeader().getRoadName())
                 .geometry(geoJsonLineString)
                 .lanetype(responseDTO.getResultData().getHeader().getLaneType())
                 .speed(responseDTO.getResultData().getHeader().getSpeed())
@@ -55,7 +57,7 @@ public class Road {
                 .build();
     }
 
-    public static Road createRoad(RoadRequest request) {
+    public static TmapRoad createRoad(RoadRequest request) {
 
         List<List<Double>> coordinates = request.getCoordinates();
 
@@ -68,7 +70,7 @@ public class Road {
         // List<GeoJsonPoint>로 GeoJsonLineString 생성
         GeoJsonLineString geoJsonLineString = new GeoJsonLineString(geoJsonPoints);
 
-        return Road.builder()
+        return TmapRoad.builder()
                 .tmap_id(request.getTmap_id())
                 .geometry(geoJsonLineString)
                 .lanetype(request.getLanetype())

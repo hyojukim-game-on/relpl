@@ -3,7 +3,6 @@ package com.ssafy.relpl.controller.rest
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ssafy.relpl.dto.request.InsertRoadRequestDto
 import com.ssafy.relpl.dto.response.CommonResponse
-import com.ssafy.relpl.dto.response.TmapApiResponseDTO
 import com.ssafy.relpl.service.TmapService
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
@@ -38,13 +37,11 @@ class TmapController {
                     val tmapData = tmapService.getAllRoads(startLat, startLng, endLat, endLng)
                     val pointHash = tmapService.insertAllRoadInfo(tmapData)
                     log.info("insertAllRoadHash 완료")
-
                     tmapService.insertAllRoads(tmapData.roads)
                     log.info("insertAllRoads 완료")
                     tmapService.insertAllRoadHash(tmapData.roadsHash)
                     log.info("insertAllRoadHash 완료")
                     tmapService.insertAllPointHash(pointHash)
-
                 }
             }
         } catch (e: Exception) {
@@ -59,7 +56,7 @@ class TmapController {
                  @RequestParam startLng: Double,
                  @RequestParam endLat: Double,
                  @RequestParam endLng: Double) : ResponseEntity<Any?> {
-        val count = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
+        val count = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt()
         return ResponseEntity.ok().body(CommonResponse.OK("총 횟수 : $count"))
     }
 }
