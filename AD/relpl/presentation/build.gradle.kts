@@ -80,4 +80,7 @@ dependencies {
 
     // Naver Map
     implementation(libs.naver.mapsdk)
+
+    //Speed Dial
+    implementation(libs.dial)
 }

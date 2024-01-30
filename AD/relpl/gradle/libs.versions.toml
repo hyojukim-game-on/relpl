@@ -96,6 +96,10 @@ zxing = {group = "com.journeyapps", name = "zxing-android-embedded", version = "
 # Naver map SDK
 naver-mapsdk = { group = "com.naver.maps", name = "map-sdk", version = "3.17.0" }
 
+# FAB Speed Dial (https://github.com/leinardi/FloatingActionButtonSpeedDial)
+dial = {group = "com.leinardi.android", name = "speed-dial", version = "3.3.0"}
+
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version = "8.1.3" }
