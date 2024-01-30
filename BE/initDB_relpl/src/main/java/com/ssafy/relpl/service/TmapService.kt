@@ -59,14 +59,10 @@ class TmapService {
         var hashVal = 0L
 
         var lat = startLat
-<<<<<<< HEAD
-        var count = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
-=======
         var count = 0
         var holeCnt = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
         var i = 0
         var apiKey = getInstance().get(i++)
->>>>>>> 58cf2c49a18b79f0f90ad4e17c15aaadd784730b
         coroutineScope {
             launch {
                 while (lat >= endLat) {
