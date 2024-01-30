@@ -8,16 +8,18 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-@Builder
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@RedisHash(value = "refresh", timeToLive = 1209600)
+@RedisHash(value = "refresh", timeToLive = 60*60)
 public class RefreshToken {
 
     @Id
-    private String id;
+    private Long id;
+
+    private String refreshToken;
 
     @Indexed
-    private String refreshToken;
+    private String accessToken;
 }
