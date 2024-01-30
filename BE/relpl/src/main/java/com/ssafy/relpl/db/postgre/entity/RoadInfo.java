@@ -40,16 +40,16 @@ public class RoadInfo {
 
     @Column(name = "road_Info_recent_done")
     int roadInfoRecentDone;
-
-    public static RoadInfo creatRoadInfo(Road road) {
-        return RoadInfo.builder()
-                .build();
-    }
-    public static PointHash createRoadInfo(Long pointHashId, Point pointCoordinate){
-
-        return PointHash.builder()
-                .pointHashId(pointHashId)
-                .pointCoordinate(pointCoordinate)
-                .build();
-    }
+//
+//    public static RoadInfo creatRoadInfo(RoadInfo road) {
+//        return RoadInfo.builder()
+//                .build();
+//    }
+//    public static PointHash createRoadInfo(Long pointHashId, Point pointCoordinate){
+//
+//        return PointHash.builder()
+//                .pointHashId(pointHashId)
+//                .pointCoordinate(pointCoordinate)
+//                .build();
+//    }
 }

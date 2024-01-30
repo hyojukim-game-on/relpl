@@ -11,4 +11,8 @@ import java.util.List;
 public interface PointHashRepository extends JpaRepository<PointHash, Long> {
     @Override
     <S extends PointHash> @NotNull List<S> saveAll(@NotNull Iterable<S> entities);
+
+    @Override
+    List<PointHash> findAll();
+    findwi
 }
