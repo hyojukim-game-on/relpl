@@ -15,7 +15,6 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 생성 전략을 설정해주어야 합니다.
-
     @Column(name = "report_id")
     private Long reportId;
 

@@ -35,10 +35,10 @@ public class ReportController {
         try {
             log.info("여기는 컨트롤러다. 제보 등록 요청받음.");
             // 제보 등록 요청 전달
-            CommonResult dbResult = reportService.registerReport(reportRegistRequestDto);
+            CommonResult result = reportService.registerReport(reportRegistRequestDto);
 
             // 성공시
-            CommonResult result = responseService.getSingleResult(true, "제보 등록 성공입니둥", 200);
+//            CommonResult result = responseService.getSingleResult(true, "제보 등록 성공입니둥", 200);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             // 실패 시

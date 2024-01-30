@@ -33,9 +33,19 @@ public class ReportService {
     private final ResponseService responseService;
 
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+
     // 제보 등록하기 로직
     public CommonResult registerReport(ReportRegistRequestDto reportRegistRequestDto) {
         log.info("여기는 서비스단이다 . 제보 등록 여부를 확인한다.");
+
+        // userId 체크
+        Long userId = reportRegistRequestDto.getUserId();
+        if (userId == null) {
+            // userId가 null인 경우 처리
+            return responseService.getFailResult(400, "유저 정보가 없습니다.");
+        }
+
+
         // 제보 등록 로직 예시 db에 저장
         Report report = new Report();
         //기존부분
@@ -46,7 +56,6 @@ public class ReportService {
 
 
         report.setReportDate(reportRegistRequestDto.getReportDate());
-
         Point start = reportRegistRequestDto.getReportCoordinate();
         Coordinate coordinate = new Coordinate(start.getX(), start.getY());
         report.setReportCoordinate(geometryFactory.createPoint(coordinate));
@@ -62,6 +71,7 @@ public class ReportService {
 //        report.setReportId(null);
 
         report = reportRepository.save(report);
+//        reportRepository.flush();//삽입 호출
 
         // report.getUserId() 값이 null인 경우에 실패로 간주하고 처리
 //        if (report.getUserId() != null) {

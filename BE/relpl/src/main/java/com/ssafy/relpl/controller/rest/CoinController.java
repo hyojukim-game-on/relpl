@@ -53,7 +53,7 @@ public class CoinController {
             SingleResult<CoinScoreDataResponseDto> result = responseService.getSingleResult(coinScoreDataResponseDto, "포인트 내역 조회 성공입니둥", 200);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            log.error("포인트 내역 조회 중 오류 발생", e);
+            log.error("여기는 컨트롤러. 포인트 내역 조회 중 오류 발생", e);
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "포인트 내역 조회 실패입니둥", null));
         }
     }
