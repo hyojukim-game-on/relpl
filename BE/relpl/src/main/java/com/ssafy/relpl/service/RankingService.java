@@ -8,6 +8,7 @@ import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.dto.response.RankingEntry;
 import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.SingleResult;
+import jakarta.annotation.PostConstruct;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,12 +31,22 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RankingService {
 
+    private final RedisTemplate<String, String> redisTemplate; // RedisTemplate 주입
     private final ResponseService responseService;
-//    private final RankingRepository rankingRepository;
     private final RedisConfig redisConfig;
 
-    private ZSetOperations<String, String> zSetOperations; // Sorted Set 을 다루기 위한 인터페이스
+    private ZSetOperations<String, String> zSetOperations; // Sorted Set 을 다루기 위한 인터페이스s
 
+    @PostConstruct
+    private void init() {
+        zSetOperations = redisTemplate.opsForZSet(); // zSetOperations 초기화
+    }
+
+
+    @Transactional
+    // 트랜잭션(Transaction) : 트랜잭션은 데이터베이스의 상태를 변환시키는
+    // 하나의 논리적 기능을 수행하기 위한 작업의 단위 또는
+    // 한꺼번에 모두 수행되어야 할 일련의 연산들을 의미합니다.
     public Boolean testRanking(String nickname, double moveDistance) {
         // redis 에 데이터 넣기
         String dailyRanking = "dailyRanking";
