@@ -101,5 +101,11 @@
     <string name="home_welcome">%1$s님 환영합니다!</string>
     <string name="home_total_distance">총 %1$s 걸으셨습니다</string>
 
+    <string name="report_ment">플로깅이 필요한 지역을 제보해 주세요!</string>
+    <string name="report_guide">제보된 위치는 경로 추천 시 반영됩니다</string>
+    <string name="report_cur_point">현재 보유 포인트</string>
+    <string name="report_use_point">소모 포인트</string>
+    <string name="report_report">제보하기</string>
+
 
 </resources>
