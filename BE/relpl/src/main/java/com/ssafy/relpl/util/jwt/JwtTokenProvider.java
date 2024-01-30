@@ -12,13 +12,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -27,12 +32,11 @@ public class JwtTokenProvider {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-//    @Value("${jwt.token.secret}")
-//    private static String key;
-    private static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @Value("${jwt.token.secret}")
+    private String secretKey;
 
     @Value("${jwt.token.access-expiration-time}")
-    private static long accessExpirationTime;
+    private long accessExpirationTime;
 
     @Value("${jwt.token.refresh-expiration-time}")
     private long refreshExpirationTime;
@@ -40,12 +44,14 @@ public class JwtTokenProvider {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    public static String createAccessToken(Authentication authentication) {
+    public static String createAccessToken(JwtTokenProvider jwtTokenProvider, Authentication authentication, Long userId) {
         Claims claims = Jwts.claims();
         Date now = new Date();
-        Date expireDate = new Date(now.getTime() + accessExpirationTime);
-        claims.put("userNickname", authentication.getName());
+        Date expireDate = new Date(now.getTime() + jwtTokenProvider.accessExpirationTime);
+        claims.put("userId", String.valueOf(userId));
         claims.put("role", List.of("USER"));
+
+        Key key = new SecretKeySpec(jwtTokenProvider.secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -58,10 +64,11 @@ public class JwtTokenProvider {
     /**
      * Refresh 토큰 생성
      */
-    public String createRefreshToken(Authentication authentication){
+    public String createRefreshToken(JwtTokenProvider jwtTokenProvider, Authentication authentication){
         Claims claims = Jwts.claims().setSubject(authentication.getName());
         Date now = new Date();
-        Date expireDate = new Date(now.getTime() + refreshExpirationTime);
+        Date expireDate = new Date(now.getTime() + jwtTokenProvider.refreshExpirationTime);
+        Key key = new SecretKeySpec(jwtTokenProvider.secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
@@ -71,12 +78,12 @@ public class JwtTokenProvider {
                 .compact();
 
         // redis에 저장
-        redisTemplate.opsForValue().set(
-                authentication.getName(),
-                refreshToken,
-                refreshExpirationTime,
-                TimeUnit.MILLISECONDS
-        );
+//        redisTemplate.opsForValue().set(
+//                authentication.getName(),
+//                refreshToken,
+//                refreshExpirationTime,
+//                TimeUnit.MILLISECONDS
+//        );
 
         return refreshToken;
     }
@@ -85,8 +92,9 @@ public class JwtTokenProvider {
      * 토큰으로부터 클레임을 만들고, 이를 통해 User 객체 생성해 Authentication 객체 반환
      */
     public Authentication getAuthentication(String token) {
-        String userPrincipal = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userPrincipal);
+        Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
+        String username = (String) Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("userId");
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
@@ -107,6 +115,7 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token){
         try{
+            Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch(ExpiredJwtException e) {
@@ -117,19 +126,4 @@ public class JwtTokenProvider {
             throw new BaseException(JwtConstants.INVALID_JWT_MESSAGE);
         }
     }
-
-//    public static boolean isExpired(String token, String key) {
-//        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-//                .getBody().getExpiration().before(new Date());
-//    }
-//
-//    public static String getUserNickname(String token, String key) {
-//        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-//                .getBody().get("userNickname", String.class);
-//    }
-//
-//    public static List<String> getRole(String token, String key) {
-//        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-//        return (List<String>) claims.get("role");
-//    }
 }

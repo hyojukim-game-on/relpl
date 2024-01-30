@@ -7,6 +7,7 @@ import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.CommonResult;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
