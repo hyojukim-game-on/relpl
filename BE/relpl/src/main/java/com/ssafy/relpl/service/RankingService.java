@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -47,11 +48,35 @@ public class RankingService {
     // 트랜잭션(Transaction) : 트랜잭션은 데이터베이스의 상태를 변환시키는
     // 하나의 논리적 기능을 수행하기 위한 작업의 단위 또는
     // 한꺼번에 모두 수행되어야 할 일련의 연산들을 의미합니다.
-    public Boolean testRanking(String nickname, double moveDistance) {
-        // redis 에 데이터 넣기
+    public CommonResult testRanking(String nickname, double moveDistance) {
+//        // redis 에 데이터 넣기
         String dailyRanking = "dailyRanking";
-        return zSetOperations.add(dailyRanking, nickname, moveDistance);
+//        return zSetOperations.add(dailyRanking, nickname, moveDistance);
+
+        // redis 에 nickname 으로 moveDistance 있는지 검사하고
+        Optional<Double> presentMoveDistance = checkMemberExists(dailyRanking, nickname);
+        // 있으면 기존 값 + moveDistance 넣어주기
+        if (presentMoveDistance.isPresent()) {
+            double newTotalDistance;
+            newTotalDistance = presentMoveDistance.get() + moveDistance;
+            addOrUpdateMember(dailyRanking, nickname, newTotalDistance);
+            return responseService.getSuccessResult("기존 멤버 업데이트 성공");
+        } else {
+        // 없으면 moveDistance 넣어주기
+            addOrUpdateMember(dailyRanking, nickname, moveDistance);
+            return responseService.getSuccessResult("새로운 멤버 추가 성공");
+        }
     }
+
+    public Optional<Double> checkMemberExists(String dailyRanking, String nickname) {
+        return Optional.ofNullable(zSetOperations.score(dailyRanking, nickname));
+    }
+
+    public void addOrUpdateMember(String dailyRanking, String nickname, double moveDistance) {
+        Boolean isAdded = zSetOperations.add(dailyRanking, nickname, moveDistance);
+        log.info("isAdded : {}", isAdded);
+    }
+
 
 //
 //    public void ZsetAddOrUpdate(String nickname, int moveDistance) {

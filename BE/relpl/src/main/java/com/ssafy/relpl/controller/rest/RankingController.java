@@ -26,7 +26,7 @@ public class RankingController {
 //    }
 
     @GetMapping("/test/{nickname}/{distance}")
-    public Boolean testRanking(@PathVariable String nickname, @PathVariable double distance) {
+    public CommonResult testRanking(@PathVariable String nickname, @PathVariable double distance) {
         return rankingService.testRanking(nickname, distance);
     }
 
