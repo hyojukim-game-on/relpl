@@ -1,26 +1,34 @@
 package com.ssafy.relpl.db.redis.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
+
+import java.util.concurrent.TimeUnit;
 
 
-
-
-@RedisHash("DailyRanking")
+@RedisHash("dailyranking") // JPA 의 @Entity 와 동일한 역할
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class DailyRanking {
-    // 랭킹 데이터 필드
+
+
     @Id
-    private Long dailyRankingId;
-    private Long userId;
-    // private String dailyEndTime;
-    private int dailyDistance;
+    @GeneratedValue
+    private Long Id;
+
+    @Indexed
+    private String nickname;
+
+    @Indexed
+    @TimeToLive(unit = TimeUnit.DAYS)
+    private String rankingTime;
+
+    private int moveTotalDistance;
 }

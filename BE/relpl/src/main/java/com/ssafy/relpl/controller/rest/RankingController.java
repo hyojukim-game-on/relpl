@@ -1,11 +1,12 @@
 package com.ssafy.relpl.controller.rest;
 
 
-import com.ssafy.relpl.dto.response.CommonResponse;
 import com.ssafy.relpl.service.RankingService;
+import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,8 +20,7 @@ public class RankingController {
     private final RankingService rankingService;
 
     @GetMapping("/{rankingTime}")
-    public void getRanking(@PathVariable String rankingTime) {
-        // 서비스 로직 호출
-        SingleResult<?> ranking = rankingService.getRanking(rankingTime);
+    public ResponseEntity<CommonResult> getRanking(@PathVariable String rankingTime) {
+        return rankingService.getRanking(rankingTime);
     }
 }

@@ -1,38 +1,18 @@
 package com.ssafy.relpl.db.redis.repository;
 
-
 import com.ssafy.relpl.db.redis.entity.DailyRanking;
-import com.ssafy.relpl.dto.response.RankingEntry;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.ssafy.relpl.db.redis.entity.MonthlyRanking;
+import com.ssafy.relpl.db.redis.entity.WeeklyRanking;
+import com.ssafy.relpl.service.result.CommonResult;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
+public abstract class RankingRepository implements CrudRepository {
+    public abstract ResponseEntity<CommonResult> findByDailyEndTime(String rankingTime);
+    public abstract ResponseEntity<CommonResult> findByWeeklyEndTime(String rankingTime);
+    public abstract ResponseEntity<CommonResult> findByMonthlyEndTime(String rankingTime);
 
-
-@Repository
-public interface RankingRepository {
-
-    private final RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    public RankingRepository(RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-
-    public void addScore(String user, double score) {
-        redisTemplate.opsForZSet().add("ranking", user, score);
-    }
-
-    public Set<String> getTopUsers(int top) {
-        return redisTemplate.opsForZSet().reverseRange("ranking", 0, top - 1)
-    }
-
+    public abstract List<DailyRanking> sample_findByDailyEndTime();
 }
