@@ -6,6 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".relay.LoadRelayFragment">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map_fragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:name="com.naver.maps.map.MapFragment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="match_parent"
@@ -18,16 +27,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/map_fragment"
         android:background="#74D3ECBC"/>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/map_fragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:name="com.naver.maps.map.MapFragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.leinardi.android.speeddial.SpeedDialOverlayLayout
         android:id="@+id/speedDialog_overlay"
