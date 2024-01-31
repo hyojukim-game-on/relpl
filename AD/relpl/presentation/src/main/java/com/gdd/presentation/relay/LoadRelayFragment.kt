@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,8 @@ import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -64,45 +67,36 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             ?: MapFragment.newInstance().also {
                 childFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
             }
+        registerObserver()
         mapFragment.getMapAsync(onMapReadyCallBack)
         setFabSpeedDialUi()
     }
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
-        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (!locationSource.isActivated) { // 권한 거부됨
-                naverMap.locationTrackingMode = LocationTrackingMode.None
+
+    private fun registerObserver(){
+        viewModel.markerResult.observe(viewLifecycleOwner){
+            it.forEachIndexed { idx, coordinate ->
+                Marker().apply {
+                    position =  coordinate
+                    map = naverMap
+                    icon = OverlayImage.fromResource(R.drawable.ic_marker)
+                    iconTintColor = if (idx % 4 == 0) resources.getColor(R.color.sage_brown) else resources.getColor(R.color.sage_green_dark)
+                }
             }
-            return
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
 
     @SuppressLint("MissingPermission")
     val onMapReadyCallBack = OnMapReadyCallback { map ->
-//        val locationManager = mainActivity.getSystemService(LOCATION_SERVICE) as LocationManager
-//        val curCoordinate = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-//        map.locationOverlay.apply {
-//            this.isVisible = true
-//            circleRadius = 100
-//        }
-//        val cameraUpdate = CameraUpdate.scrollTo(LatLng(curCoordinate.latitude, curCoordinate.longitude))
-//            .animate(CameraAnimation.Easing, 2000)
-//            .finishCallback {
-//                showSnackBar("완료")
-//            }
-//            .cancelCallback {
-//                showSnackBar("취소")
-//            }
-//
-//        map.moveCamera(cameraUpdate)
         naverMap = map
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         naverMap.uiSettings.isLocationButtonEnabled = true
+
+        viewModel.loadMarker()
     }
 
+    // region 권한 및 fab
     private val locationPermissionDeniedListener: () -> Unit = {
         MaterialAlertDialogBuilder(mainActivity)
             .setTitle("정확한 위치 권한 허용이 필요합니다")
@@ -124,7 +118,18 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             .show()
     }
 
-    // region fab 코드 영역
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            if (!locationSource.isActivated) { // 권한 거부됨
+                naverMap.locationTrackingMode = LocationTrackingMode.None
+            }
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     private fun setFabSpeedDialUi() {
         binding.fabCreateRelay.addActionItem(
             SpeedDialActionItem.Builder(
@@ -144,7 +149,6 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         binding.fabCreateRelay.setOnActionSelectedListener { item ->
             when (item.id) {
                 R.id.fab_create_path -> {
-//                    showJoinGroupDialog()
                     showSnackBar("path!!")
                 }
                 R.id.fab_create_distance -> {
@@ -156,9 +160,10 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         }
     }
 
-    // endregion
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
+
+    // endregion
 }
