@@ -1,7 +1,7 @@
 package com.ssafy.relpl.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.ssafy.relpl.db.mongo.entity.Road
+import com.ssafy.relpl.db.mongo.entity.TmapRoad
 import com.ssafy.relpl.db.mongo.repository.TmapRoadRepository
 import com.ssafy.relpl.db.postgre.entity.PointHash
 import com.ssafy.relpl.db.postgre.entity.RoadHash
@@ -30,7 +30,7 @@ class TmapService {
     val log = LoggerFactory.getLogger(TmapService::class.java)
 
     @Autowired
-    lateinit var roadRepository: TmapRoadRepository
+    lateinit var tmapRoadRepository: TmapRoadRepository
 
     @Autowired
     lateinit var roadHashRepository: RoadHashRepository
@@ -55,7 +55,7 @@ class TmapService {
     suspend fun getAllRoads(startLat: BigDecimal, startLng: BigDecimal, endLat: BigDecimal, endLng: BigDecimal): TmapData {
 
         val roadSet = mutableSetOf<Long>()
-        val roadDetailList = mutableListOf<Road>()
+        val roadDetailList = mutableListOf<TmapRoad>()
         val roadHashList = mutableListOf<RoadHash>()
         var hashVal = 0L
 
@@ -63,7 +63,7 @@ class TmapService {
         var count = 0
         var holeCnt = ((startLat - endLat).div(BigDecimal(0.000025)) * ((endLng - startLng).div(BigDecimal(0.000025)))).toInt() + 2
         var i = 0
-        var apiKey = getInstance().get(i++)
+        var apiKey = getkeys().get(i++)
         coroutineScope {
             launch {
                 while (lat >= endLat) {
@@ -75,7 +75,7 @@ class TmapService {
                             ++count
                             if (count % 19000 == 0) {
                                 count %= 19000
-                                apiKey = getInstance().get(i++)
+                                apiKey = getkeys().get(i++)
                             }
                             val responseData = callTmapApi(lat.toDouble(), lng.toDouble(), apiKey)
                             val objectMapper = ObjectMapper()
@@ -85,7 +85,7 @@ class TmapService {
                                 if (!roadSet.contains(responseDTO.resultData.header.linkId)) {
                                     roadSet.add(responseDTO.resultData.header.linkId)
                                     log.info(" lat: $lat, lng: $lng, API Call: $responseDTO\"")
-                                    roadDetailList.add(Road.createRoad(responseDTO))
+                                    roadDetailList.add(TmapRoad.createRoad(responseDTO, hashVal))
                                     roadHashList.add(RoadHash.createRoadHash(hashVal++, responseDTO.resultData.header.linkId))
                                 }
                             }
@@ -101,8 +101,8 @@ class TmapService {
         return TmapData(roadDetailList, roadHashList)
     }
 
-    fun insertAllRoads(roads: List<Road>) {
-        roadRepository.saveAll(roads)
+    fun insertAllRoads(roads: List<TmapRoad>) {
+        tmapRoadRepository.saveAll(roads)
     }
 
     fun insertAllRoadHash(roadsHash: List<RoadHash>) {
@@ -110,11 +110,6 @@ class TmapService {
     }
 
     fun insertAllPointHash(pointHashList: List<PointHash>){
-
-//        val pointHashList = mutableListOf<PointHash>()
-//        for ((index, value) in pointSet.withIndex()) {
-//            pointHashList.add(PointHash.createPointHash(index.toLong(), value))
-//        }
         pointHashRepository.saveAll(pointHashList)
     }
 
@@ -183,7 +178,7 @@ class TmapService {
     lateinit var key5: String
 
     var keys = mutableListOf<String>()
-    fun getInstance(): List<String> {
+    fun getkeys(): List<String> {
         if (keys.isEmpty()) keys = mutableListOf(key1, key2, key3, key4, key5)
         return keys
     }
