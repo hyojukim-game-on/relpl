@@ -98,6 +98,6 @@ interface UserService {
     @POST("user/token/reissue")
     suspend fun reissueToken(
         @Body reissueRequest: ReissueRequest
-    ): Result<DefaultResponse<ReissueResponse>>
+    ): Response<DefaultResponse<ReissueResponse>>
 
 }

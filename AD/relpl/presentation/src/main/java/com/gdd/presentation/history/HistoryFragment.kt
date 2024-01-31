@@ -37,7 +37,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
     private lateinit var historyList: List<History>
 
     @Inject
-    private lateinit var prefManager: PrefManager
+    lateinit var prefManager: PrefManager
 
     val icon: Drawable? by lazy {
         AppCompatResources.getDrawable(requireContext(), R.drawable.bg_history_indicator)

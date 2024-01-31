@@ -145,6 +145,12 @@ class UserRemoteDataSourceImpl @Inject constructor(
         return userService.reissueToken(ReissueRequest(
             accessToken,
             refreshToken
-        ))
+        )).let { response ->
+            if (response.isSuccessful && response.body() != null){
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception(response.message()))
+            }
+        }
     }
 }

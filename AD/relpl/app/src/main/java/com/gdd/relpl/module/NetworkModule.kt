@@ -1,7 +1,9 @@
 package com.gdd.relpl.module
 
+import com.d101.data.utils.AuthInterceptor
 import com.gdd.data.api.ApiClient.BASE_URL
 import com.gdd.data.api.UserService
+import com.gdd.relpl.AuthAuthenticator
 import com.gdd.relpl.TokenInterceptor
 import com.gdd.retrofit_adapter.NetworkResponseAdapterFactory
 import com.squareup.moshi.Moshi
@@ -15,15 +17,20 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthRetrofit
 
-    @Inject
-    lateinit var tokenInterceptor: TokenInterceptor
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthUserService
 
     @Provides
     @Singleton
@@ -34,7 +41,9 @@ object NetworkModule {
     @Provides
     @Singleton
     fun providesRetrofitClient(
-        moshi: Moshi
+        moshi: Moshi,
+        authInterceptor: AuthInterceptor,
+        authenticator: AuthAuthenticator
     ): Retrofit {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -42,7 +51,8 @@ object NetworkModule {
 
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(tokenInterceptor)
+            .addInterceptor(authInterceptor)
+            .authenticator(authenticator)
             .build()
 
         return Retrofit.Builder()
@@ -55,7 +65,37 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @AuthRetrofit
+    fun providesAuthRetrofitClient(
+        moshi: Moshi
+    ): Retrofit {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideUserService(retrofit: Retrofit): UserService {
+        return retrofit.create(UserService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @AuthUserService
+    fun provideAuthUserService(
+        @AuthRetrofit retrofit: Retrofit
+    ): UserService {
         return retrofit.create(UserService::class.java)
     }
 }

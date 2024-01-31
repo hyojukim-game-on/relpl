@@ -7,10 +7,8 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.gdd.domain.model.history.History
-import com.gdd.domain.model.relay.Relay
 import com.gdd.presentation.base.Constants
 import com.gdd.presentation.databinding.ItemHistoryBinding
-import java.text.SimpleDateFormat
 import java.util.StringTokenizer
 
 class HistoryAdapter(private val layoutInflater: LayoutInflater,
