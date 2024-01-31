@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.zxing)
 
     // Naver Map
-    implementation(libs.naver.mapsdk)
+    implementation(libs.bundles.naverMap)
 
     //Speed Dial
     implementation(libs.dial)

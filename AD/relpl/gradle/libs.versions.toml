@@ -99,6 +99,8 @@ naver-mapsdk = { group = "com.naver.maps", name = "map-sdk", version = "3.17.0" 
 # FAB Speed Dial (https://github.com/leinardi/FloatingActionButtonSpeedDial)
 dial = {group = "com.leinardi.android", name = "speed-dial", version = "3.3.0"}
 
+# Google Location
+google-location = {group="com.google.android.gms", name = "play-services-location", version="21.1.0"}
 
 
 [plugins]
@@ -126,3 +128,6 @@ hilt = ["hilt-android", "hilt-compiler"]
 
 # Room Database Bundle
 room = ["room-runtime", "room-compiler", "room-ktx"]
+
+# NaverMap, Google Location
+naverMap = ["naver-mapsdk","google-location"]
