@@ -44,6 +44,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/sample/post").permitAll() //로그인 열어둠
                             .requestMatchers("/api/sample/get/**").permitAll() //로그인 열어둠
                             .requestMatchers("/api/project/recommend").permitAll()
+                            .requestMatchers("/api/project/test/**").permitAll()
                             .anyRequest().authenticated(); //인증 필요
                     })
                 .csrf((csrf) -> csrf.disable())

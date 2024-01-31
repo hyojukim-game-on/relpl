@@ -14,7 +14,7 @@ import java.util.List;
 public class TmapRoadService {
 
     private final TmapRoadRepository tmapRoadRepository;
-    public List<TmapRoad> getAllTmapRoadById(List<Long> tmapRoadIdList) {
-        return tmapRoadRepository.findAllByTmapIdIn(tmapRoadIdList);
+    public List<TmapRoad> getAllTmapRoadById(List<Long> roadHashIdList) {
+        return tmapRoadRepository.findAllByroadHash(roadHashIdList);
     }
 }
