@@ -39,8 +39,8 @@ public class RoadInfo {
     @Column(name = "road_info_total_report")
     int roadInfoTotalReport;
 
-    @Column(name = "road_Info_recent_done")
-    boolean roadInfoRecentDone;
+    @Column(name = "road_Info_weight")
+    int roadInfoRecentDone;
 
     public static RoadInfo createRoadInfo(Long roadHashId, Long pointHashIdStart, Long pointHashIdEnd, int roadInfoLen) {
         return RoadInfo.builder()

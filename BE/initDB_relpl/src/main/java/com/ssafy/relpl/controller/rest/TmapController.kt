@@ -1,6 +1,5 @@
 package com.ssafy.relpl.controller.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.ssafy.relpl.dto.request.InsertRoadRequestDto
 import com.ssafy.relpl.dto.request.TimesRoadRequestDto
 import com.ssafy.relpl.dto.response.CommonResponse
@@ -13,6 +12,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.data.geo.Point
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 
 @RestController
 @CrossOrigin("*")
@@ -37,10 +37,10 @@ class TmapController {
             coroutineScope {
                 launch {
                     val tmapData = tmapService.getAllRoads(
-                            insertRoadRequestDto.startPoint.y
-                            , insertRoadRequestDto.startPoint.x
-                            , insertRoadRequestDto.endPoint.y
-                            , insertRoadRequestDto.endPoint.x)
+                            BigDecimal(insertRoadRequestDto.startPoint.y)
+                            , BigDecimal(insertRoadRequestDto.startPoint.x)
+                            , BigDecimal(insertRoadRequestDto.endPoint.y)
+                            , BigDecimal(insertRoadRequestDto.endPoint.x))
                     val pointHash = tmapService.insertAllRoadInfo(tmapData)
                     log.info("insertAllRoadHash 완료")
                     tmapService.insertAllRoads(tmapData.roads)

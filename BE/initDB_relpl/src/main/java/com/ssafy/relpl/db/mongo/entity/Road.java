@@ -2,6 +2,7 @@ package com.ssafy.relpl.db.mongo.entity;
 
 import com.ssafy.relpl.dto.response.TmapApiResponseDTO;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -78,4 +79,18 @@ public class Road {
 //                .lane(request.getLane())
 //                .build();
 //    }
+
+    @Override
+    public String toString() {
+        return "Road{" +
+                "id='" + id + '\'' +
+                ", tmap_id=" + tmap_id +
+                ", road_name='" + road_name + '\'' +
+                ", geometry=" + geometry +
+                ", lanetype=" + lanetype +
+                ", speed=" + speed +
+                ", total_distance=" + total_distance +
+                ", lane=" + lane +
+                '}';
+    }
 }

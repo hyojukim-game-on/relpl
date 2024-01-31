@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import java.math.BigDecimal
+import java.util.*
 
 
 @Service
@@ -51,7 +53,7 @@ class TmapService {
         }
     }
 
-    suspend fun getAllRoads(startLat: Double, startLng: Double, endLat: Double, endLng: Double): TmapData {
+    suspend fun getAllRoads(startLat: BigDecimal, startLng: BigDecimal, endLat: BigDecimal, endLng: BigDecimal): TmapData {
 
         val roadSet = mutableSetOf<Long>()
         val roadDetailList = mutableListOf<Road>()
@@ -60,28 +62,29 @@ class TmapService {
 
         var lat = startLat
         var count = 0
-        var holeCnt = ((startLat - endLat) / 0.00005 * ((endLng - startLng) / 0.00005)).toInt() + 2
+        var holeCnt = ((startLat - endLat).div(BigDecimal(0.00005)) * ((endLng - startLng).div(BigDecimal(0.00005)))).toInt() + 2
         var i = 0
         var apiKey = getInstance().get(i++)
         coroutineScope {
             launch {
                 while (lat >= endLat) {
-                    lat -= 0.00005
+                    lat = lat.minus(BigDecimal(0.000025))
                     var lng = startLng;
                     while (lng <= endLng) {
-                        lng += 0.00005
+                        lng = lng.plus(BigDecimal(0.000025))
                         try {
                             ++count
-                            if (count % 20000 == 0) {
-                                count %= 20000
+                            if (count % 19000 == 0) {
+                                count %= 19000
                                 apiKey = getInstance().get(i++)
                             }
-                            val responseData = callTmapApi(lat, lng, apiKey)
+                            val responseData = callTmapApi(lat.toDouble(), lng.toDouble(), apiKey)
                             val objectMapper = ObjectMapper()
                             val responseDTO: TmapApiResponseDTO = objectMapper.readValue(responseData, TmapApiResponseDTO::class.java)
                             log.info("count: ${--holeCnt}")
                             responseDTO.resultData.let {
-                                if (roadSet.add(responseDTO.resultData.header.linkId)) {
+                                if (!roadSet.contains(responseDTO.resultData.header.linkId)) {
+                                    roadSet.add(responseDTO.resultData.header.linkId)
                                     log.info(" lat: $lat, lng: $lng, API Call: $responseDTO\"")
                                     roadDetailList.add(Road.createRoad(responseDTO))
                                     roadHashList.add(RoadHash.createRoadHash(hashVal++, responseDTO.resultData.header.linkId))
@@ -96,8 +99,18 @@ class TmapService {
                 }
             }
         }
+        for (detail: Road in roadDetailList) {
+            log.info("{}", detail)
+        }
+        log.info("================================================================")
+        log.info("================================================================")
+        log.info("================================================================")
+        for (hash: RoadHash in roadHashList) {
+            log.info("{}", hash)
+        }
         return TmapData(roadDetailList, roadHashList)
     }
+
 
     fun insertAllRoads(roads: List<Road>) {
         roadRepository.saveAll(roads)
