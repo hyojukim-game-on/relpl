@@ -33,60 +33,42 @@ public class CoinController {
      * @param coinscoreRequestDto
      * @return
      */
-    // 포인트 내역 조회 로직
+    // 포인트 내역 조회 로직 메서드
     @PostMapping(value = "/coinscore")
     public ResponseEntity<?> checkCoin(@RequestBody CoinScoreRequestDto coinscoreRequestDto) {
         try {
             log.info("여기는 컨트롤러. 포인트 내역 조회 요청 받음");
-            coinService.completeProject(coinscoreRequestDto.getUserId());
-            coinService.completeShortPlogging(coinscoreRequestDto.getUserId());
-            coinService.reportLocationFlag(coinscoreRequestDto.getUserId());
 
-            // 사용자 코인 정보 조회
-            CoinScoreDataResponseDto coinScoreDataResponseDto = coinService.getCoinScoreData(coinscoreRequestDto.getUserId());
+            // 유저 정보 확인
+            Long userId = coinscoreRequestDto.getUserId();
+            SingleResult<CoinScoreDataResponseDto> result = coinService.coinScore(userId);
 
-            // 코인 데이터 삽입 예시를 동적으로 만들기
-            Long coinEventId = coinService.generateCoinEventId();  // 동적으로 생성된 값 사용
-            String coinEventDate = coinService.generateCoinEventDate();  // 동적으로 생성된 값 사용
-            int coinAmount = coinService.generateCoinAmount();  // 동적으로 생성된 값 사용
-            String coinEventDetail = coinService.generateCoinEventDetail();  // 동적으로 생성된 값 사용
-
-
-            coinService.insertCoinData(
-                    coinscoreRequestDto.getUserId(),
-                    coinService.generateCoinEventId(),
-                    coinService.generateCoinEventDate(),
-                    coinService.generateCoinAmount(),
-                    coinService.generateCoinEventDetail()
-            );
-
-            // 로오직
-            SingleResult<CoinScoreDataResponseDto> result = responseService.getSingleResult(coinScoreDataResponseDto, "포인트 내역 조회 성공입니둥", 200);
-            return ResponseEntity.ok(result);
+            // 내역 조회 성공
+            return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (Exception e) {
-            log.error("포인트 내역 조회 중 오류 발생", e);
-            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "포인트 내역 조회 실패입니둥", null));
+            // 내역 조회 실패
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(responseService.getFailResult(400, "포인트 내역 조회에 실패하였습니다."));
         }
     }
 
     // 포인트 바코드 조회 로직
     @PostMapping(value = "/coinbarcode")
-    public ResponseEntity<?> checkBarcode(@RequestBody CoinBarcodeRequestDto coinbarcodeRequestDto) {
+    public ResponseEntity<?> checkCoinBarcode(@RequestBody CoinBarcodeRequestDto coinBarcodeRequestDto) {
         try {
-            // 바코드 조회 로직 작성
+            log.info("여기는 컨트롤러. 포인트 바코드 조회 요청 받음");
 
-            // 예시 결과 데이터
-            CoinBarcodeResponseDto barcodeResponseDto = new CoinBarcodeResponseDto();
-//            barcodeResponseDto.setBarcode("123456789");
+            // 유저 정보 확인
+            Long userId = coinBarcodeRequestDto.getUserId();
+            SingleResult<CoinBarcodeResponseDto> result = coinService.coinBarcode(userId);
 
-            // 로직
-            SingleResult<CoinBarcodeResponseDto> result = responseService.getSingleResult(barcodeResponseDto, "바코드 조회 성공", 200);
-            return ResponseEntity.ok(result);
+            // 바코드 조회 성공
+            return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (Exception e) {
-            log.error("바코드 조회 중 오류 발생", e);
-            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "바코드 조회 실패", null));
+            // 바코드 조회 실패
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(responseService.getFailResult(400, "포인트 바코드 조회에 실패하였습니다."));
         }
-
     }
 }
 

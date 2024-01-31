@@ -1,5 +1,6 @@
 package com.ssafy.relpl.db.postgre.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,9 +15,6 @@ public class Coin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId; // 유저 id
-
     @Column(name = "coin_event_id")
     private Long coinEventId; // 포인트 이벤트 id
 
@@ -28,5 +26,11 @@ public class Coin {
 
     @Column(name = "coin_event_detail")
     private String coinEventDetail; // 포인트 이벤트 상세 내용
+
+    //외래키
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER) // 다대일(N:1) 관계를 표시
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
