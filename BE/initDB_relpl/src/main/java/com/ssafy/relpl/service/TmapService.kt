@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.math.BigDecimal
-import java.util.*
 
 
 @Service
@@ -62,7 +61,7 @@ class TmapService {
 
         var lat = startLat
         var count = 0
-        var holeCnt = ((startLat - endLat).div(BigDecimal(0.00005)) * ((endLng - startLng).div(BigDecimal(0.00005)))).toInt() + 2
+        var holeCnt = ((startLat - endLat).div(BigDecimal(0.000025)) * ((endLng - startLng).div(BigDecimal(0.000025)))).toInt() + 2
         var i = 0
         var apiKey = getInstance().get(i++)
         coroutineScope {
@@ -99,18 +98,8 @@ class TmapService {
                 }
             }
         }
-        for (detail: Road in roadDetailList) {
-            log.info("{}", detail)
-        }
-        log.info("================================================================")
-        log.info("================================================================")
-        log.info("================================================================")
-        for (hash: RoadHash in roadHashList) {
-            log.info("{}", hash)
-        }
         return TmapData(roadDetailList, roadHashList)
     }
-
 
     fun insertAllRoads(roads: List<Road>) {
         roadRepository.saveAll(roads)
