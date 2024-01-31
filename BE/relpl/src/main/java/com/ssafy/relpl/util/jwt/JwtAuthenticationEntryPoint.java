@@ -3,12 +3,8 @@ package com.ssafy.relpl.util.jwt;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -17,16 +13,9 @@ import java.io.IOException;
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    private final HandlerExceptionResolver resolver;
-
-    public JwtAuthenticationEntryPoint(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
-        this.resolver = resolver;
-    }
-
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        // JwtAuthenticationFilter에서 request에 담아서 보내준 예외를 처리
-//        resolver.resolveException(request, response, null, (Exception) request.getAttribute("exception"));
-        resolver.resolveException(request, response, null, authException);
+    public void commence(HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.AuthenticationException authException) throws IOException, ServletException {
+        // 유효한 자격증명을 제공하지 않고 접근하려 할때 401
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

@@ -12,15 +12,14 @@ import org.springframework.data.redis.core.index.Indexed;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@RedisHash(value = "refresh", timeToLive = 60*60)
 public class RefreshToken {
+
+    @Id
+    private Long id;
+
     private String refreshToken;
-    private Long userId;
 
-    public static RefreshToken createRefreshToken(String refreshToken, Long userId) {
-        return RefreshToken.builder()
-                .refreshToken(refreshToken)
-                .userId(userId)
-                .build();
-    }
-
+    @Indexed
+    private String accessToken;
 }

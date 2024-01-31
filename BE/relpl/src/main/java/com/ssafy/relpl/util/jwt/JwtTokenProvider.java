@@ -78,12 +78,12 @@ public class JwtTokenProvider {
                 .compact();
 
         // redis에 저장
-        redisTemplate.opsForValue().set(
-                refreshToken,
-                "token_"+authentication.getName(),
-                refreshExpirationTime,
-                TimeUnit.MILLISECONDS
-        );
+//        redisTemplate.opsForValue().set(
+//                authentication.getName(),
+//                refreshToken,
+//                refreshExpirationTime,
+//                TimeUnit.MILLISECONDS
+//        );
 
         return refreshToken;
     }

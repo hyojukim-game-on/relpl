@@ -1,8 +1,10 @@
 package com.ssafy.relpl.config;
 
-import com.ssafy.relpl.util.jwt.*;
+import com.ssafy.relpl.util.jwt.JwtAccessDeniedHandler;
+import com.ssafy.relpl.util.jwt.JwtAuthenticationEntryPoint;
+import com.ssafy.relpl.util.jwt.JwtFilter;
+import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -23,9 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ExceptionResponseHandler exceptionHandler;
-    private final JwtAuthenticationEntryPoint entryPoint;
-
 
     @Value("${jwt.token.secret}")
     private String key;
@@ -43,16 +41,16 @@ public class SecurityConfig {
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger UI 접근 허용
                             .requestMatchers("/api/user/signup").permitAll() //회원가입 열어둠
                             .requestMatchers("/api/user/login").permitAll() //로그인 열어둠
-                            .requestMatchers("/api/sample/post").permitAll()
-                            .requestMatchers("/api/sample/get/**").permitAll()
+                            .requestMatchers("/api/sample/post").permitAll() //로그인 열어둠
+                            .requestMatchers("/api/sample/get/**").permitAll() //로그인 열어둠
                             .anyRequest().authenticated(); //인증 필요
                     })
                 .csrf((csrf) -> csrf.disable())
                 .cors((c) -> c.disable())
                 .headers((headers) -> headers.disable())
-                .addFilterBefore(new JwtFilter(jwtTokenProvider, exceptionHandler), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(authenticationManager -> authenticationManager
-                        .authenticationEntryPoint(entryPoint) // ExceptionResponseHandler 사용
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                         .accessDeniedHandler(new JwtAccessDeniedHandler()))
                 .build();
     }
