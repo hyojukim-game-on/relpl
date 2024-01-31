@@ -12,11 +12,11 @@ spring:
     mongodb:
       url: ENC(KcJ5FQHY4MxVzUNJ6pqxFT7JOUsoi/NlatlZCHbCM/0=)
       host: ENC(vewwyQ0zMOe77WvwzphNSqF0vAjbkvGP+mkABZCw8to=)
-      port: 10272
+      port: ${MONGODB_PORT}
       database: ENC(QYRSKr0uZOD+6mFChXcyMg==)
     redis:
       host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
-      port: 10271
+      port: ${REDIS_PORT}
 
 tmap:
   api:

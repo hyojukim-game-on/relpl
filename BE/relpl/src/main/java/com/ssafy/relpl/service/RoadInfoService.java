@@ -12,10 +12,9 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class RoadInfoService {
 
-    RoadInfoRepository roadInfoRepository;
+    private final RoadInfoRepository roadInfoRepository;
     public List<RoadInfo> getRoadInfo() {
         return roadInfoRepository.findAll();
     }

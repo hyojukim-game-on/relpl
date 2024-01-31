@@ -1,10 +1,12 @@
 package com.ssafy.relpl.util.common;
 
 
+import org.jetbrains.annotations.NotNull;
+
 public class Info {
-    int to; int distSum;
-    Info(int _to, int _distSum) {
-        to = _to; distSum = _distSum;
+    public int cur; public long distSum;
+    public Info(int _cur, long _distSum) {
+        cur = _cur; distSum = _distSum;
     }
 
 }

@@ -16,7 +16,7 @@ import org.locationtech.jts.geom.Point;
 public class RoadInfo {
 
     @Id
-    @Column(name= "road_id")
+    @Column(name= "road_info_id")
     @GeneratedValue(strategy=GenerationType.AUTO)
     Long roadId;
 
@@ -38,8 +38,8 @@ public class RoadInfo {
     @Column(name = "road_info_total_report")
     int roadInfoTotalReport;
 
-    @Column(name = "road_Info_recent_done")
-    int roadInfoRecentDone;
+    @Column(name = "road_info_weight")
+    int roadInfoWeight;
 //
 //    public static RoadInfo creatRoadInfo(RoadInfo road) {
 //        return RoadInfo.builder()
