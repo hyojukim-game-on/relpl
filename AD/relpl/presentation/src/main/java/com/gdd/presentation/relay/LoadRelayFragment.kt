@@ -130,6 +130,15 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    private fun showCannotCreateDistanceProjectDialog(){
+        MaterialAlertDialogBuilder(mainActivity)
+            .setTitle("잠시만요!")
+            .setMessage("반경 50m 이내에 이어할 수 있는 거리 기반 릴레이가 존재합니다. \n" +
+                    "릴레이를 이어 받아 완성해주세요!")
+            .setPositiveButton("확인") { _, _ -> }
+            .show()
+    }
+
     private fun setFabSpeedDialUi() {
         binding.fabCreateRelay.addActionItem(
             SpeedDialActionItem.Builder(
@@ -149,10 +158,10 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         binding.fabCreateRelay.setOnActionSelectedListener { item ->
             when (item.id) {
                 R.id.fab_create_path -> {
-                    showSnackBar("path!!")
+                    showSnackBar("path!")
                 }
                 R.id.fab_create_distance -> {
-                    showSnackBar("distance!!")
+                    showCannotCreateDistanceProjectDialog()
                 }
             }
             binding.fabCreateRelay.close()
