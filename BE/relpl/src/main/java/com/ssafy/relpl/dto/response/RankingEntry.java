@@ -10,5 +10,5 @@ import lombok.*;
 @ToString
 public class RankingEntry {
         private String nickname;
-        private int distance;
+        private double distance;
 }
