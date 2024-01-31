@@ -24,14 +24,14 @@ public class TmapRoad {
 
     @Id
     private String id;
-    private Long tmapId; // link_id
-    private String roadName;
-    private GeoJsonLineString geometry;
+    public Long tmapId; // link_id
+    public String roadName;
+    public GeoJsonLineString geometry;
     private int lanetype;
     private int speed;
-    private int totalDistance;
+    public int totalDistance;
     private int lane;
-    private Long roadHash;
+    public Long roadHash;
 
     private static final Logger logger = LoggerFactory.getLogger(TmapRoad.class);
 

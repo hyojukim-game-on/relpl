@@ -155,7 +155,7 @@ class TmapService {
             } else {
                 endPointHash = indexPointMap.get(endPoint)!!
             }
-            roadInfoList.add(RoadInfo.createRoadInfo(tmapToRoadHashMap.get(road.tmap_id), startPointHash, endPointHash, road.total_distance))
+            roadInfoList.add(RoadInfo.createRoadInfo(tmapToRoadHashMap.get(road.tmapId), startPointHash, endPointHash, road.totalDistance))
             log.info(roadInfoList.last().toString())
         }
         roadInfoRepository.saveAll(roadInfoList)
