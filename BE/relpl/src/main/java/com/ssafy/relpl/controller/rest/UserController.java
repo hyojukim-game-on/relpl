@@ -1,20 +1,16 @@
 package com.ssafy.relpl.controller.rest;
 
 import com.ssafy.relpl.db.postgre.entity.User;
+import com.ssafy.relpl.dto.request.UserAutoLoginRequest;
 import com.ssafy.relpl.dto.request.UserLoginRequest;
 import com.ssafy.relpl.dto.request.UserSignupRequest;
 import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.CommonResult;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 @Slf4j
 @RestController
@@ -30,7 +26,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResult> userLogin(@RequestBody UserLoginRequest request) throws UnsupportedEncodingException {
+    public ResponseEntity<CommonResult> userLogin(@RequestBody UserLoginRequest request) {
         return userService.login(request);
+    }
+
+    @PostMapping("/autologin")
+    public ResponseEntity<CommonResult> autologin(@RequestBody UserAutoLoginRequest request) {
+        return userService.autologin(request);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return userService.test();
     }
 }
