@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
@@ -18,15 +17,20 @@ import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.databinding.FragmentReportBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
-import com.naver.maps.map.util.FusedLocationSource
+import com.naver.maps.map.overlay.Marker
 
 private const val TAG = "ReportFragment_Genseong"
 
@@ -48,21 +52,20 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
 
+        // 뒤로가기 버튼 제어
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     Log.d(TAG, "registerListener: ${bottomSheetBehavior.state}")
-                    if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
-                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                        setDefaultUI()
                     } else {
                         parentFragmentManager.popBackStack()
                     }
                 }
             })
 
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_EXPANDED
-        }
+        //위치권한 확인
         checkLocationPermission()
         /**
          * 이 이후로 위치 권한이 필요한 코드를 작성
@@ -79,15 +82,49 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
         registerListener()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fusedLocationProviderClient.flushLocations()
+    }
+
+    @SuppressLint("ClickableViewAccessibility", "MissingPermission")
     private fun registerListener() {
         binding.layoutBottomSheet.setOnTouchListener { _, _ ->
             true
         }
 
         binding.btnReport.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            Log.d(TAG, "registerListener: ${bottomSheetBehavior.state}")
+            setReportUI()
+        }
+
+        binding.fabCurLocation.setOnClickListener {
+            binding.fabCurLocation.isEnabled = false
+            fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        task.result.also {
+                            val latLng = LatLng(it)
+                            naverMap.moveCamera(
+                                CameraUpdate.scrollTo(latLng).animate(CameraAnimation.Easing)
+                                    .finishCallback {
+                                        naverMap.moveCamera(
+                                            CameraUpdate.zoomTo(16.0)
+                                                .animate(CameraAnimation.Easing)
+                                        )
+                                    }
+                            )
+                            naverMap.locationOverlay.isVisible = true
+                            naverMap.locationOverlay.position = latLng
+                        }
+                    } else {
+                        showSnackBar("위치정보 호출에 실패했습니다.")
+                    }
+                    binding.fabCurLocation.isEnabled = true
+                }
+        }
+
+        binding.efabReportLocation.setOnClickListener {
+            Marker(naverMap.cameraPosition.target).map = naverMap
         }
     }
 
@@ -134,8 +171,41 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
             isTiltGesturesEnabled = false
             isRotateGesturesEnabled = false
         }
+        binding.fabCurLocation.performClick()
+        // Map 이외 초기 UI 세팅
+        bottomSheetSetting()
+        setDefaultUI()
+    }
 
-        naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(fusedLocationProviderClient.lastLocation.result)))
+    private fun bottomSheetSetting(){
+        // 바텀시트 제어
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet)
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState){
+                    STATE_COLLAPSED -> {
+                        naverMap.setContentPadding(0,0,0,0)
+                    }
+                    STATE_EXPANDED -> {
+                        naverMap.setContentPadding(0,0,0,binding.layoutBottomSheet.height)
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+    }
+
+    private fun setDefaultUI(){
+        bottomSheetBehavior.state = STATE_EXPANDED
+        binding.ivReportTargetMarker.visibility = View.GONE
+    }
+
+    private fun setReportUI(){
+        bottomSheetBehavior.state = STATE_COLLAPSED
+        binding.ivReportTargetMarker.visibility = View.VISIBLE
     }
 
 }
