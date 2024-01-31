@@ -33,21 +33,32 @@ public class CoinController {
      * @param coinscoreRequestDto
      * @return
      */
-    @PostMapping(value = "/coinscore")
     // 포인트 내역 조회 로직
+    @PostMapping(value = "/coinscore")
     public ResponseEntity<?> checkCoin(@RequestBody CoinScoreRequestDto coinscoreRequestDto) {
-
         try {
             log.info("여기는 컨트롤러. 포인트 내역 조회 요청 받음");
             coinService.completeProject(coinscoreRequestDto.getUserId());
-            coinService.completePlogging(coinscoreRequestDto.getUserId());
+            coinService.completeShortPlogging(coinscoreRequestDto.getUserId());
             coinService.reportLocationFlag(coinscoreRequestDto.getUserId());
 
             // 사용자 코인 정보 조회
             CoinScoreDataResponseDto coinScoreDataResponseDto = coinService.getCoinScoreData(coinscoreRequestDto.getUserId());
 
-            // 코인 데이터 삽입 예시
-            coinService.insertCoinData(coinscoreRequestDto.getUserId(), 222L, "2024-01-24 12:30", 100, "Sample Event Detail");
+            // 코인 데이터 삽입 예시를 동적으로 만들기
+            Long coinEventId = coinService.generateCoinEventId();  // 동적으로 생성된 값 사용
+            String coinEventDate = coinService.generateCoinEventDate();  // 동적으로 생성된 값 사용
+            int coinAmount = coinService.generateCoinAmount();  // 동적으로 생성된 값 사용
+            String coinEventDetail = coinService.generateCoinEventDetail();  // 동적으로 생성된 값 사용
+
+
+            coinService.insertCoinData(
+                    coinscoreRequestDto.getUserId(),
+                    coinService.generateCoinEventId(),
+                    coinService.generateCoinEventDate(),
+                    coinService.generateCoinAmount(),
+                    coinService.generateCoinEventDetail()
+            );
 
             // 로오직
             SingleResult<CoinScoreDataResponseDto> result = responseService.getSingleResult(coinScoreDataResponseDto, "포인트 내역 조회 성공입니둥", 200);

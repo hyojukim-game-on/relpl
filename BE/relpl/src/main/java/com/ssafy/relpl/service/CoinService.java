@@ -6,14 +6,18 @@ import com.ssafy.relpl.db.postgre.repository.CoinRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.response.CoinScoreDataResponseDto;
 import com.ssafy.relpl.dto.response.CoinScoreResponseDto;
-import com.ssafy.relpl.service.ResponseService; // 왜 계속 회색으로 남아있냐??? ReportService도 그렇던데
+import com.ssafy.relpl.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,37 +33,58 @@ public class CoinService {
     private static final int PROJECT_COMPLETION_POINTS = 100;
 
     // 플로깅 프로젝트 100meter 주행 시, 10point coin 씩 지급
-    private static final int PLOGGING_COMPLETION_POINTS = 10;
+    private static final int PLOGGING_SHORT_POINTS = 10;
 
     // reportCoordinate의 위도,경도 위치를 한번씩 등록할때마다, 100point coin 씩 차감되는 것.
-    private static final int LOCATION_FLAG_DEDUCTION_POINTS = 100;
+    private static final int LOCATION_FLAG_DEDUCTION_POINTS = -100;
 
 
     // 프로젝트 완료 시 지급하는 100 point coin 지급하는 로직 작성
     public void completeProject(Long userId) {
         log.info("프로젝트 완료 시 포인트 {}point 지급", PROJECT_COMPLETION_POINTS);
-        updateUserCoin(userId, PROJECT_COMPLETION_POINTS);
+        updateUserCoin(userId, PROJECT_COMPLETION_POINTS, generateCoinEventDetail());
     }
-
-
 
     // 플로깅 프로젝트 100meter 주행 시, 10point coin 씩 지급 로직
-    public void completePlogging(Long userId) {
-        log.info("100미터 플로깅 완료 시 포인트 {}point 지급", PLOGGING_COMPLETION_POINTS);
-        updateUserCoin(userId, PLOGGING_COMPLETION_POINTS);
+    public void completeShortPlogging(Long userId) {
+        log.info("100미터 플로깅 완료 시 포인트 {}point 지급", PLOGGING_SHORT_POINTS);
+        updateUserCoin(userId, PLOGGING_SHORT_POINTS, generateCoinEventDetail());
     }
-
-
 
     // reportCoordinate의 위도,경도 위치를 한번씩 등록할때마다, 100point coin 씩 차감되는  로직
     public void reportLocationFlag(Long userId) {
         log.info("위치 플래그 제보 시 포인트 {}point 차감", LOCATION_FLAG_DEDUCTION_POINTS);
         // 여기 포인트 차감 로직을 추가
-        updateUserCoin(userId, -LOCATION_FLAG_DEDUCTION_POINTS);// 차감이라 음수?
+        updateUserCoin(userId, LOCATION_FLAG_DEDUCTION_POINTS, generateCoinEventDetail());
+    }
+
+    public Long generateCoinEventId() {
+        // 여기에 동적으로 CoinEventId를 생성하는 로직을 작성하세요.
+        // 예를 들어, 현재 시간을 기반으로 한 값을 사용할 수 있습니다.
+        return System.currentTimeMillis();
+    }
+
+    public String generateCoinEventDate() {
+        // 여기에 동적으로 CoinEventDate를 생성하는 로직을 작성하세요.
+        // 예를 들어, 현재 시간을 기반으로 한 값을 사용할 수 있습니다.
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public int generateCoinAmount() {
+        // 여기에 동적으로 CoinAmount를 생성하는 로직을 작성하세요.
+        // 예를 들어, 랜덤 값을 사용할 수 있습니다.
+        return new Random().nextInt(100) + 1; // 1부터 100 사이의 랜덤 값
+    }
+
+    public String generateCoinEventDetail() {
+        // 여기에 동적으로 CoinEventDetail을 생성하는 로직을 작성하세요.
+        // 예를 들어, 랜덤 문자열을 사용할 수 있습니다.
+        int length = 10;
+        return RandomStringUtils.randomAlphanumeric(length);
     }
 
     // 유저의 현재 코인 정보 조회 및 업데이트 로직 (update vs select)
-    private void updateUserCoin(Long userId, int coinAmount) {
+    private void updateUserCoin(Long userId, int coinAmount, String coinEventDetail) {
         // 사용자의 현재 코인 정보 조회
         List<Coin> userCoins = coinRepository.findAllByUserId(userId);
 
