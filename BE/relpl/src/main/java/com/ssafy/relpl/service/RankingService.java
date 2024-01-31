@@ -10,10 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -43,6 +45,8 @@ public class RankingService {
 
         updateRankingFor(dailyRanking, nickname, moveDistance);
         log.info("dailyRanking 업데이트 완료");
+//        resetRankingTest();
+//        log.info("5초 후 redis 에서 dailyRanking 키가 사라집니다 !");
 
         updateRankingFor(weeklyRanking, nickname, moveDistance);
         log.info("weeklyRanking 업데이트 완료");
@@ -86,13 +90,16 @@ public class RankingService {
     * @return : RankingDataDTO
     * */
     public SingleResult<RankingDataDto> getNowRanking() {
+
         // LinkedHashSet 형태로 redis 에서 key = dailyRanking 에 해당하는 값들 반환 받기
         Set<ZSetOperations.TypedTuple<String>> dailyRankingRedis = zSetOperations.reverseRangeWithScores("dailyRanking", 0, 3);
-        log.info("dailyRankingResult:{}", dailyRankingRedis);
+        log.info("dailyRankingRedis:{}", dailyRankingRedis);
+
         Set<ZSetOperations.TypedTuple<String>> weeklyRankingRedis = zSetOperations.reverseRangeWithScores("weeklyRanking", 0, 3);
-        log.info("weeklyRankingResult:{}", weeklyRankingRedis);
+        log.info("weeklyRankingRedis:{}", weeklyRankingRedis);
+
         Set<ZSetOperations.TypedTuple<String>> monthlyRankingRedis = zSetOperations.reverseRangeWithScores("monthlyRanking", 0, 3);
-        log.info("monthlyRankingResult:{}", monthlyRankingRedis);
+        log.info("monthlyRankingRedis:{}", monthlyRankingRedis);
         
         // RankingDataDto 응답 객체 초기화
         List<RankingEntry> dailyRankingList = new ArrayList<>();
@@ -123,4 +130,42 @@ public class RankingService {
 
         return responseService.getSingleResult(rankingDataDto, "랭킹 조회 성공했습니다.", 200);
     }
+    
+    // TimeToLive (TTL) - 랭킹 갱신 주기마다 기존 키 값 만료되도록 하기
+
+    public void resetRankingTest() {
+        // TTL 설정 로직
+        // 5초뒤에 dailyRanking 키에 할당된 것들이 사라짐
+        redisTemplate.expire("dailyRanking", 5, TimeUnit.SECONDS);
+    }
+
+
+
+
+    // 매일 자정에 Daily Ranking 의 TTL 설정
+    @Scheduled(cron = "0 0 0 * * *")
+    public void resetDailyRankingTTL() {
+        // TTL 설정 로직
+        redisTemplate.expire("dailyRanking", 24, TimeUnit.HOURS);
+    }
+
+    // 매주 일요일 자정에 Weekly Ranking의 TTL 설정
+    @Scheduled(cron = "0 0 0 * * SUN")
+    public void resetWeeklyRankingTTL() {
+        // TTL 설정 로직
+        redisTemplate.expire("weeklyRanking", 168, TimeUnit.HOURS);
+    }
+
+    // 매월 1일 자정에 Monthly Ranking의 TTL 설정
+    @Scheduled(cron = "0 0 0 1 * *")
+    public void resetMonthlyRankingTTL() {
+        // TTL 설정 로직
+        // 일단 28일 후에 만료되도록 설정해둠 (하드코딩)
+        redisTemplate.expire("monthlyRanking", 672, TimeUnit.HOURS);
+    }
+    
+    
+    
+    
+    
 }
