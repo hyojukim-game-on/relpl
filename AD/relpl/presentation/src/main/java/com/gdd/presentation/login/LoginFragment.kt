@@ -7,6 +7,7 @@ import android.view.animation.PathInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionManager
+import com.gdd.domain.model.user.User
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.R
@@ -53,11 +54,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 
     private fun registerListener(){
         binding.btnSignin.setOnClickListener {
-            if (binding.layoutLoginInputs.visibility == View.GONE){
-                setLoginUi()
-            } else {
-                loginViewModel.login()
-            }
+            startActivity(Intent(_activity,MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra("user", User(
+                    0,"die",0,0,0,"12345678","","","")
+                )
+            })
+//            if (binding.layoutLoginInputs.visibility == View.GONE){
+//                setLoginUi()
+//            } else {
+//                loginViewModel.login()
+//            }
         }
 
         binding.btnSignup.setOnClickListener {
