@@ -2,6 +2,8 @@ package com.gdd.presentation.base
 
 import android.content.Intent
 import android.os.Build
+import com.gdd.domain.model.Point
+import com.naver.maps.geometry.LatLng
 import java.io.Serializable
 import java.text.DecimalFormat
 
@@ -28,4 +30,8 @@ fun Int.distanceFormat(): String{
     val m = this % 1000
 
     return "$km ${m}m"
+}
+
+fun Point.toLatLng(): LatLng{
+    return LatLng(this.x, this.y)
 }

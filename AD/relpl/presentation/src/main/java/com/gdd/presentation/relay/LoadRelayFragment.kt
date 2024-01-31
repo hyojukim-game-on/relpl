@@ -23,7 +23,9 @@ import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
+import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentLoadRelayBinding
+import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.naver.maps.geometry.LatLng
@@ -73,13 +75,68 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     }
 
     private fun registerObserver(){
-        viewModel.markerResult.observe(viewLifecycleOwner){
-            it.forEachIndexed { idx, coordinate ->
+        viewModel.markerResult.observe(viewLifecycleOwner){ result ->
+            /*
+            result.forEach{
                 Marker().apply {
-                    position =  coordinate
+                    position =  it.stopCoordinate.toLatLng()
                     map = naverMap
                     icon = OverlayImage.fromResource(R.drawable.ic_marker)
-                    iconTintColor = if (idx % 4 == 0) resources.getColor(R.color.sage_brown) else resources.getColor(R.color.sage_green_dark)
+                    iconTintColor = if (it.isPath) resources.getColor(R.color.sage_green_dark) else resources.getColor(R.color.sage_brown)
+                    tag = it.projectId
+                    setOnClickListener {marker ->
+                        showSnackBar(marker.tag.toString())
+                        true
+                    }
+                }
+            }
+             */
+
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+                    it.forEach{
+                        Marker().apply {
+                            position =  it.stopCoordinate.toLatLng()
+                            map = naverMap
+                            icon = OverlayImage.fromResource(R.drawable.ic_marker)
+                            iconTintColor = if (it.isPath) resources.getColor(R.color.sage_green_dark) else resources.getColor(R.color.sage_brown)
+                            tag = it.projectId.toString()
+                            setOnClickListener {marker ->
+//                                showSnackBar(marker.tag.toString())
+                                viewModel.getDistanceRelayInfo(this.tag.toString().toLong())
+                                true
+                            }
+                        }
+                    }
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
+
+        viewModel.isExistDistanceResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+                    //존재하므로 생성 막아야함
+                    if (it){
+                        showCannotCreateDistanceProjectDialog()
+                    }else{
+                        // 거리 릴레이 생성 다이얼로그
+                    }
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
                 }
             }
         }
@@ -93,7 +150,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         naverMap.uiSettings.isLocationButtonEnabled = true
 
-        viewModel.loadMarker()
+        viewModel.getAllMarker()
     }
 
     // region 권한 및 fab
@@ -139,6 +196,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             .show()
     }
 
+    @SuppressLint("MissingPermission")
     private fun setFabSpeedDialUi() {
         binding.fabCreateRelay.addActionItem(
             SpeedDialActionItem.Builder(
@@ -161,6 +219,9 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                     showSnackBar("path!")
                 }
                 R.id.fab_create_distance -> {
+                    val locationManager = mainActivity.getSystemService(LOCATION_SERVICE) as LocationManager
+                    val current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
+                    viewModel.isExistDistanceRelay(current.latitude, current.longitude)
                     showCannotCreateDistanceProjectDialog()
                 }
             }

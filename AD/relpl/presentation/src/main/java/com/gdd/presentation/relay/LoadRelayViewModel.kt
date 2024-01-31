@@ -3,34 +3,82 @@ package com.gdd.presentation.relay
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.gdd.domain.model.Point
+import com.gdd.domain.model.relay.DistanceRelayInfo
+import com.gdd.domain.model.relay.RelayMarker
+import com.gdd.domain.usecase.relay.GetAllRelayMarkerUseCase
+import com.gdd.domain.usecase.relay.GetDistanceRelayInfoUseCase
+import com.gdd.domain.usecase.relay.IsExistDistanceRelayUseCase
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoadRelayViewModel @Inject constructor(
-
+    private val getAllRelayMarkerUseCase: GetAllRelayMarkerUseCase,
+    private val getDistanceRelayInfoUseCase: GetDistanceRelayInfoUseCase,
+    private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase
 ) : ViewModel() {
-    private val _markerResult = MutableLiveData<List<LatLng>>()
-    val markerResult: LiveData<List<LatLng>>
+
+    private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
+    val markerResult: LiveData<Result<List<RelayMarker>>>
         get() = _markerResult
 
-    fun loadMarker(){
-        _markerResult.postValue(tempMarkerList)
+    /*
+    private val _markerResult = MutableLiveData<List<RelayMarker>>()
+    val markerResult: LiveData<List<RelayMarker>>
+        get() = _markerResult
+     */
+
+    private val _isExistDistanceResult = MutableLiveData<Result<Boolean>>()
+    val isExistDistanceResult: LiveData<Result<Boolean>>
+        get() = _isExistDistanceResult
+
+    private val _distanceRelayInfoResult = MutableLiveData<Result<DistanceRelayInfo>>()
+    val distanceRelayInfoResult: LiveData<Result<DistanceRelayInfo>>
+        get() = _distanceRelayInfoResult
+
+    fun getAllMarker(){
+        viewModelScope.launch {
+            getAllRelayMarkerUseCase().let {
+                _markerResult.postValue(it)
+//                _markerResult.postValue(tempMarkerList)
+            }
+        }
     }
+
+    fun isExistDistanceRelay(lat: Double, lng: Double){
+        viewModelScope.launch {
+            isExistDistanceRelayUseCase(lat, lng).let {
+                _isExistDistanceResult.postValue(it)
+            }
+        }
+    }
+
+    fun getDistanceRelayInfo(projectId: Long){
+        viewModelScope.launch {
+            getDistanceRelayInfoUseCase(projectId).let {
+                _distanceRelayInfoResult.postValue(it)
+            }
+        }
+    }
+
+
     companion object{
-        val tempMarkerList = arrayListOf<LatLng>(
-            LatLng(36.108899, 128.418671),
-            LatLng(36.108540, 128.420353),
-            LatLng(36.107000, 128.422437),
-            LatLng(36.106996,  128.422379),
-            LatLng(36.105022, 128.422064),
-            LatLng(36.104238, 128.419391),
-            LatLng(36.104024, 128.418710),
-            LatLng(36.101772, 128.420475),
-            LatLng(36.101640, 128.421811),
-            LatLng(36.100745, 128.420818),
-            LatLng(36.104214, 128.425846)
+        val tempMarkerList = arrayListOf<RelayMarker>(
+            RelayMarker(1, Point(36.108899, 128.418671), true),
+            RelayMarker(2, Point(36.108540, 128.420353), true),
+            RelayMarker(3, Point(36.107000, 128.422437), false),
+            RelayMarker(4, Point(36.106996,  128.422379), true),
+            RelayMarker(5, Point(36.105022, 128.422064), true),
+            RelayMarker(6, Point(36.104238, 128.419391), true),
+            RelayMarker(7, Point(36.104024, 128.418710), true),
+            RelayMarker(8, Point(36.101772, 128.420475), false),
+            RelayMarker(9, Point(36.101640, 128.421811), false),
+            RelayMarker(10, Point(36.100745, 128.420818), true),
+            RelayMarker(11, Point(36.104214, 128.425846), false),
         )
     }
 }
