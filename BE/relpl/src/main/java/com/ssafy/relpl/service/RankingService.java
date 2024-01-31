@@ -37,7 +37,7 @@ public class RankingService {
     }
 
 
-
+    @Transactional
     public CommonResult addOrUpDateRanking(String nickname, double moveDistance) {
 
         String dailyRanking = "dailyRanking";
@@ -67,20 +67,21 @@ public class RankingService {
 
 
     // redis 에 nickname 으로 moveDistance 있는지 검사
-
+    @Transactional
     public Optional<Double> checkMemberExists(String key, String nickname) {
         return Optional.ofNullable(zSetOperations.score(key, nickname));
     }
 
 
     // redis 에 rankingKey key , nickname member , moveDistance score 로 추가된 값 insert
-
+    @Transactional
     public void addOrUpdateMember(String key, String nickname, double moveDistance) {
         Boolean isAdded = zSetOperations.add(key, nickname, moveDistance);
     }
 
 
     // redis 에 rankingKey 에 대한 moveDistance 값이 있으면 추가, 없으면 새로 넣어주기
+    @Transactional
     public void updateRankingFor(String key, String nickname, double moveDistance) {
         Optional<Double> presentMoveDistance = checkMemberExists(key, nickname);
 
@@ -106,7 +107,7 @@ public class RankingService {
             }
     }
     * */
-
+    @Transactional
     public SingleResult<RankingDataDto> getNowRanking() {
         try {
             // LinkedHashSet 형태로 redis 에서 key = dailyRanking 에 해당하는 값들 반환 받기
@@ -158,6 +159,7 @@ public class RankingService {
     
     // TimeToLive (TTL) - 랭킹 갱신 주기마다 기존 키 값 만료되도록 하기
 
+    @Transactional
     public void resetRankingTest() {
         // TTL 설정 로직
         // 5초뒤에 dailyRanking 키에 할당된 것들이 사라짐
@@ -169,6 +171,7 @@ public class RankingService {
 
     // 매일 자정에 Daily Ranking 의 TTL 설정
     @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
     public void resetDailyRankingTTL() {
         // TTL 설정 로직
         redisTemplate.expire("dailyRanking", 24, TimeUnit.HOURS);
@@ -176,6 +179,7 @@ public class RankingService {
 
     // 매주 일요일 자정에 Weekly Ranking의 TTL 설정
     @Scheduled(cron = "0 0 0 * * SUN")
+    @Transactional
     public void resetWeeklyRankingTTL() {
         // TTL 설정 로직
         redisTemplate.expire("weeklyRanking", 168, TimeUnit.HOURS);
@@ -183,6 +187,7 @@ public class RankingService {
 
     // 매월 1일 자정에 Monthly Ranking의 TTL 설정
     @Scheduled(cron = "0 0 0 1 * *")
+    @Transactional
     public void resetMonthlyRankingTTL() {
         // TTL 설정 로직
         // 일단 28일 후에 만료되도록 설정해둠 (하드코딩)
