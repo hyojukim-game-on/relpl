@@ -100,6 +100,12 @@
 
     <string name="home_welcome">%1$s님 환영합니다!</string>
     <string name="home_total_distance">총 %1$s 걸으셨습니다</string>
+    
+    
+    <string name="load_relay_instructions">지도에 있는 마커를 선택하여 릴레이를 이어가거나 \n
+        새로운 릴레이를 생성해 보세요!</string>
+    <string name="load_relay_create_path">경로를 설정하여 시작하기</string>
+    <string name="load_relay_create_distance">거리를 설정하여 시작하기</string>
 
     <string name="report_ment">플로깅이 필요한 지역을 제보해 주세요!</string>
     <string name="report_guide">제보된 위치는 경로 추천 시 반영됩니다</string>

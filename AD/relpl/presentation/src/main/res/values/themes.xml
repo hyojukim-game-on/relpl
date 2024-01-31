@@ -123,6 +123,10 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="Relpl.Text.Bold.16.Black" parent="Relpl.Text">
+        <item name="android:fontFamily">@font/font_wanted_sans_bold</item>
+    </style>
+
 
 
     <style name="Relpl.Button" parent="Theme.Relpl">
