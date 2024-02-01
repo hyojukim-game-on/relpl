@@ -46,7 +46,6 @@ public class SecurityConfig {
                             .requestMatchers("/api/user/token/reissue").permitAll() //토큰 재발급 열어둠
                             .requestMatchers("/api/sample/post").permitAll()
                             .requestMatchers("/api/sample/get/**").permitAll()
-                            .requestMatchers("/api/user/mypage").permitAll()
                             .anyRequest().authenticated(); //인증 필요
                     })
                 .csrf((csrf) -> csrf.disable())
