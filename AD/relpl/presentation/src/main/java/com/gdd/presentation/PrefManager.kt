@@ -3,7 +3,9 @@ package com.gdd.presentation
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 
+private const val TAG = "PrefManager_Genseong"
 /**
  * Only Use By Hilt Injection
  *
@@ -12,6 +14,10 @@ import android.content.SharedPreferences
 class PrefManager(context: Context) {
     private var pref: SharedPreferences =
         context.getSharedPreferences("relpl_preference", Activity.MODE_PRIVATE)
+
+    init {
+        Log.d(TAG, "Preference: ${this.pref.all}")
+    }
 
     /**
      * @param id
