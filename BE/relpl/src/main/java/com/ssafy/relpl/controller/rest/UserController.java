@@ -1,8 +1,8 @@
 package com.ssafy.relpl.controller.rest;
 
-import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.dto.request.UserAutoLoginRequest;
 import com.ssafy.relpl.dto.request.UserLoginRequest;
+import com.ssafy.relpl.dto.request.UserReissueRequest;
 import com.ssafy.relpl.dto.request.UserSignupRequest;
 import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.CommonResult;
@@ -33,6 +33,11 @@ public class UserController {
     @PostMapping("/autologin")
     public ResponseEntity<CommonResult> autologin(@RequestBody UserAutoLoginRequest request) {
         return userService.autologin(request);
+    }
+
+    @PostMapping("/token/reissue")
+    public ResponseEntity<CommonResult> reissue(@RequestBody UserReissueRequest request) {
+        return userService.reissue(request);
     }
 
     @GetMapping("/test")
