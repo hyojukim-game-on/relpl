@@ -2,6 +2,7 @@ package com.ssafy.relpl.db.postgre.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,7 +32,7 @@ public class Report {
     private Long tmapId;
 
     //외래키
-    @JsonManagedReference
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER) // 다대일(N:1) 관계를 표시
     @JoinColumn(name = "user_id")
     private User user;

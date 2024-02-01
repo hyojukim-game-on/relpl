@@ -108,7 +108,7 @@ public class ReportService {
 
         } else {
             // 등록되지 않은 유저인 경우
-            return responseService.getFailResult(400, "등록되지 않은 유저입니다.", Collections.emptyList());
+            return responseService.getFailResult(400, "등록되지 않은 유저입니당.", Collections.emptyList());
         }
     }
 }
