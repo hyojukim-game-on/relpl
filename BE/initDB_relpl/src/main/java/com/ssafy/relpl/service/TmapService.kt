@@ -232,7 +232,7 @@ class TmapService {
     @Value("\${tmap.api.key6}")
     lateinit var key6: String
 
-    @Value("\${tmap.api.key6}")
+    @Value("\${tmap.api.key7}")
     lateinit var key7: String
 
     @Value("\${tmap.api.key6}")
