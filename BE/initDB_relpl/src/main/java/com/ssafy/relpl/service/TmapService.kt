@@ -235,7 +235,7 @@ class TmapService {
     @Value("\${tmap.api.key7}")
     lateinit var key7: String
 
-    @Value("\${tmap.api.key6}")
+    @Value("\${tmap.api.key8}")
     lateinit var key8: String
 
     var keys = mutableListOf<String>()
