@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface CoinRepository extends JpaRepository<Coin, Long> {
     // 사용자 ID로 코인 조회
-    List<Coin> findAllByUserId(Long userId);
+    List<Coin> findAllByUserUserId(Long userId);
 
 }

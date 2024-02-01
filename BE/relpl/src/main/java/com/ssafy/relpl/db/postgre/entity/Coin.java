@@ -28,7 +28,6 @@ public class Coin {
     private String coinEventDetail; // 포인트 이벤트 상세 내용
 
     //외래키
-    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER) // 다대일(N:1) 관계를 표시
     @JoinColumn(name = "user_id")
     private User user;

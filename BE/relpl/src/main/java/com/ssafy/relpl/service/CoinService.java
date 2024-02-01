@@ -41,7 +41,7 @@ public class CoinService {
         if (existingUser != null) {
             // 등록되어 존재하는 유저인 경우
             // 코인 지급 내역 조회
-            List<Coin> coins = coinRepository.findAllByUserId(userId);
+            List<Coin> coins = coinRepository.findAllByUserUserId(userId);
 
             CoinScoreDataResponseDto responseDto = null;
             if (!coins.isEmpty()) {
@@ -90,7 +90,7 @@ public class CoinService {
         if (existingUser != null) {
             // 등록되어 존재하는 유저인 경우
             // 코인 지급 내역 조회
-            List<Coin> coins = coinRepository.findAllByUserId(userId);
+            List<Coin> coins = coinRepository.findAllByUserUserId(userId);
 
             // 총 코인 액수 계산
             int totalCoin = 0;
