@@ -48,7 +48,7 @@ public class CoinController {
         } catch (Exception e) {
             // 내역 조회 실패
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(responseService.getFailResult(400, "포인트 내역 조회에 실패하였습니다."));
+                    .body(responseService.getFailResult(400, "등록되지 않은 ID입니다. 포인트 내역 조회에 실패하였습니다."));
         }
     }
 
@@ -67,10 +67,7 @@ public class CoinController {
         } catch (Exception e) {
             // 바코드 조회 실패
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(responseService.getFailResult(400, "포인트 바코드 조회에 실패하였습니다."));
+                    .body(responseService.getFailResult(400, "등록되지 않은 ID입니다. 포인트 바코드 조회에 실패하였습니다."));
         }
     }
 }
-
-
-

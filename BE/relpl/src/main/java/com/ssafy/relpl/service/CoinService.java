@@ -43,18 +43,19 @@ public class CoinService {
             // 코인 지급 내역 조회
             List<Coin> coins = coinRepository.findAllByUserId(userId);
 
+            CoinScoreDataResponseDto responseDto = null;
             if (!coins.isEmpty()) {
                 // 총 코인 액수 계산
                 int totalCoin = 0;
 
                 // 응답 데이터 구성
-                CoinScoreDataResponseDto responseDto = new CoinScoreDataResponseDto();
+                responseDto = new CoinScoreDataResponseDto();
                 List<CoinScoreResponseDto> coinScoreResponseDtos = new ArrayList<>();
 
                 for (Coin coin : coins) {
                     totalCoin += coin.getCoinAmount();
 
-                    CoinScoreResponseDto coinScoreResponseDto = convertToCoinScoreResponseDto(coin);
+                    CoinScoreResponseDto coinScoreResponseDto = CoinScoreResponseDto.convertFromCoin(coin);
                     coinScoreResponseDtos.add(coinScoreResponseDto);
                 }
 
@@ -64,23 +65,14 @@ public class CoinService {
                 return responseService.getSingleResult(responseDto, "코인 지급 내역 조회 성공", 200);
             } else {
                 // 코인 지급 내역이 없는 경우
-                return responseService.getFailResult(204, "코인 지급 내역이 없습니다.", new CoinScoreDataResponseDto());
+                return responseService.getSingleResult(responseDto, "코인 지급 내역이 없습니당.", 200);
             }
         } else {
             // 등록되지 않은 유저인 경우
-            return responseService.getFailResult(400, "등록되지 않은 유저입니다.", new CoinScoreDataResponseDto());
+            return (SingleResult<CoinScoreDataResponseDto>) responseService.getFailResult(400, "등록되지 않은 유저입니다.");
         }
     }
 
-
-    // 코인 지급 내역을 응답 DTO로 변환하는 메서드
-    private CoinScoreResponseDto convertToCoinScoreResponseDto(Coin coin) {
-        CoinScoreResponseDto responseDto = new CoinScoreResponseDto();
-        responseDto.setCoinEventDate(coin.getCoinEventDate());
-        responseDto.setCoinAmount(coin.getCoinAmount());
-        responseDto.setCoinEventDetail(coin.getCoinEventDetail());
-        return responseDto;
-    }
 
     // coinBarcode 조회 메서드
     public SingleResult<CoinBarcodeResponseDto> coinBarcode(Long userId) {
@@ -113,7 +105,7 @@ public class CoinService {
             return responseService.getSingleResult(responseDto, "바코드 조회 성공", 200);
         } else {
             // 등록되지 않은 유저인 경우
-            return responseService.getFailResult(400, "등록되지 않은 유저입니다.", new CoinBarcodeResponseDto());
+            return (SingleResult<CoinBarcodeResponseDto>) responseService.getFailResult(400, "등록되지 않은 유저입니다.");
         }
     }
 }
