@@ -7,6 +7,6 @@ import java.util.List;
 
 
 public interface TmapRoadRepository extends MongoRepository<TmapRoad, Long> {
-    @Query("{'roadHash': {$in: ?0}}")
+    @Query("{'tmapId': {$in: ?0}}")
     List<TmapRoad> findAllByroadHash(List<Long> tmapIds);
 }

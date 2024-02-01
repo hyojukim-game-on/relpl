@@ -3,10 +3,12 @@ package com.ssafy.relpl.db.mongo.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.geo.Point;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
-import org.springframework.data.mongodb.core.geo.GeoJsonMultiLineString;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,4 +25,10 @@ public class RecommendProject {
 //    private int speed;
 //    private int total_distance;
 //    private int lane;
+
+    public static RecommendProject createRecommendProject(List<Point> lineString) {
+        return RecommendProject.builder()
+                .recommendLineString(new GeoJsonLineString(lineString))
+                .build();
+    }
 }
