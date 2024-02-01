@@ -1,13 +1,8 @@
 package com.ssafy.relpl.controller.rest;
 
-import com.ssafy.relpl.db.postgre.entity.User;
-import com.ssafy.relpl.dto.request.CoinBarcodeRequestDto;
-import com.ssafy.relpl.dto.request.CoinScoreRequestDto;
-import com.ssafy.relpl.dto.response.*;
 import com.ssafy.relpl.service.CoinService;
 import com.ssafy.relpl.service.ResponseService;
 import com.ssafy.relpl.service.UserService;
-import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
