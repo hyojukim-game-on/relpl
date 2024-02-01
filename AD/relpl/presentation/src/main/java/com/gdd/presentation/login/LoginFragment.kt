@@ -54,17 +54,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 
     private fun registerListener(){
         binding.btnSignin.setOnClickListener {
-            startActivity(Intent(_activity,MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                putExtra("user", User(
-                    0,"die",0,0,0,"12345678","","","")
-                )
-            })
-//            if (binding.layoutLoginInputs.visibility == View.GONE){
-//                setLoginUi()
-//            } else {
-//                loginViewModel.login()
-//            }
+            if (binding.layoutLoginInputs.visibility == View.GONE){
+                setLoginUi()
+            } else {
+                loginViewModel.login()
+            }
         }
 
         binding.btnSignup.setOnClickListener {
