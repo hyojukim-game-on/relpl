@@ -99,11 +99,11 @@ public class UserService {
                 //유저가 존재하고, 회원탈퇴를 하지 않은 경우
                 return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), "accessToken", "refreshToken"), "로그인 성공", 200));
             }
-            log.info("isUserIsActive: " + user.get().isUserIsActive());
+            log.info("autologin isUserIsActive: " + user.get().isUserIsActive());
             //유저가 존재하고, 회원탈퇴를 한 경우
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "로그인 실패"));
         }
-        log.info("isPresent: " + user.isPresent());
+        log.info("autologin isPresent: " + user.isPresent());
         //유저가 존재하지 않은 경우
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "로그인 실패"));
     }
@@ -124,14 +124,19 @@ public class UserService {
                     String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, request.getUserId());
                     String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, String.valueOf(request.getUserId()));
 
+                    log.info("reissue success");
                     return ResponseEntity.ok(responseService.getSingleResult(UserReissueResponse.createUserReissueResponse(accessToken, refreshToken), "재발급 성공", 200));
                 }
+                log.info("reissue 401 error : refresh token 이 일치하지 않습니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "refresh token 이 일치하지 않습니다."));
             }
+            log.info("reissue 401 error : 재발급 실패");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
         } catch (BaseException e) {
+            log.info("reissue 401 error : 만료된 토큰입니다. 다시 로그인하세요.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "만료된 토큰입니다. 다시 로그인하세요."));
         } catch (Exception e) {
+            log.info("reissue 401 error : 재발급 실패");
             log.info("error 5 : " + e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
         }

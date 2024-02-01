@@ -58,6 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (BaseException e) {
+            log.info("JwtFilter 401 error");
             ResponseEntity<String> responseEntity = exceptionResponseHandler.handleBaseException(e);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
