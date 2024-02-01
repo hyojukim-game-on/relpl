@@ -104,7 +104,7 @@ class TmapService {
                                     var endPointHash = -1L
 
 
-                                    if (pointHashMap.contains(startPoint)) {
+                                    if (!pointHashMap.contains(startPoint)) {
                                         startPointHash = roadHashIndex
                                         val pointHashEntity = PointHash.createPointHash(roadHashIndex, startPoint)
                                         insertPointHash(pointHashEntity)
@@ -113,7 +113,7 @@ class TmapService {
                                         startPointHash = pointHashMap.get(startPoint)!!
                                     }
 
-                                    if (pointHashMap.contains(endPoint)) {
+                                    if (!pointHashMap.contains(endPoint)) {
                                         endPointHash = roadHashIndex
                                         insertPointHash(PointHash.createPointHash(roadHashIndex, endPoint))
                                         pointHashMap.put(endPoint, roadHashIndex++)
