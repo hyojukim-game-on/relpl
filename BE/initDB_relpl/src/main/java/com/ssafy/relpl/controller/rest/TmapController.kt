@@ -42,13 +42,13 @@ class TmapController {
                             , BigDecimal(insertRoadRequestDto.startPoint.x)
                             , BigDecimal(insertRoadRequestDto.endPoint.y)
                             , BigDecimal(insertRoadRequestDto.endPoint.x))
-                    val pointHash = tmapService.insertAllRoadInfo(tmapData)
-                    log.info("insertAllRoadHash 완료")
-                    tmapService.insertAllRoads(tmapData.roads)
-                    log.info("insertAllRoads 완료")
-                    tmapService.insertAllRoadHash(tmapData.roadsHash)
-                    log.info("insertAllRoadHash 완료")
-                    tmapService.insertAllPointHash(pointHash)
+//                    val pointHash = tmapService.insertAllRoadInfo(tmapData)
+//                    log.info("insertAllRoadHash 완료")
+//                    tmapService.insertAllRoads(tmapData.roads)
+//                    log.info("insertAllRoads 완료")
+//                    tmapService.insertAllRoadHash(tmapData.roadsHash)
+//                    log.info("insertAllRoadHash 완료")
+//                    tmapService.insertAllPointHash(pointHash)
                 }
             }
         } catch (e: Exception) {
@@ -66,7 +66,7 @@ class TmapController {
         val startLng = BigDecimal(timesRoadRequestDto.startPoint.x)
         val endLat = BigDecimal(timesRoadRequestDto.endPoint.y)
         val endLng = BigDecimal(timesRoadRequestDto.endPoint.x)
-        var holeCnt = ((startLat - endLat).div(BigDecimal(0.000025)) * ((endLng - startLng).div(BigDecimal(0.000025)))).toInt() + 2
+        var holeCnt = ((startLat - endLat).div(BigDecimal(0.00005)) * ((endLng - startLng).div(BigDecimal(0.00005)))).toInt() + 2
         return ResponseEntity.ok().body(CommonResponse.OK("총 횟수 : $holeCnt", true))
     }
 }

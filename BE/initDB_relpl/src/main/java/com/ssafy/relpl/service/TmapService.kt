@@ -57,24 +57,27 @@ class TmapService {
         val roadSet = mutableSetOf<Long>()
         val roadDetailList = mutableListOf<TmapRoad>()
         val roadHashList = mutableListOf<RoadHash>()
+        val pointHashMap = mutableMapOf<Point, Long>()
+
         var hashVal = 0L
 
         var lat = startLat
         var count = 0
-        var holeCnt = ((startLat - endLat).div(BigDecimal(0.000025)) * ((endLng - startLng).div(BigDecimal(0.000025)))).toInt() + 2
+        var holeCnt = ((startLat - endLat).div(BigDecimal(0.00005)) * ((endLng - startLng).div(BigDecimal(0.00005)))).toInt() + 2
         var i = 0
+        var roadHashIndex = 0L
         var apiKey = getkeys().get(i++)
         coroutineScope {
             launch {
                 while (lat >= endLat) {
-                    lat = lat.minus(BigDecimal(0.000025))
+                    lat = lat.minus(BigDecimal(0.00005))
                     var lng = startLng;
                     while (lng <= endLng) {
-                        lng = lng.plus(BigDecimal(0.000025))
+                        lng = lng.plus(BigDecimal(0.00005))
                         try {
                             ++count
-                            if (count % 19000 == 0) {
-                                count %= 19000
+                            if (count % 20000 == 0) {
+                                count %= 20000
                                 apiKey = getkeys().get(i++)
                             }
                             val responseData = callTmapApi(lat.toDouble(), lng.toDouble(), apiKey)
@@ -83,10 +86,44 @@ class TmapService {
                             log.info("count: ${--holeCnt}")
                             responseDTO.resultData.let {
                                 if (!roadSet.contains(responseDTO.resultData.header.linkId)) {
+
                                     roadSet.add(responseDTO.resultData.header.linkId)
                                     log.info(" lat: $lat, lng: $lng, API Call: $responseDTO\"")
-                                    roadDetailList.add(TmapRoad.createRoad(responseDTO, hashVal))
-                                    roadHashList.add(RoadHash.createRoadHash(hashVal++, responseDTO.resultData.header.linkId))
+//                                    roadDetailList.add(TmapRoad.createRoad(responseDTO, hashVal))
+                                    val tmapRoad = TmapRoad.createRoad(responseDTO, hashVal);
+                                    insertTmapRoad(tmapRoad)
+                                    insertRoadHash(RoadHash.createRoadHash(hashVal++, responseDTO.resultData.header.linkId))
+
+
+                                    val start = tmapRoad.geometry.coordinates.first()
+                                    val startPoint = geometryFactory.createPoint(Coordinate(start.x, start.y))
+                                    var startPointHash = -1L
+
+                                    val end = tmapRoad.geometry.coordinates.last()
+                                    val endPoint = geometryFactory.createPoint(Coordinate(end.x, end.y))
+                                    var endPointHash = -1L
+
+
+                                    if (pointHashMap.contains(startPoint)) {
+                                        startPointHash = roadHashIndex
+                                        val pointHashEntity = PointHash.createPointHash(roadHashIndex, startPoint)
+                                        insertPointHash(pointHashEntity)
+                                        pointHashMap.put(startPoint, roadHashIndex++)
+                                    } else {
+                                        startPointHash = pointHashMap.get(startPoint)!!
+                                    }
+
+                                    if (pointHashMap.contains(endPoint)) {
+                                        endPointHash = roadHashIndex
+                                        insertPointHash(PointHash.createPointHash(roadHashIndex, endPoint))
+                                        pointHashMap.put(endPoint, roadHashIndex++)
+                                    } else {
+                                        endPointHash = pointHashMap.get(endPoint)!!
+                                    }
+                                    // point hash 관련 로직 작성 완료
+                                    // tmap 데이터 넣는 로직 작성 필요
+                                    val roadInfo = RoadInfo.createRoadInfo(tmapRoad.tmapId, startPointHash, endPointHash, tmapRoad.totalDistance)
+                                    insertRoadInfo(roadInfo)
                                 }
                             }
                         } catch (e: Exception) {
@@ -101,16 +138,31 @@ class TmapService {
         return TmapData(roadDetailList, roadHashList)
     }
 
-    fun insertAllRoads(roads: List<TmapRoad>) {
-        tmapRoadRepository.saveAll(roads)
+//    fun insertAllRoads(roads: List<TmapRoad>) {
+//        tmapRoadRepository.saveAll(roads)
+//    }
+//
+//    fun insertAllRoadHash(roadsHash: List<RoadHash>) {
+//        roadHashRepository.saveAll(roadsHash)
+//    }
+//
+//    fun insertAllPointHash(pointHashList: List<PointHash>){
+//        pointHashRepository.saveAll(pointHashList)
+//    }
+    fun insertPointHash(pointHash: PointHash) {
+        pointHashRepository.save(pointHash)
     }
 
-    fun insertAllRoadHash(roadsHash: List<RoadHash>) {
-        roadHashRepository.saveAll(roadsHash)
+    fun insertRoadHash(roadHash: RoadHash) {
+        roadHashRepository.save(roadHash)
     }
 
-    fun insertAllPointHash(pointHashList: List<PointHash>){
-        pointHashRepository.saveAll(pointHashList)
+    fun insertTmapRoad(tmapRoad: TmapRoad) {
+        tmapRoadRepository.save(tmapRoad)
+    }
+
+    fun insertRoadInfo(roadInfo: RoadInfo) {
+        roadInfoRepository.save(roadInfo)
     }
 
     fun insertAllRoadInfo(tmapData: TmapData) : List<PointHash>{
@@ -180,9 +232,15 @@ class TmapService {
     @Value("\${tmap.api.key6}")
     lateinit var key6: String
 
+    @Value("\${tmap.api.key6}")
+    lateinit var key7: String
+
+    @Value("\${tmap.api.key6}")
+    lateinit var key8: String
+
     var keys = mutableListOf<String>()
     fun getkeys(): List<String> {
-        if (keys.isEmpty()) keys = mutableListOf(key1, key2, key3, key4, key5, key6)
+        if (keys.isEmpty()) keys = mutableListOf(key7, key8)
         return keys
     }
 }

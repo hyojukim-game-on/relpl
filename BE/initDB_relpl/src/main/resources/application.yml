@@ -44,6 +44,12 @@ tmap:
 
     key6: ENC(NlBgeuShNL3O+38XF4hbMhQcKOyTGtCSCpIKa9lmouyd4f5+48Jr10/rxtEbLj0ZnExqTm54Qys=)
     #choe
+
+    key7: ENC(dQWks83Pnr42llyVbiI3tcGmgrTXOC/xnYvIRVdQewGCVYSGZ2vVF+YBjydf3jSucpGlLnkvcu8=)
+    #kimi
+
+    key8: ENC(n3zeLeJPbxmXwXR5qdwH4SGtA6UYFd7loi+9pM+67RSmhKcaZ7mn8r2rbW5cM/HpaZtK1Xkgk9c=)
+    #jee
 cloud:
   aws:
     s3:
