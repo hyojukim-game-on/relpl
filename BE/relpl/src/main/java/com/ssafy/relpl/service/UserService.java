@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +39,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTemplate redisTemplate;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    @Qualifier("redisTemplate")  // 여기에 @Qualifier 어노테이션 추가
+    private final RedisTemplate<String, Object> redisTemplate;
+//    private final RedisTemplate redisTemplate;
+    private final AuthenticationManager authenticationManager;
 
     public ResponseEntity<CommonResult> save(UserSignupRequest request) throws BaseException {
         //사용자가 이미 존재하는지 확인

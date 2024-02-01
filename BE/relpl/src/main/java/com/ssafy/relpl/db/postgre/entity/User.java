@@ -1,12 +1,11 @@
 package com.ssafy.relpl.db.postgre.entity;
 
-import com.ssafy.relpl.db.redis.entity.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 
@@ -41,4 +40,9 @@ public class User {
 
     @Column(name = "user_isactive", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean userIsActive;
+
+    // 다대일(N:1) 양방향 관계에서 여러 개의 Report 엔티티를 갖도록 설정
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Report> report;
 }

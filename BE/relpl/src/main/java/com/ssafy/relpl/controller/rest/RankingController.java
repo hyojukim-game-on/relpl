@@ -25,13 +25,5 @@ public class RankingController {
         log.info("getNowRanking 내부로 들어옴");
         return rankingService.getNowRanking();
     }
-    
 
-    // 플로깅 중단 시 랭킹에 사용자 추가 혹은 update 필요 !
-    // 테스트용 : 랭킹에 사용자 추가 혹은 update 하는 서비스 로직 호출
-    @GetMapping("/{nickname}/{distance}")
-    public CommonResult addOrUpDateRanking(@PathVariable String nickname, @PathVariable double distance) {
-        log.info("새로운 유저를 랭킹에 추가하기");
-        return rankingService.addOrUpDateRanking(nickname, distance);
-    }
 }

@@ -25,7 +25,7 @@ tmap:
 jwt:
   token:
     secret: ssafy10thgumi2classd201choegossafy10thgumi2classd201choegossafy10thgumi2classd201choegossafy10thgumi2classd201choego
-    access-expiration-time: 120000 #2분
+    access-expiration-time: 240000 #2분
     refresh-expiration-time: 600000 #10분
 
 cloud:

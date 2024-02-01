@@ -40,12 +40,12 @@ public class RankingService {
 
 
     public CommonResult addOrUpDateRanking(String nickname, double moveDistance) {
-
+        log.info("서비스 내부로 들어옴");
         String dailyRanking = "dailyRanking";
         String weeklyRanking = "weeklyRanking";
         String monthlyRanking = "monthlyRanking";
 
-        
+
         try {
             updateRankingFor(dailyRanking, nickname, moveDistance);
             log.info("dailyRanking 업데이트 완료");
