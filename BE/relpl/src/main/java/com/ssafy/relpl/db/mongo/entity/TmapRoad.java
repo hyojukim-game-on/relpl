@@ -1,6 +1,5 @@
 package com.ssafy.relpl.db.mongo.entity;
 
-import com.ssafy.relpl.dto.request.RoadRequest;
 import com.ssafy.relpl.dto.response.TmapApiResponseDTO;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +32,7 @@ public class TmapRoad {
     private int lane;
     private Long roadHash;
 
-    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO) {
+    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO, Long roadHash) {
 
         TmapApiResponseDTO.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
 
