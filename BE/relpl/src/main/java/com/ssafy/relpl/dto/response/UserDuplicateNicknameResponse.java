@@ -10,5 +10,9 @@ import lombok.Setter;
 public class UserDuplicateNicknameResponse {
     private boolean isexist;
 
-    public static createUserDuplicateNicknameResponse()
+    public static UserDuplicateNicknameResponse createUserDuplicateNicknameResponse(boolean isexist) {
+        return UserDuplicateNicknameResponse.builder()
+                .isexist(isexist)
+                .build();
+    }
 }

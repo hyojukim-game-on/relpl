@@ -37,9 +37,9 @@ public class UserController {
         return userService.reissue(request);
     }
 
-    @PostMapping("/token/reissue")
-    public ResponseEntity<CommonResult> duplicateNickname(@RequestBody UserDuplicateNicknameRequest request) {
-        return userService.duplicateNickname(request);
+    @GetMapping("/isExist/nickname/{nickname}")
+    public ResponseEntity<CommonResult> duplicateNickname(@PathVariable("nickname") String nickname) {
+        return userService.duplicateNickname(nickname);
     }
 
     @GetMapping("/test")

@@ -46,7 +46,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/user/token/reissue").permitAll() //토큰 재발급
                             .requestMatchers("/api/user/isExist/uid").permitAll() //유저 아이디 중복체크
                             .requestMatchers("/api/user/isExist/phone").permitAll() //유저 연락처 중복체크
-                            .requestMatchers("/api/user/isExist/nickname").permitAll() //유저 닉네임 중복체크
+                            .requestMatchers("/api/user/isExist/nickname/**").permitAll() //유저 닉네임 중복체크
                             .requestMatchers("/api/sample/post").permitAll()
                             .requestMatchers("/api/sample/get/**").permitAll()
                             .anyRequest().authenticated(); //인증 필요
