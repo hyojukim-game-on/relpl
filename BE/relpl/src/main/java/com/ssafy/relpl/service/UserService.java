@@ -109,8 +109,10 @@ public class UserService {
     }
 
     public ResponseEntity<CommonResult> reissue(UserReissueRequest request) {
+        log.info("reissue 진입");
         Optional<User> user = userRepository.findById(request.getUserId());
         if(!(user.isPresent() && user.get().isUserIsActive())) {
+            log.info("유저가 존재하지 않거나, 비활성화 상태");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "존재하지 않는 유저입니다."));
         }
         try {
