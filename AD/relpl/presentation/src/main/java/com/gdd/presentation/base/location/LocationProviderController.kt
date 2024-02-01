@@ -63,11 +63,13 @@ class LocationProviderController(
     }
 
     /**
-     * @return 이미 추적 중 이라면 false 를 반환
+     * @param distance meter 단위로 입력, 입력값 이상의 이동이 일어날 때 리스너가 동작합니다.
+     * @return 추적 시작시 true, 이미 추적 중 이라면 false 를 반환
      */
-    fun startTrackingLocation(): Boolean {
+    fun startTrackingLocation(distance: Int ,listener:(Location?, LocationTrackingException?) -> Unit): Boolean {
         return if (distanceFlag < 0) {
-            distanceFlag = 0
+            distanceFlag = distance
+            locationListener = listener
             fusedLocationProviderClient
                 .requestLocationUpdates(
                     LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build(),
