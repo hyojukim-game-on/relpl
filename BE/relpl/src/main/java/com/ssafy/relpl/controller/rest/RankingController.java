@@ -7,16 +7,7 @@ import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.*;
-
-=======
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
-
->>>>>>> 5b5999ecb98bddf11c2ea5cc7c879cea701df4cd
 
 @Slf4j
 @RestController
