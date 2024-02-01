@@ -103,7 +103,14 @@ public class ResponseService {
         result.setData(data);
         return result;
     }
-
+    // 실패 결과만 처리하는 메소드 + data=null
+    public <T> SingleResult<T> getFailResult(int code, String msg, T data) {
+        SingleResult<T> result = new SingleResult<>();
+        result.setData(data);
+        result.setMessage(msg);
+        result.setCode(CommonResponse.FAILED.output);
+        return result;
+    }
     // 결과 모델에 api 요청 성공 데이터를 세팅해주는 메소드
     private void setSuccessResult(CommonResult result) {
         result.setCode(CommonResponse.SUCCESS.getOutput());

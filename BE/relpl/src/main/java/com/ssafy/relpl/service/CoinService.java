@@ -4,7 +4,10 @@ import com.ssafy.relpl.db.postgre.entity.Coin;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.CoinRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
+import com.ssafy.relpl.dto.response.CoinBarcodeResponseDto;
+import com.ssafy.relpl.dto.response.CoinScoreDataResponseDto;
 import com.ssafy.relpl.dto.response.CoinScoreResponseDto;
+import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +36,7 @@ public class CoinService {
         }
 
         // 등록되어 존재하는 유저인지 확인
-        User existingUser = userRepository.findById(String.valueOf(userId)).orElse(null);
+        User existingUser = userRepository.findById(userId).orElse(null);
 
         if (existingUser != null) {
             // 등록되어 존재하는 유저인 경우
@@ -82,7 +85,7 @@ public class CoinService {
         }
 
         // 등록되어 존재하는 유저인지 확인
-        User existingUser = userRepository.findById(String.valueOf(userId)).orElse(null);
+        User existingUser = userRepository.findById(userId).orElse(null);
 
         if (existingUser != null) {
             // 등록되어 존재하는 유저인 경우

@@ -3,7 +3,6 @@ package com.ssafy.relpl.controller.rest;
 import com.ssafy.relpl.dto.request.ReportListRequestDto;
 import com.ssafy.relpl.dto.request.ReportRegistRequestDto;
 import com.ssafy.relpl.dto.response.ReportListResponseDto;
-import com.ssafy.relpl.dto.response.ReportRegistResponseDto;
 import com.ssafy.relpl.service.ReportService;
 import com.ssafy.relpl.service.ResponseService;
 import com.ssafy.relpl.service.UserService;
