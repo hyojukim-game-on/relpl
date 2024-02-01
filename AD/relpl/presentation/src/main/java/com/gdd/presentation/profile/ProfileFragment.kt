@@ -26,6 +26,7 @@ import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentProfileBinding
+import com.gdd.presentation.point.PointRecordFragment
 import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.MaterialContainerTransform
@@ -91,6 +92,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
                 .commit()
         }
 
+        binding.llPointHistory.setOnClickListener{
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, PointRecordFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun registerObserver(){

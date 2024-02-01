@@ -1,12 +1,7 @@
-package com.d101.data.utils
+package com.gdd.relpl
 
 import android.util.Log
 import com.gdd.presentation.PrefManager
-import com.google.gson.JsonObject
-import com.squareup.moshi.Json
-import com.squareup.moshi.Moshi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
@@ -25,7 +20,7 @@ class AuthInterceptor @Inject constructor(
                 .addHeader("Authorization", "Bearer $accessToken")
                 .build()
         }
-        Log.i("okhttp.after_intercept", "$request")
+        Log.d(TAG, "okhttp.after_intercept : $request")
         return chain.proceed(request)
     }
 }

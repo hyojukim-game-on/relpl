@@ -22,9 +22,9 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource
 ) : UserRepository {
-    override suspend fun signIn(userUid: String, userPasswork: String): Result<User> {
+    override suspend fun signIn(userUid: String, userPassword: String): Result<User> {
         return userRemoteDataSource.signIn(
-            SignInRequest(userUid, userPasswork)
+            SignInRequest(userUid, userPassword)
         ).map { it.toUser() }
     }
 
@@ -96,6 +96,12 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailInfo> {
         return userRemoteDataSource.getHistoryDetail(projectId).map {
             it.toHistoryDetailInfo()
+        }
+    }
+
+    override suspend fun autoLogin(userId: Long): Result<User> {
+        return userRemoteDataSource.autoLogin(userId).map {
+            it.toUser()
         }
     }
 }

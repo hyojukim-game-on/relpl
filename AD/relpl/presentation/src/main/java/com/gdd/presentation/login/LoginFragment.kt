@@ -10,6 +10,7 @@ import androidx.transition.TransitionManager
 import com.gdd.domain.model.user.User
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
+import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
@@ -18,12 +19,16 @@ import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFade
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.log
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(
     FragmentLoginBinding::bind, R.layout.fragment_login
 ) {
+    @Inject
+    lateinit var prefManager: PrefManager
+
     private lateinit var loginActivity: LoginActivity
     private val loginViewModel: LoginViewModel by viewModels()
 
@@ -63,6 +68,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 
         binding.btnSignup.setOnClickListener {
             startActivity(Intent(loginActivity,SignupActivity::class.java))
+        }
+
+        binding.cbAutoLogin.setOnCheckedChangeListener { _, b ->
+            prefManager.setAutoLoginState(b)
         }
     }
 

@@ -28,7 +28,7 @@ class PrefManager(context: Context) {
      */
     fun setUserId(id: Long){
         pref.edit().apply {
-            putLong(PREF_ACCESSTOKEN, id)
+            putLong(PREF_USERID, id)
             apply()
         }
     }
@@ -62,6 +62,17 @@ class PrefManager(context: Context) {
         return pref.getString(PREF_REFRESHTOKEN, null)
     }
 
+    fun setAutoLoginState(flag: Boolean){
+        pref.edit().apply{
+            putBoolean(PREF_AUTOLOGIN,flag)
+            apply()
+        }
+    }
+
+    fun getAutoLoginState(): Boolean {
+        return pref.getBoolean(PREF_AUTOLOGIN,false)
+    }
+
     fun deleteAll(){
         pref.edit().let {
             it.clear()
@@ -71,6 +82,7 @@ class PrefManager(context: Context) {
 
     companion object{
         private const val PREF_USERID = "user_id"
+        private const val PREF_AUTOLOGIN = "auto_login"
         private const val PREF_ACCESSTOKEN = "access_token"
         private const val PREF_REFRESHTOKEN = "refresh_token"
     }

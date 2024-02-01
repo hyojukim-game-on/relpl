@@ -139,10 +139,12 @@ class UserRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun reissueToken(
+        userId: Long,
         accessToken: String,
         refreshToken: String
     ): Result<DefaultResponse<ReissueResponse>> {
         return userService.reissueToken(ReissueRequest(
+            userId,
             accessToken,
             refreshToken
         )).let { response ->
@@ -152,5 +154,9 @@ class UserRemoteDataSourceImpl @Inject constructor(
                 Result.failure(Exception(response.message()))
             }
         }
+    }
+
+    override suspend fun autoLogin(userId: Long): Result<SignInResponse> {
+        return userService.autoLogin(UserIdRequest(userId)).toNonDefault()
     }
 }
