@@ -153,4 +153,8 @@ class UserRemoteDataSourceImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun autoLogin(userId: Long): Result<SignInResponse> {
+        return userService.autoLogin(UserIdRequest(userId)).toNonDefault()
+    }
 }

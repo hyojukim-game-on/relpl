@@ -9,7 +9,7 @@ import com.gdd.domain.model.user.User
 import java.io.File
 
 interface UserRepository {
-    suspend fun signIn(userUid: String, userPasswork: String): Result<User>
+    suspend fun signIn(userUid: String, userPassword: String): Result<User>
 
     suspend fun isDuplicatedPhone(phone: String): Result<Boolean>
 
@@ -32,4 +32,6 @@ interface UserRepository {
     suspend fun getHistory(userId: Long): Result<HistoryInfo>
 
     suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailInfo>
+
+    suspend fun autoLogin(userId: Long): Result<User>
 }

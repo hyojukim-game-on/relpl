@@ -100,4 +100,9 @@ interface UserService {
         @Body reissueRequest: ReissueRequest
     ): Response<DefaultResponse<ReissueResponse>>
 
+    @POST("user/autologin")
+    suspend fun autoLogin(
+        @Body userIdRequest: UserIdRequest
+    ): Result<DefaultResponse<SignInResponse>>
+
 }

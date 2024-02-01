@@ -43,4 +43,6 @@ interface UserRemoteDataSource {
     suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailSummeryResponse>
 
     suspend fun reissueToken(accessToken: String, refreshToken: String): Result<DefaultResponse<ReissueResponse>>
+
+    suspend fun autoLogin(userId: Long): Result<SignInResponse>
 }

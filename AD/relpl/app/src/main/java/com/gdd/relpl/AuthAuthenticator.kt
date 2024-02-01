@@ -1,5 +1,6 @@
 package com.gdd.relpl
 
+import android.util.Log
 import com.gdd.data.api.UserService
 import com.gdd.data.model.token.ReissueRequest
 import com.gdd.data.toNonDefault
@@ -12,6 +13,7 @@ import okhttp3.Response
 import okhttp3.Route
 import javax.inject.Inject
 
+private const val TAG = "AuthAuthenticator_Genseong"
 class AuthAuthenticator @Inject constructor(
     @NetworkModule.AuthUserService private val userService: UserService,
     private val prefManager: PrefManager
@@ -30,9 +32,11 @@ class AuthAuthenticator @Inject constructor(
             ))
 
             if (!tokenResponse.isSuccessful || tokenResponse.body() == null) {
+                Log.d(TAG, "authenticate: Fail")
                 prefManager.deleteAll()
                 null
             } else {
+                Log.d(TAG, "authenticate Success: ${tokenResponse.body()!!.data.accessToken}, ${tokenResponse.body()!!.data.refreshToken}")
                 response.request.newBuilder()
                     .header("Authorization", "Bearer ${tokenResponse.body()!!.data.accessToken}")
                     .build()
