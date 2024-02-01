@@ -1,10 +1,7 @@
 package com.ssafy.relpl.service;
 
-import com.ssafy.relpl.db.redis.entity.RefreshToken;
-import com.ssafy.relpl.db.redis.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
