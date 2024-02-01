@@ -51,7 +51,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     private lateinit var mainActivity: MainActivity
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
-
+    private var distanceRelayInfoBottomSheetFragment: DistanceRelayInfoBottomSheetFragment? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
@@ -72,6 +72,8 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         registerObserver()
         mapFragment.getMapAsync(onMapReadyCallBack)
         setFabSpeedDialUi()
+        distanceRelayInfoBottomSheetFragment =
+            DistanceRelayInfoBottomSheetFragment.show(parentFragmentManager, R.id.bottom_sheet)
     }
 
     private fun registerObserver(){
@@ -229,7 +231,6 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             return@setOnActionSelectedListener true
         }
     }
-
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000

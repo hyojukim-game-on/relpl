@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":retrofit_adapter"))
+    implementation(project(":btmsheet"))
 
     // Android
     implementation(libs.bundles.androidx)
