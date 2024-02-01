@@ -19,6 +19,8 @@ class AuthAuthenticator @Inject constructor(
     private val prefManager: PrefManager
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
+        Log.d(TAG, "authenticate: ")
+        val userId = prefManager.getUserId()
         val accessToken = prefManager.getAccessToken()
         val refreshToken = prefManager.getRefreshToken()
 
@@ -28,7 +30,7 @@ class AuthAuthenticator @Inject constructor(
 
         return runBlocking {
             val tokenResponse = userService.reissueToken(ReissueRequest(
-                accessToken, refreshToken
+                userId, accessToken, refreshToken
             ))
 
             if (!tokenResponse.isSuccessful || tokenResponse.body() == null) {

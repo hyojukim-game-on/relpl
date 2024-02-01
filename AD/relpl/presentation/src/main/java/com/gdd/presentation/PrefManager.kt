@@ -28,7 +28,7 @@ class PrefManager(context: Context) {
      */
     fun setUserId(id: Long){
         pref.edit().apply {
-            putLong(PREF_ACCESSTOKEN, id)
+            putLong(PREF_USERID, id)
             apply()
         }
     }

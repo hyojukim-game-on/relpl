@@ -1,11 +1,10 @@
 package com.gdd.relpl.module
 
-import com.d101.data.utils.AuthInterceptor
 import com.gdd.data.api.ApiClient.BASE_URL
 import com.gdd.data.api.ProjectService
 import com.gdd.data.api.UserService
 import com.gdd.relpl.AuthAuthenticator
-import com.gdd.relpl.TokenInterceptor
+import com.gdd.relpl.AuthInterceptor
 import com.gdd.retrofit_adapter.NetworkResponseAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -17,7 +16,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
