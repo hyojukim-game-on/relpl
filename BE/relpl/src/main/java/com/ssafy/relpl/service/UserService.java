@@ -130,7 +130,7 @@ public class UserService {
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
         } catch (BaseException e) {
-            return ResponseEntity.status(HttpStatus.GONE).body(responseService.getFailResult(410, "만료된 토큰입니다. 다시 로그인하세요."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "만료된 토큰입니다. 다시 로그인하세요."));
         } catch (Exception e) {
             log.info("error 5 : " + e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));

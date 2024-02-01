@@ -36,6 +36,6 @@ public class ExceptionResponseHandler {
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<String> handleBaseException(BaseException ex) {
-        return ResponseEntity.status(HttpStatus.GONE).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 }

@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (BaseException e) {
             ResponseEntity<String> responseEntity = exceptionResponseHandler.handleBaseException(e);
-            response.setStatus(HttpStatus.GONE.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write(responseEntity.getBody());
             return;
