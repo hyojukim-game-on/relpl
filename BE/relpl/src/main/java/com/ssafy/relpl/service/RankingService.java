@@ -68,14 +68,12 @@ public class RankingService {
 
 
     // redis 에 nickname 으로 moveDistance 있는지 검사
-
     public Optional<Double> checkMemberExists(String key, String nickname) {
         return Optional.ofNullable(zSetOperations.score(key, nickname));
     }
 
 
     // redis 에 rankingKey key , nickname member , moveDistance score 로 추가된 값 insert
-
     public void addOrUpdateMember(String key, String nickname, double moveDistance) {
         Boolean isAdded = zSetOperations.add(key, nickname, moveDistance);
     }
@@ -107,7 +105,6 @@ public class RankingService {
             }
     }
     * */
-
     public SingleResult<RankingDataDto> getNowRanking() {
         try {
             // LinkedHashSet 형태로 redis 에서 key = dailyRanking 에 해당하는 값들 반환 받기
@@ -158,7 +155,6 @@ public class RankingService {
     }
     
     // TimeToLive (TTL) - 랭킹 갱신 주기마다 기존 키 값 만료되도록 하기
-
     public void resetRankingTest() {
         // TTL 설정 로직
         // 5초뒤에 dailyRanking 키에 할당된 것들이 사라짐
