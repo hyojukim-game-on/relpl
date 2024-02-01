@@ -177,9 +177,12 @@ class TmapService {
     @Value("\${tmap.api.key5}")
     lateinit var key5: String
 
+    @Value("\${tmap.api.key6}")
+    lateinit var key6: String
+
     var keys = mutableListOf<String>()
     fun getkeys(): List<String> {
-        if (keys.isEmpty()) keys = mutableListOf(key1, key2, key3, key4, key5)
+        if (keys.isEmpty()) keys = mutableListOf(key1, key2, key3, key4, key5, key6)
         return keys
     }
 }
