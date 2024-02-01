@@ -19,10 +19,10 @@ public class RoadHash {
 
     @Id
     @Column(name= "road_hash_id")
-    Long roadHashId;
+    public Long roadHashId;
 
     @Column(name = "tmap_id")
-    Long tmapId;
+    public Long tmapId;
 
     public static RoadHash createRoadHash(Long roadHashId, Long tmapId){
         return RoadHash.builder()
