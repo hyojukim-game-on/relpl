@@ -113,5 +113,10 @@
     <string name="report_use_point">소모 포인트</string>
     <string name="report_report">제보하기</string>
 
+    <string name="dlg_create_all_relay_name">릴레이 이름을 입력해 주세요</string>
+    <string name="dlg_create_all_relay_crate">생성</string>
+    <string name="dlg_create_distance_relay_distance">목표 거리를 설정해 주세요</string>
+    <string name="dlg_create_distance_relay_end">릴레이 종료일</string>
+
 
 </resources>

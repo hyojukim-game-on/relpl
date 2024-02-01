@@ -2,19 +2,27 @@ package com.gdd.presentation.relay
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isNotEmpty
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
@@ -27,6 +35,7 @@ import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentLoadRelayBinding
 import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputLayout
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
@@ -42,6 +51,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 
 
+private const val TAG = "LoadRelayFragment_Genseong"
 @AndroidEntryPoint
 class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     FragmentLoadRelayBinding::bind, R.layout.fragment_load_relay
@@ -52,6 +62,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
     private var distanceRelayInfoBottomSheetFragment: DistanceRelayInfoBottomSheetFragment? = null
+    private lateinit var createDistanceRelayDialog: AlertDialog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
@@ -123,6 +134,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         }
 
         viewModel.isExistDistanceResult.observe(viewLifecycleOwner){ result ->
+            showCreateDistanceRelayDialog()
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     //존재하므로 생성 막아야함
@@ -196,6 +208,62 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                     "릴레이를 이어 받아 완성해주세요!")
             .setPositiveButton("확인") { _, _ -> }
             .show()
+    }
+
+    @SuppressLint("MissingInflatedId")
+    fun showCreateDistanceRelayDialog(){
+        viewModel.setInitialDist()
+
+        val builder = AlertDialog.Builder(mainActivity)
+        val view = LayoutInflater.from(requireContext()).inflate(
+            R.layout.dialog_create_distance_relay, mainActivity.findViewById(R.id.dlg_create_distance_relay)
+        )
+
+        val etRelayName = view.findViewById<TextInputLayout>(R.id.et_relay_name)
+        val btnKmMinus = view.findViewById<ImageView>(R.id.btn_km_minus)
+        val btnKmPlus = view.findViewById<ImageView>(R.id.btn_km_plus)
+        val tvKm = view.findViewById<TextView>(R.id.tv_km)
+        val btnMeterMinus = view.findViewById<ImageView>(R.id.btn_meter_minus)
+        val btnMeterPlus = view.findViewById<ImageView>(R.id.btn_meter_plus)
+        val tvMeter = view.findViewById<TextView>(R.id.tv_meter)
+        val btnCreate = view.findViewById<TextView>(R.id.tv_create)
+        val btnCancel = view.findViewById<TextView>(R.id.tv_cancel)
+
+        builder.setView(view)
+        createDistanceRelayDialog = builder.create()
+        createDistanceRelayDialog.apply {
+            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setCancelable(false)
+        }.show()
+
+        btnCancel.setOnClickListener {
+            createDistanceRelayDialog.dismiss()
+        }
+
+        btnCreate.setOnClickListener {
+             if (etRelayName.isNotEmpty()){
+
+            }else{
+                showSnackBar(resources.getString(R.string.all_input_everything))
+            }
+        }
+
+        btnKmPlus.setOnClickListener {
+            viewModel.plusKmDist()
+        }
+
+        btnKmMinus.setOnClickListener {
+            viewModel.minusKmDist()
+        }
+
+        btnMeterPlus.setOnClickListener {
+            viewModel.plusMeterDist()
+        }
+
+        btnMeterMinus.setOnClickListener {
+            viewModel.minusMeterDist()
+        }
+
     }
 
     @SuppressLint("MissingPermission")

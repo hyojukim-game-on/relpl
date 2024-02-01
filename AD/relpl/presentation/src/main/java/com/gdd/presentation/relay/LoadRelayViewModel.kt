@@ -22,6 +22,10 @@ class LoadRelayViewModel @Inject constructor(
     private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase
 ) : ViewModel() {
 
+    private val _createDistanceRelayDist = MutableLiveData<Int>()
+    val createDistanceRelayDist : LiveData<Int>
+        get() = _createDistanceRelayDist
+
     private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
     val markerResult: LiveData<Result<List<RelayMarker>>>
         get() = _markerResult
@@ -63,6 +67,28 @@ class LoadRelayViewModel @Inject constructor(
                 _distanceRelayInfoResult.postValue(it)
             }
         }
+    }
+
+    fun setInitialDist(){
+        _createDistanceRelayDist.value = 1000
+    }
+
+    fun plusMeterDist(){
+        _createDistanceRelayDist.value!!.plus(100)
+    }
+
+    fun minusMeterDist(){
+        if (_createDistanceRelayDist.value!! > 1000)
+            _createDistanceRelayDist.value!!.minus(100)
+    }
+
+    fun plusKmDist(){
+        _createDistanceRelayDist.value!!.plus(1000)
+    }
+
+    fun minusKmDist(){
+        if (_createDistanceRelayDist.value!! > 2000)
+            _createDistanceRelayDist.value!!.minus(1000)
     }
 
 

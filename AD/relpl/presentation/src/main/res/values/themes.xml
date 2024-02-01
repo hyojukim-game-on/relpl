@@ -12,7 +12,65 @@
         <item name="textAppearanceBodyMedium">@style/Relpl.Text</item>
     </style>
 
-    <style name="Theme.Relpl" parent="Base.Theme.Relpl"/>
+    <style name="Theme.Relpl" parent="Base.Theme.Relpl">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Relpl.Text.SB.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+    </style>
+
+    <style name="Relpl.Text.B.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_bold</item>
+    </style>
+
+    <style name="Relpl.Text.R.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_regular</item>
+    </style>
+
+    <style name="Relpl.Text.M.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
+    </style>
+
+
+    <style name="Relpl.Text.SB.14" parent="Relpl.Text.SB.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.SB.18" parent="Relpl.Text.SB.16">
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="Relpl.Text.SB.20" parent="Relpl.Text.SB.16">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
+    <style name="Relpl.Text.M.14" parent="Relpl.Text.M.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.M.18" parent="Relpl.Text.M.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.M.20" parent="Relpl.Text.M.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Relpl.Text.R.14" parent="Relpl.Text.R.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.R.18" parent="Relpl.Text.R.16">
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="Relpl.Text.R.20" parent="Relpl.Text.R.16">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
+
+
+
+
+
 
     <style name="Relpl.Text.Logo" parent="Theme.Relpl">
         <item name="android:fontFamily">@font/font_wanted_sans_bold</item>
