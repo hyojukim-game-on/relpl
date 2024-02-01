@@ -2,10 +2,8 @@ package com.ssafy.relpl.service;
 
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
-import com.ssafy.relpl.dto.request.UserAutoLoginRequest;
-import com.ssafy.relpl.dto.request.UserLoginRequest;
-import com.ssafy.relpl.dto.request.UserReissueRequest;
-import com.ssafy.relpl.dto.request.UserSignupRequest;
+import com.ssafy.relpl.dto.request.*;
+import com.ssafy.relpl.dto.response.UserDuplicatePhoneResponse;
 import com.ssafy.relpl.dto.response.UserLoginResponse;
 import com.ssafy.relpl.dto.response.UserReissueResponse;
 import com.ssafy.relpl.dto.response.UserSignupResponse;
@@ -135,6 +133,13 @@ public class UserService {
             log.info("error 5 : " + e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
         }
+    }
+
+    public ResponseEntity<CommonResult> duplicateUserPhone(UserDuplicatePhoneRequest request) {
+        if(userRepository.findByUserPhone(request.getUserPhone()).isPresent()) {
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(true), "휴대폰번호 사용 불가능", 200));
+        }
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(false), "휴대폰번호 사용 가능", 200));
     }
 
     public ResponseEntity<String> test() {

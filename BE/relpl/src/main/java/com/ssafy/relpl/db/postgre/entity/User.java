@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="ruser")

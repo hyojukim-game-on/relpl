@@ -44,6 +44,9 @@ public class SecurityConfig {
                             .requestMatchers("/api/user/signup").permitAll() //회원가입 열어둠
                             .requestMatchers("/api/user/login").permitAll() //로그인 열어둠
                             .requestMatchers("/api/user/token/reissue").permitAll() //토큰 재발급 열어둠
+                            .requestMatchers("/api/user/isExist/uid").permitAll() //토큰 재발급 열어둠
+                            .requestMatchers("/api/user/isExist/phone").permitAll() //토큰 재발급 열어둠
+                            .requestMatchers("/api/user/isExist/nickname").permitAll() //토큰 재발급 열어둠
                             .requestMatchers("/api/sample/post").permitAll()
                             .requestMatchers("/api/sample/get/**").permitAll()
                             .anyRequest().authenticated(); //인증 필요
