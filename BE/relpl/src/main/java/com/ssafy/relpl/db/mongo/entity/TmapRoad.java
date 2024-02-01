@@ -32,8 +32,6 @@ public class TmapRoad {
     private int total_distance;
     private int lane;
 
-    private static final Logger logger = LoggerFactory.getLogger(TmapRoad.class);
-
     public static TmapRoad createRoad(TmapApiResponseDTO responseDTO) {
 
         TmapApiResponseDTO.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();

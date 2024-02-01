@@ -64,15 +64,18 @@ public class ProjectRecommendBusiness {
         // 2번
         long[] shortestCost = dijkstraShortestPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
 //        Long[] recommendCost = dijkstraRecommendPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
-        log.info("shortestCost: {}", Arrays.toString(shortestCost));
+        log.info("dijkstraShortestPath 완료");
+
         // 3번
         List<Integer> shortestRoadHash = getShortestRoadHashRevBfs(Math.toIntExact(realEndHash.getPointHashId()), shortestCost);
-        log.info("shortestRoadHash: {}", shortestCost.toString());
+        log.info("getShortestRoadHashRevBfs 완료");
+
         List<Long> shortestTmapRoadId = roadHashToTmapRoad(shortestRoadHash);
-        log.info("shortestTmapRoadId: {}", shortestTmapRoadId.toString());
+        log.info("shortestTmapRoadId 완료");
 
         List<TmapRoad> shortestTmapRoad = tmapRoadService.getAllTmapRoadById(shortestTmapRoadId);
-        log.info("shortestTmapRoad: {}", shortestTmapRoad.toString());
+        log.info("shortestTmapRoad 완료");
+
         List<GeoJsonLineString> line = new ArrayList<>();
         for (TmapRoad tmapRoad : shortestTmapRoad) {
             line.add(tmapRoad.getGeometry());
@@ -83,13 +86,12 @@ public class ProjectRecommendBusiness {
     }
 
 
-    // ------------------------------------------------ algorithm
+    // ------------------------------------------------ 경로 추천 알고리즘 관련
     ArrayList<Edge>[] shortestEdges, recommendEdges;
     int vertexCnt = -1; // 꼭짓점 수
     HashMap<Long, Point> pointHashMap;
 
     /**
-     * 경로 추천 api가 최초 1회 호출될 때 호출
      * DB에서 값을 가져와서 다익스트라를 위한 ArrayList에 값을 넣어주는 함수
      */
     public void initSettings() {
@@ -109,7 +111,6 @@ public class ProjectRecommendBusiness {
     }
 
     /**
-     * 경로 추천 api가 최초 1회 호출될 때 호출
      * DB에서 가져온 값을 바탕으로 다익스트라를 위해 ArrayList에 값을 넣어주는 함수
      */
     public void initArrayList() {
@@ -141,15 +142,13 @@ public class ProjectRecommendBusiness {
         pq.add(new Info(start, 0L));
         log.info("start");
         while (!pq.isEmpty()) {
-
             Info info = pq.poll();
             if (visit[info.cur]) continue;
-            if (info.distSum != cost[info.cur]) continue;
+            if (info.cur == end) break;
+            visit[info.cur] = true;
             for (Edge next : shortestEdges[info.cur]) {
                 log.info("next.to: {}, sum: {}",cost[next.to], cost[next.to] + next.dist);
                 if (cost[next.to] <= cost[info.cur] + next.dist) continue;
-                log.info("test2");
-                visit[info.cur] = true;
                 cost[next.to] = cost[info.cur] + next.dist;
                 pq.add(new Info(next.to, cost[next.to]));
             }
