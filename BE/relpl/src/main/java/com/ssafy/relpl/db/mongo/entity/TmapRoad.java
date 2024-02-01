@@ -33,9 +33,7 @@ public class TmapRoad {
     private int lane;
     private Long roadHash;
 
-    private static final Logger logger = LoggerFactory.getLogger(TmapRoad.class);
-
-    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO, Long roadHash) {
+    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO) {
 
         TmapApiResponseDTO.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
 

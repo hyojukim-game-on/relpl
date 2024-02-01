@@ -1,12 +1,10 @@
 package com.ssafy.relpl.db.postgre.entity;
 
-import com.ssafy.relpl.db.mongo.entity.Road;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Point;
 
 @Data
 @Entity
