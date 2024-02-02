@@ -4,17 +4,15 @@ import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.dto.response.UserDuplicateNicknameResponse;
+import com.ssafy.relpl.dto.response.UserDuplicatePhoneResponse;
 import com.ssafy.relpl.dto.response.UserLoginResponse;
 import com.ssafy.relpl.dto.response.UserReissueResponse;
 import com.ssafy.relpl.dto.response.UserSignupResponse;
 import com.ssafy.relpl.service.result.CommonResult;
-import com.ssafy.relpl.util.jwt.ExceptionResponseHandler;
 import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
-import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -147,6 +145,13 @@ public class UserService {
             return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(true), "휴대폰번호 사용 불가능", 200));
         }
         return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(false), "휴대폰번호 사용 가능", 200));
+    }
+
+    public ResponseEntity<CommonResult> duplicateUserPhone(UserDuplicatePhoneRequest request) {
+        if(userRepository.findByUserPhone(request.getUserPhone()).isPresent()) {
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(true), "휴대폰번호 사용 불가능", 200));
+        }
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(false), "휴대폰번호 사용 가능", 200));
     }
 
     public ResponseEntity<String> test() {

@@ -42,6 +42,11 @@ public class UserController {
         return userService.duplicateNickname(nickname);
     }
 
+    @PostMapping("/isExist/phone")
+    public ResponseEntity<CommonResult> duplicatePhone(@RequestBody UserDuplicatePhoneRequest request){
+        return userService.duplicateUserPhone(request);
+    }
+
     @GetMapping("/test")
     public ResponseEntity<String> test() {
         return userService.test();
