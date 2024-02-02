@@ -70,7 +70,7 @@ class SignupNicknameFragment : BaseFragment<FragmentSignupNicknameBinding>(
 
         activityViewModel.nicknameDupResult.observe(viewLifecycleOwner){result ->
             if (result.isSuccess){
-                if (result.getOrNull()!!){
+                if (!result.getOrNull()!!){
                     activityViewModel.nickname = binding.etNickname.editText!!.text.toString().trim()
                     showToast("사용 가능한 닉네임입니다")
                     activityViewModel.signUp()

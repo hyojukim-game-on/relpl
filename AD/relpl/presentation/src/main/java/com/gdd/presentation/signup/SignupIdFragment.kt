@@ -66,8 +66,7 @@ class SignupIdFragment : BaseFragment<FragmentSignupIdBinding>(
 
         activityViewModel.idDupResult.observe(viewLifecycleOwner){result ->
             if (result.isSuccess){
-                if (result.getOrNull()!!){
-                    activityViewModel.id = binding.etId.editText!!.text.toString().trim()
+                if (!result.getOrNull()!!){
                     showToast("사용 가능한 아이디입니다")
                     signupActivity.moveToNextPage()
                 }else{

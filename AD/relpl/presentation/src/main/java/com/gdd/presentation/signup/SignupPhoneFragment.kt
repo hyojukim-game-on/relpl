@@ -84,7 +84,7 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
 
         activityViewModel.phoneDupResult.observe(viewLifecycleOwner){result ->
             if (result.isSuccess){
-                if (result.getOrNull()!!){
+                if (!result.getOrNull()!!){
                     showToast(resources.getString(R.string.profile_change_usable_phone))
                     sendVerificationCode()
                 }else{

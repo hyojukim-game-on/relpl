@@ -117,6 +117,8 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_signin"
             style="@style/Relpl.FullButton.Signin"
+            android:textAppearance="@style/Relpl.Text.SB.16"
+            android:textColor="@color/white"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
@@ -129,6 +131,8 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_signup"
             style="@style/Relpl.FullButton.Signup"
+            android:textAppearance="@style/Relpl.Text.SB.16"
+            android:textColor="@color/white"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"

@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/signup_photo_welcome"
-        android:textAppearance="@style/Relpl.Text.Signup.Main"
+        style="@style/Relpl.Text.Signup.Main"
         android:gravity="center"/>
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/signup_photo_login"
-        android:textAppearance="@style/Relpl.Text.Signup.Content" />
+        style="@style/Relpl.Text.M.16" />
 
     <ImageView
         android:id="@+id/iv_profile_photo"
@@ -41,21 +41,22 @@
         android:layout_marginTop="30dp"
         android:gravity="center"
         android:text="@string/signup_photo_main"
-        android:textAppearance="@style/Relpl.Text.Signup.Content" />
+        style="@style/Relpl.Text.M.16" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:fontFamily="@font/font_wanted_sans_medium"
         android:gravity="center"
         android:text="@string/signup_photo_content"
         android:textColor="@color/text_gray"
-        android:textSize="16sp" />
+        style="@style/Relpl.Text.M.16"/>
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/Relpl.FullButton.Signup"
+        android:textAppearance="@style/Relpl.Text.SB.16"
+        android:textColor="@color/white"
         android:id="@+id/btn_done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
