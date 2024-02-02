@@ -17,6 +17,7 @@ spring:
     redis:
       host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
       port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 tmap:
   api:
