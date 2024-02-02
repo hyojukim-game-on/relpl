@@ -6,14 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".relay.LoadRelayFragment">
-    <FrameLayout
-        android:id="@+id/bottom_sheet"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map_fragment"
@@ -36,6 +29,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/map_fragment"
         android:background="#74D3ECBC"/>
+
+
 
     <com.leinardi.android.speeddial.SpeedDialOverlayLayout
         android:id="@+id/speedDialog_overlay"
@@ -60,5 +55,13 @@
         app:sdMainFabOpenedSrc="@drawable/ic_close"
         app:sdOverlayLayout="@id/speedDialog_overlay" />
 
-
+    <FrameLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

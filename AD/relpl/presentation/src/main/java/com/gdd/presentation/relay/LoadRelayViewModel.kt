@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class LoadRelayViewModel @Inject constructor(
@@ -22,10 +23,6 @@ class LoadRelayViewModel @Inject constructor(
     private val getDistanceRelayInfoUseCase: GetDistanceRelayInfoUseCase,
     private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase
 ) : ViewModel() {
-
-    private val _createDistanceRelayDist = MutableLiveData<Int>()
-    val createDistanceRelayDist : LiveData<Int>
-        get() = _createDistanceRelayDist
 
     private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
     val markerResult: LiveData<Result<List<RelayMarker>>>
@@ -74,27 +71,7 @@ class LoadRelayViewModel @Inject constructor(
         }
     }
 
-    fun setInitialDist(){
-        _createDistanceRelayDist.value = 1000
-    }
 
-    fun plusMeterDist(){
-        _createDistanceRelayDist.value!!.plus(100)
-    }
-
-    fun minusMeterDist(){
-        if (_createDistanceRelayDist.value!! > 1000)
-            _createDistanceRelayDist.value!!.minus(100)
-    }
-
-    fun plusKmDist(){
-        _createDistanceRelayDist.value!!.plus(1000)
-    }
-
-    fun minusKmDist(){
-        if (_createDistanceRelayDist.value!! > 2000)
-            _createDistanceRelayDist.value!!.minus(1000)
-    }
 
 
     companion object{
@@ -122,7 +99,7 @@ class LoadRelayViewModel @Inject constructor(
             "2024년 2월 5일",
             false,
             Point(36.108540, 128.420353),
-            "47%",
+            47,
             "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세"
         )
     }

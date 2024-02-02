@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isNotEmpty
 import androidx.fragment.app.activityViewModels
@@ -34,6 +35,7 @@ import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentLoadRelayBinding
 import com.gdd.retrofit_adapter.RelplException
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -55,7 +57,7 @@ private const val TAG = "LoadRelayFragment_Genseong"
 @AndroidEntryPoint
 class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     FragmentLoadRelayBinding::bind, R.layout.fragment_load_relay
-) {
+) , DialogClickInterface{
     private val mainViewModel: MainViewModel by activityViewModels()
     private val viewModel: LoadRelayViewModel by viewModels()
     private lateinit var mainActivity: MainActivity
@@ -66,6 +68,17 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
+
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (distanceRelayInfoBottomSheetFragment?.handleBackKeyEvent() == true) {
+                        // no-op
+                    } else {
+                        parentFragmentManager.popBackStack()
+                    }
+                }
+            })
 
         if(!PermissionHelper.checkPermission(mainActivity,Manifest.permission.ACCESS_FINE_LOCATION)){
             PermissionHelper.requestPermission_fragment(
@@ -83,8 +96,6 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         registerObserver()
         mapFragment.getMapAsync(onMapReadyCallBack)
         setFabSpeedDialUi()
-        distanceRelayInfoBottomSheetFragment =
-            DistanceRelayInfoBottomSheetFragment.show(parentFragmentManager, R.id.bottom_sheet)
     }
 
     private fun registerObserver(){
@@ -118,7 +129,6 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         }
 
         viewModel.isExistDistanceResult.observe(viewLifecycleOwner){ result ->
-            showCreateDistanceRelayDialog()
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     //존재하므로 생성 막아야함
@@ -126,7 +136,10 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                         showCannotCreateDistanceProjectDialog()
                     }else{
                         // 거리 릴레이 생성 다이얼로그
-                        showCreateDistanceRelayDialog()
+                        //showCreateDistanceRelayDialog()
+                        val dialog = CreateDistanceRelayDialog(this)
+                        dialog.isCancelable = false
+                        dialog.show(this.childFragmentManager, "")
                     }
                 }
             }else{
@@ -143,12 +156,16 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         viewModel.distanceRelayInfoResult.observe(viewLifecycleOwner){ result ->
             if (result.isSuccess){
                 result.getOrNull()?.let {
-
+                    distanceRelayInfoBottomSheetFragment =
+                        DistanceRelayInfoBottomSheetFragment.show(childFragmentManager, R.id.bottom_sheet, it)
                 }
             }
         }
     }
 
+    override fun onCreateButtonClick(name: String) {
+        showSnackBar(name)
+    }
 
     @SuppressLint("MissingPermission")
     val onMapReadyCallBack = OnMapReadyCallback { map ->
@@ -203,61 +220,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             .show()
     }
 
-    @SuppressLint("MissingInflatedId")
-    fun showCreateDistanceRelayDialog(){
-        viewModel.setInitialDist()
 
-        val builder = AlertDialog.Builder(mainActivity)
-        val view = LayoutInflater.from(requireContext()).inflate(
-            R.layout.dialog_create_distance_relay, mainActivity.findViewById(R.id.dlg_create_distance_relay)
-        )
-
-        val etRelayName = view.findViewById<TextInputLayout>(R.id.et_relay_name)
-        val btnKmMinus = view.findViewById<ImageView>(R.id.btn_km_minus)
-        val btnKmPlus = view.findViewById<ImageView>(R.id.btn_km_plus)
-        val tvKm = view.findViewById<TextView>(R.id.tv_km)
-        val btnMeterMinus = view.findViewById<ImageView>(R.id.btn_meter_minus)
-        val btnMeterPlus = view.findViewById<ImageView>(R.id.btn_meter_plus)
-        val tvMeter = view.findViewById<TextView>(R.id.tv_meter)
-        val btnCreate = view.findViewById<TextView>(R.id.tv_create)
-        val btnCancel = view.findViewById<TextView>(R.id.tv_cancel)
-
-        builder.setView(view)
-        createDistanceRelayDialog = builder.create()
-        createDistanceRelayDialog.apply {
-            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            setCancelable(false)
-        }.show()
-
-        btnCancel.setOnClickListener {
-            createDistanceRelayDialog.dismiss()
-        }
-
-        btnCreate.setOnClickListener {
-             if (etRelayName.isNotEmpty()){
-
-            }else{
-                showSnackBar(resources.getString(R.string.all_input_everything))
-            }
-        }
-
-        btnKmPlus.setOnClickListener {
-            viewModel.plusKmDist()
-        }
-
-        btnKmMinus.setOnClickListener {
-            viewModel.minusKmDist()
-        }
-
-        btnMeterPlus.setOnClickListener {
-            viewModel.plusMeterDist()
-        }
-
-        btnMeterMinus.setOnClickListener {
-            viewModel.minusMeterDist()
-        }
-
-    }
 
     @SuppressLint("MissingPermission")
     private fun setFabSpeedDialUi() {
@@ -284,7 +247,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                 R.id.fab_create_distance -> {
                     val locationManager = mainActivity.getSystemService(LOCATION_SERVICE) as LocationManager
                     val current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-//                    viewModel.isExistDistanceRelay(current.latitude, current.longitude)
+                    viewModel.isExistDistanceRelay(current.latitude, current.longitude)
                 }
             }
             binding.fabCreateRelay.close()

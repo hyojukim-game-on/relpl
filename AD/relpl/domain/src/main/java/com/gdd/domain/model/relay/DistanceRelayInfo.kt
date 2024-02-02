@@ -12,6 +12,6 @@ data class DistanceRelayInfo(
     val endDate: String,
     val isPath: Boolean,
     val stopCoordinate: Point,
-    val progress: String,
+    val progress: Int,
     val memo: String
 )
