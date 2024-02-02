@@ -41,13 +41,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     authorize
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger UI 접근 허용
-                            .requestMatchers("/api/user/signup").permitAll() //회원가입 열어둠
-                            .requestMatchers("/api/user/login").permitAll() //로그인 열어둠
-                            .requestMatchers("/api/user/token/reissue").permitAll() //토큰 재발급 열어둠
+                            .requestMatchers("/api/user/signup").permitAll() //회원가입
+                            .requestMatchers("/api/user/login").permitAll() //로그인
+                            .requestMatchers("/api/user/token/reissue").permitAll() //토큰 재발급
+                            .requestMatchers("/api/user/isExist/uid").permitAll() //유저 아이디 중복체크
+                            .requestMatchers("/api/user/isExist/phone").permitAll() //유저 연락처 중복체크
+                            .requestMatchers("/api/user/isExist/nickname/**").permitAll() //유저 닉네임 중복체크
                             .requestMatchers("/api/sample/post").permitAll()
                             .requestMatchers("/api/sample/get/**").permitAll()
                             .anyRequest().authenticated(); //인증 필요
-                    })
+                })
                 .csrf((csrf) -> csrf.disable())
                 .cors((c) -> c.disable())
                 .headers((headers) -> headers.disable())

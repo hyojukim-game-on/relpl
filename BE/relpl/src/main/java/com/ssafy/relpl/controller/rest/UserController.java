@@ -1,9 +1,6 @@
 package com.ssafy.relpl.controller.rest;
 
-import com.ssafy.relpl.dto.request.UserAutoLoginRequest;
-import com.ssafy.relpl.dto.request.UserLoginRequest;
-import com.ssafy.relpl.dto.request.UserReissueRequest;
-import com.ssafy.relpl.dto.request.UserSignupRequest;
+import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.CommonResult;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +35,11 @@ public class UserController {
     @PostMapping("/token/reissue")
     public ResponseEntity<CommonResult> reissue(@RequestBody UserReissueRequest request) {
         return userService.reissue(request);
+    }
+
+    @GetMapping("/isExist/nickname/{nickname}")
+    public ResponseEntity<CommonResult> duplicateNickname(@PathVariable("nickname") String nickname) {
+        return userService.duplicateNickname(nickname);
     }
 
     @GetMapping("/test")
