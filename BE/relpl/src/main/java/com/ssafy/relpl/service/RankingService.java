@@ -1,6 +1,5 @@
 package com.ssafy.relpl.service;
 
-
 import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.dto.response.RankingEntry;
 import com.ssafy.relpl.service.result.CommonResult;
@@ -8,9 +7,11 @@ import com.ssafy.relpl.service.result.SingleResult;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,22 +24,21 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RankingService {
 
-
     private final RedisTemplate<String, String> redisTemplate; // RedisTemplate 주입
     private final ResponseService responseService;
     private ZSetOperations<String, String> zSetOperations; // Sorted Set 을 다루기 위한 인터페이스
 
 
+    // zSetOperations 초기화
     @PostConstruct
     private void init() {
         zSetOperations = redisTemplate.opsForZSet(); 
         log.info("zSetOperations 초기화 완료");
-        // zSetOperations 초기화
     }
 
 
 
-    public CommonResult addOrUpDateRanking(String nickname, double moveDistance) {
+    public ResponseEntity<CommonResult> addOrUpDateRanking(String nickname, double moveDistance) {
 
         String dailyRanking = "dailyRanking";
         String weeklyRanking = "weeklyRanking";
@@ -58,10 +58,10 @@ public class RankingService {
             log.info("monthlyRanking 업데이트 완료");
 
             // 결과 반환
-            return responseService.getSuccessResult("랭킹 업데이트 성공");
+            return ResponseEntity.ok(responseService.getSuccessResult("랭킹 업데이트 성공"));
         } catch (Exception e){
             log.error(e.getMessage());
-            return responseService.getFailResult(400, "랭킹 업데이트 실패");
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "랭킹 업데이트 실패"));
         }
     }
 
@@ -95,7 +95,7 @@ public class RankingService {
 
     /* getNowRanking : 요청받았을 때의 Redis 에 있는 데일리랭킹 1~20위 반환
     * @parameter : 없음
-    * @return : SingleResult<RankingDataDto>
+    * @return : ResponseEntity<CommonResult>
     {
     "code": 200,
     "msg": "랭킹 조회 성공했습니다.",
@@ -107,7 +107,7 @@ public class RankingService {
     }
     * */
 
-    public SingleResult<RankingDataDto> getNowRanking() {
+    public ResponseEntity<CommonResult> getNowRanking() {
         try {
             // LinkedHashSet 형태로 redis 에서 key = dailyRanking 에 해당하는 값들 반환 받기
             Set<ZSetOperations.TypedTuple<String>> dailyRankingRedis = zSetOperations.reverseRangeWithScores("dailyRanking", 0, 20);
@@ -146,13 +146,13 @@ public class RankingService {
                     .monthlyRanking(monthlyRankingList)
                     .build();
 
-            return responseService.getSingleResult(rankingDataDto, "랭킹 조회 성공했습니다.", 200);
+            return ResponseEntity.ok(responseService.getSingleResult(rankingDataDto, "랭킹 조회 성공했습니다.", 200));
         } catch (RedisConnectionFailureException e) {
             log.error("Redis 연결 실패: {}", e.getMessage());
-            return responseService.getFailResult(400, "Redis 연결 오류 발생");
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "Redis 연결 오류 발생"));
         } catch (Exception e) {
             log.error("랭킹 조회 중 오류 발생: {}", e.getMessage());
-            return responseService.getFailResult(400, "랭킹 조회 중 오류 발생");
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "랭킹 조회 중 오류 발생"));
             }
     }
     
@@ -188,9 +188,5 @@ public class RankingService {
         // 일단 28일 후에 만료되도록 설정해둠 (하드코딩)
         redisTemplate.expire("monthlyRanking", 672, TimeUnit.HOURS);
     }
-    
-    
-    
-    
-    
+
 }
