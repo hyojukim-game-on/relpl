@@ -3,8 +3,6 @@ package com.ssafy.relpl.service;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.*;
-import com.ssafy.relpl.dto.response.UserDuplicateNicknameResponse;
-import com.ssafy.relpl.dto.response.UserDuplicatePhoneResponse;
 import com.ssafy.relpl.dto.response.UserLoginResponse;
 import com.ssafy.relpl.dto.response.UserReissueResponse;
 import com.ssafy.relpl.dto.response.UserSignupResponse;
@@ -95,20 +93,18 @@ public class UserService {
                 //유저가 존재하고, 회원탈퇴를 하지 않은 경우
                 return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), "accessToken", "refreshToken"), "로그인 성공", 200));
             }
-            log.info("autologin isUserIsActive: " + user.get().isUserIsActive());
+            log.info("isUserIsActive: " + user.get().isUserIsActive());
             //유저가 존재하고, 회원탈퇴를 한 경우
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "로그인 실패"));
         }
-        log.info("autologin isPresent: " + user.isPresent());
+        log.info("isPresent: " + user.isPresent());
         //유저가 존재하지 않은 경우
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "로그인 실패"));
     }
 
     public ResponseEntity<CommonResult> reissue(UserReissueRequest request) {
-        log.info("reissue 진입");
         Optional<User> user = userRepository.findById(request.getUserId());
         if(!(user.isPresent() && user.get().isUserIsActive())) {
-            log.info("유저가 존재하지 않거나, 비활성화 상태");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "존재하지 않는 유저입니다."));
         }
         try {
@@ -153,6 +149,16 @@ public class UserService {
         }
         return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(false), "휴대폰번호 사용 가능", 200));
     }
+
+    public ResponseEntity<CommonResult> duplicateUserId(UserDuplicateIdRequest request) {
+        if(userRepository.findByUserUid(request.getUserUid()).isPresent()){
+            //중복된 ID 있음
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(true), "아이디 사용 불가능", 200));
+        }
+        //중복된 ID 없음
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
+    }
+
 
     public ResponseEntity<String> test() {
 

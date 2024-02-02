@@ -47,6 +47,11 @@ public class UserController {
         return userService.duplicateUserPhone(request);
     }
 
+    @PostMapping("/isExist/uid")
+    public ResponseEntity<CommonResult> duplicateUserId(@RequestBody UserDuplicateIdRequest request){
+        return userService.duplicateUserId(request);
+    }
+
     @GetMapping("/test")
     public ResponseEntity<String> test() {
         return userService.test();
