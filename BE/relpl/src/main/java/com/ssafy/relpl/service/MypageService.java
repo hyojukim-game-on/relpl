@@ -53,20 +53,20 @@ public class MypageService {
         log.info("비밀번호 변경 시작");
         Optional<User> userOptional = userRepository.findById(request.getUserId());
 
-        // 기존 유저가 존재함
+        // 기존 유저가 존재함..
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            // 기존 비밀번호가 일치하는 경우
+            // 기존 비밀번호가 일치하는 경우..
             if (passwordEncoder.matches(request.getCurrentPassword(), user.getUserPassword())) {
-                // 새 비밀번호로 업데이트
+                // 새 비밀번호로 업데이트..
                 user.setUserPassword(passwordEncoder.encode(request.getNewPassword()));
                 userRepository.save(user);  // 변경사항 저장
                 return ResponseEntity.ok(responseService.getSingleResult(true, "비밀번호 변경 성공", 200));
             } else {
-                // 현재 비밀번호 불일치
+                // 현재 비밀번호 불일치..
                 return ResponseEntity.badRequest().body(responseService.getFailResult(400,  "비밀번호 일치하지 않음"));
             }
-        }   // 유저가 존재하지 않음
+        }   // 유저가 존재하지 않음..
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "비밀번호 변경 실패"));
         }
 
@@ -82,39 +82,39 @@ public class MypageService {
             log.info("프로필 변경");
             Optional<User> userOptional = userRepository.findById(request.getUserId());
 
-            // 기존 유저가 존재함
+            // 기존 유저가 존재함..
             if (userOptional.isPresent()) {
                 
                 log.info("기존 유저가 존재함");
                 
-                // 기존 유저 가져오기
+                // 기존 유저 가져오기..
                 User user = userOptional.get();
 
-                // 기존 닉네임, 기존 핸드폰 번호
+                // 기존 닉네임, 기존 핸드폰 번호..
                 log.info("기존 닉네임:{}",user.getUserNickname());
                 log.info("기존 핸드폰 번호:{}",user.getUserPhone());
 
-                // 새로운 닉네임, 새로운 핸드폰 번호
+                // 새로운 닉네임, 새로운 핸드폰 번호..
                 user.setUserNickname(request.getUserNickname());
                 user.setUserPhone(request.getUserPhone());
 
-                // DB에 변경사항 저장
+                // DB에 변경사항 저장..
                 userRepository.save(user);  
                 
-                // 바뀐 닉네임, 바뀐 핸드폰 번호
+                // 바뀐 닉네임, 바뀐 핸드폰 번호..
                 log.info("바뀐 닉네임:{}",user.getUserNickname());
                 log.info("바뀐 핸드폰 번호:{}",user.getUserPhone());
                 
-                // 유저가 프로필 사진을 제공한 경우
+                // 유저가 프로필 사진을 제공한 경우..
                 if (!request.getUserProfilePhoto().isEmpty()) {
 
                     log.info("유저가 프로필 사진을 제공함");
                     log.info(request.getUserProfilePhoto().getClass().getName());
 
-                    // 프로필사진 s3에 업로드
+                    // 프로필사진 s3에 업로드..
                     String resultUrl = updateUserProfilePhoto(request.getUserProfilePhoto());
 
-                    // 업로드가 성공했을 경우 DB 에 새로 받은 url 값 업데이트
+                    // 업로드가 성공했을 경우 DB 에 새로 받은 url 값 업데이트..
                     if (resultUrl != null) {
 
                             log.info("프로필 사진 s3에 업로드 성공");
@@ -128,17 +128,17 @@ public class MypageService {
                             log.info("DB에 프로필 사진 업로드 성공");
 
                         return ResponseEntity.ok(responseService.getSingleResult(true, "정보 수정 성공", 200));
-                    } // 업로드가 실패했을 경우 에러 반환
+                    } // 업로드가 실패했을 경우 에러 반환..
                     else {
                         log.info("프로필 사진 s3에 업로드 실패");
                         return ResponseEntity.badRequest().body(responseService.getFailResult(400, "정보 수정 실패"));
                     }
-                // 프로필 사진을 제공하지 않아서 기존 프로필 사진 유지, 그 외 정보만 변경
+                // 프로필 사진을 제공하지 않아서 기존 프로필 사진 유지, 그 외 정보만 변경..
                 } else if (request.getUserProfilePhoto().isEmpty()) {
                     log.info("프로필 사진 제공하지 않음");
                     return ResponseEntity.ok(responseService.getSingleResult(true, "정보 수정 성공", 200));
                 }
-            } // 기존 유저가 존재하지 않음
+            } // 기존 유저가 존재하지 않음..
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "정보 수정 실패"));
         }
 
@@ -150,26 +150,26 @@ public class MypageService {
         public String updateUserProfilePhoto(MultipartFile userProfilePhoto) {
             try{
 
-                // 유저가 제공한 프로필 사진 파일의 원래 이름
+                // 유저가 제공한 프로필 사진 파일의 원래 이름..
                 String originalFileName = userProfilePhoto.getOriginalFilename();
 
-                // 중복 방지를 위한 랜덤 값 String 을 앞에 추가
+                // 중복 방지를 위한 랜덤 값 String 을 앞에 추가..
                 String s3UploadFileName = UUID.randomUUID() + originalFileName;
 
-                // S3에 업로드 된 파일의 url 주소
+                // S3에 업로드 된 파일의 url 주소..
                 String uploadedFileUrl = baseUrl + s3UploadFileName;
 
-                // S3에 파일과 함께 올릴 메타데이터
+                // S3에 파일과 함께 올릴 메타데이터..
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentType(userProfilePhoto.getContentType());
                 metadata.setContentLength(userProfilePhoto.getSize());
 
-                // S3에 요청 보낼 객체 생성
+                // S3에 요청 보낼 객체 생성..
                 PutObjectRequest putObjectRequest = new PutObjectRequest(
                         bucket, s3UploadFileName, userProfilePhoto.getInputStream(), metadata
                 );
 
-                // S3에 요청 보내서 파일 업로드
+                // S3에 요청 보내서 파일 업로드..
                 putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
                 amazonS3Client.putObject(putObjectRequest);
 
@@ -177,7 +177,7 @@ public class MypageService {
 
                 return uploadedFileUrl;
 
-            } // S3에 파일 업로드 실패 시 에러 출력하고 null 리턴
+            } // S3에 파일 업로드 실패 시 에러 출력하고 null 리턴..
             catch (IOException e) {
                 log.error(e.getMessage());
                 return null;
