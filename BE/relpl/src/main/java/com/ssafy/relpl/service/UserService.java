@@ -183,6 +183,11 @@ public class UserService {
     }
 
 
+
+    /* setProfilePic : 유저가 제공한 사진 파일로 유저 프로필 사진 설정
+    @param : 유저가 제공한 사진 파일
+    @return : 성공 시) uploadedFileUrl s3에 업로드 한 프로필 사진 url , 실패 시) null
+    * */
     public ResponseEntity<CommonResult> setProfilePic(UserProfileRequest request) throws IOException {
 
         log.info("프로필 사진 설정");
@@ -215,17 +220,17 @@ public class UserService {
                     log.info("DB에 프로필 사진 업로드 성공");
             
                 // 업로드가 성공했을 경우 성공 응답 반환
-                return ResponseEntity.ok(responseService.getSingleResult(true, "OK", 200));
+                return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(true, "OK", 200));
             }
             // 업로드가 실패했을 경우 실패 응답 반환
             else {
                 log.info("프로필 사진 s3에 업로드 실패");
-                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "Bad Request"));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "Bad Request"));
             }
         }
         // 기존 유저가 없음
         log.info("기존 유저가 없음");
-        return ResponseEntity.badRequest().body(responseService.getFailResult(400, "Bad Request"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "Bad Request"));
     }
 
 
