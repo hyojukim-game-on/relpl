@@ -7,6 +7,7 @@ import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -18,12 +19,13 @@ public class RankingController {
 
     private final RankingService rankingService;
 
-    
-    // 요청 들어오면 랭킹을 앱에 반환해주는 서비스 로직 호출
+    /* getNowRanking : 일간/주간/월간랭킹 1 ~ 20 위 반환
+     * @parameter : 없음
+     * @return : 200 OK / 400 랭킹 조회 중 오류 발생
+     * */
     @GetMapping("/now")
-    public SingleResult<RankingDataDto> getNowRanking () {
+    public ResponseEntity<CommonResult> getNowRanking () {
         log.info("getNowRanking 내부로 들어옴");
         return rankingService.getNowRanking();
     }
-
 }
