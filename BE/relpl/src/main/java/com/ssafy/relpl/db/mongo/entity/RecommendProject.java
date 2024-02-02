@@ -18,7 +18,7 @@ public class RecommendProject {
 
     @Id
     private String id;
-    private String projectId;
+    private Long projectId;
     private GeoJsonLineString recommendLineString;
 //    private GeoJsonMultiLineString
 //    private int lanetype;
@@ -29,6 +29,7 @@ public class RecommendProject {
     public static RecommendProject createRecommendProject(List<Point> lineString) {
         return RecommendProject.builder()
                 .recommendLineString(new GeoJsonLineString(lineString))
+                .projectId(-1L)
                 .build();
     }
 }

@@ -31,9 +31,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
-    @Qualifier("redisTemplate")  // 여기에 @Qualifier 어노테이션 추가
-    private final RedisTemplate<String, Object> redisTemplate;
-//    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final AuthenticationManager authenticationManager;
 
     public ResponseEntity<CommonResult> save(UserSignupRequest request) throws BaseException {

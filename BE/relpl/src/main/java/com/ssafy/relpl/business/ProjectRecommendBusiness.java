@@ -6,6 +6,7 @@ import com.ssafy.relpl.db.mongo.entity.TmapRoad;
 import com.ssafy.relpl.db.postgre.entity.PointHash;
 import com.ssafy.relpl.db.postgre.entity.RoadHash;
 import com.ssafy.relpl.db.postgre.entity.RoadInfo;
+import com.ssafy.relpl.dto.response.ProjectRecommendResponseDto;
 import com.ssafy.relpl.service.*;
 import com.ssafy.relpl.util.annotation.Business;
 import com.ssafy.relpl.util.common.Edge;
@@ -15,11 +16,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Business
 @Slf4j
@@ -31,9 +35,10 @@ public class ProjectRecommendBusiness {
     private final TmapRoadService tmapRoadService;
     private final RecommendProjectService recommendProjectService;
 
-    private final GeomFactoryConfig geomFactoryConfig;
-    List<RoadInfo> roadInfos;
+    private final ResponseService responseService;
 
+    private final RedisTemplate<String, String> redisTemplate;
+    List<RoadInfo> roadInfos;
 
     /**
      * 해야하는 것
@@ -54,58 +59,46 @@ public class ProjectRecommendBusiness {
     public ResponseEntity<?> recommendRoad(Point start, Point end) {
 
         // 0번
-        if (pointHashMap == null) {
-            initSettings();
-            initArrayList();
-        }
-
+        initSettings();
+        initArrayList();
         // 1번
         PointHash realStartHash = pointHashService.getNearPoint(start.getX(), start.getY());
         PointHash realEndHash = pointHashService.getNearPoint(end.getX(), end.getY());
         log.info("realStartHash: {}, realEndHash: {}", realStartHash.toString(), realEndHash.toString());
         // 2번
         long[] shortestCost = dijkstraShortestPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
-//        Long[] recommendCost = dijkstraRecommendPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
+        long[] recommendCost = dijkstraRecommendPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
         log.info("dijkstraShortestPath 완료");
 
         // 3번
         List<Long> shortestRoadHash = getShortestRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), shortestCost);
+        List<Long> recommendRoadHash = getRecommendRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), recommendCost);
         log.info("getShortestRoadHashRevBfs 완료");
 
 //        List<Long> shortestTmapRoadId = roadHashToTmapRoad(shortestRoadHash);
 //        log.info("shortestTmapRoadId 완료");
 
         List<TmapRoad> shortestTmapRoad = tmapRoadService.getAllTmapRoadById(shortestRoadHash);
-        log.info("shortestTmapRoad 완료");
+        List<org.springframework.data.geo.Point> shortestPointList = getListFromTmapRoad(start, end, shortestTmapRoad);
 
-        HashSet<org.springframework.data.geo.Point> shortestPoints = new HashSet<>();
+        List<TmapRoad> recommendTmapRoad = tmapRoadService.getAllTmapRoadById(recommendRoadHash);
+        List<org.springframework.data.geo.Point> recommendPointList = getListFromTmapRoad(start, end, recommendTmapRoad);
 
-            shortestPoints.add(
-                    new org.springframework.data.geo.Point(
-                            start.getCoordinate().getX(), start.getCoordinate().getY()
-                    )
-            );
-
-        for (TmapRoad tmapRoad : shortestTmapRoad) {
-            for (org.springframework.data.geo.Point point: tmapRoad.getGeometry().getCoordinates()) {
-                shortestPoints.add(
-                        new org.springframework.data.geo.Point(point.getX(), point.getY()
-                        )
-                );
-            }
-        }
-
-        shortestPoints.add(new org.springframework.data.geo
-                .Point(end.getCoordinate().getX(), end.getCoordinate().getY()
-                )
-        );
-        RecommendProject shortestProject = recommendProjectService.saveRecommendProject(new ArrayList<>(shortestPoints));
-        return ResponseEntity.ok(shortestProject);
+        RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList);
+        RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList);
+        ProjectRecommendResponseDto response
+                = ProjectRecommendResponseDto.builder()
+                .shortestId(shortestProject.getId())
+                .shortestPath(shortestPointList)
+                .recommendId(recommendProject.getId())
+                .recommendPath(recommendPointList)
+                .build();
+        return ResponseEntity.ok(responseService.getSingleResult(response, "경로 추천 성공.", 200));
     }
 
 
     // ------------------------------------------------ 경로 추천 알고리즘 관련
-    ArrayList<Edge>[] shortestEdges, recommendEdges;
+    ArrayList<Edge>[] edges;
     int vertexCnt = -1; // 꼭짓점 수
     HashMap<Long, Point> pointHashMap;
 
@@ -120,11 +113,9 @@ public class ProjectRecommendBusiness {
             pointHashMap.put(pointHash.getPointHashId(), pointHash.getPointCoordinate());
         }
         vertexCnt = pointHashMap.size();
-        shortestEdges = new ArrayList[vertexCnt];
-        recommendEdges = new ArrayList[vertexCnt];
+        edges = new ArrayList[vertexCnt];
         for (int i = 0; i < vertexCnt; i++) {
-            shortestEdges[i] = new ArrayList<>();
-            recommendEdges[i] = new ArrayList<>();
+            edges[i] = new ArrayList<>();
         }
     }
 
@@ -137,11 +128,22 @@ public class ProjectRecommendBusiness {
         for (RoadInfo roadInfo: roadInfos) {
             int start = Math.toIntExact(roadInfo.getPointHashIdStart());
             int end = Math.toIntExact(roadInfo.getPointHashIdEnd());
-            log.info("start: {}, end: {}, length: {}", start, end, roadInfo.getRoadInfoLen());
-            shortestEdges[start].add(new Edge(end, roadInfo.getRoadInfoLen(), roadInfo.getRoadHashId()));
-            shortestEdges[end].add(new Edge(start, roadInfo.getRoadInfoLen(), roadInfo.getRoadHashId()));
-//            recommendEdges[start].add(new Edge(end, roadInfo.getRoadInfoLen(), roadInfo.getRoadInfoWeight()));
-//            recommendEdges[end].add(new Edge(start, roadInfo.getRoadInfoLen(), roadInfo.getRoadInfoWeight()));
+
+            int len = roadInfo.getRoadInfoLen(); // d
+            if (len == 0) len++;
+
+            int report = roadInfo.getRoadInfoReport(); // n
+            if (report ==0) report++;
+
+            int totalReport = roadInfo.getRoadInfoTotalReport(); // m
+            if (totalReport == 0) totalReport++;
+
+            int weight = (int)(Math.log(len) / Math.log(totalReport) * 5 / report); // 5/n * ln(d) / ln(m) + b
+            String cleanRoad = redisTemplate.opsForValue().get("road_"+roadInfos);
+            if (cleanRoad != null) weight += 25; // b
+
+            edges[start].add(new Edge(end, roadInfo.getRoadInfoLen(), roadInfo.getRoadHashId(), weight));
+            edges[end].add(new Edge(start, roadInfo.getRoadInfoLen(), roadInfo.getRoadHashId(), weight));
         }
     }
 // ----------------------------------------------------------------
@@ -159,14 +161,13 @@ public class ProjectRecommendBusiness {
         cost[start] = 0L;
         PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> Long.compare(o1.distSum, o2.distSum));
         pq.add(new Info(start, 0L));
-        log.info("start");
         while (!pq.isEmpty()) {
             Info info = pq.poll();
             if (visit[info.cur]) continue;
             if (info.cur == end) break;
             visit[info.cur] = true;
-            for (int i = 0; i < shortestEdges[info.cur].size(); i++) {
-                Edge next = shortestEdges[info.cur].get(i);
+            for (int i = 0; i < edges[info.cur].size(); i++) {
+                Edge next = edges[info.cur].get(i);
                 if (cost[next.to] < cost[info.cur] + next.dist) continue;
                 cost[next.to] = cost[info.cur] + next.dist;
                 pq.add(new Info(next.to, cost[next.to]));
@@ -190,16 +191,15 @@ public class ProjectRecommendBusiness {
         cost[start] = 0L;
         PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> Long.compare(o1.distSum, o2.distSum));
         pq.add(new Info(start, 0L));
-        log.info("start");
         while (!pq.isEmpty()) {
             Info info = pq.poll();
             if (visit[info.cur]) continue;
             if (info.cur == end) break;
             visit[info.cur] = true;
-            for (int i = 0; i < recommendEdges[info.cur].size(); i++) {
-                Edge next = recommendEdges[info.cur].get(i);
-                if (cost[next.to] < cost[info.cur] + next.dist) continue;
-                cost[next.to] = cost[info.cur] + next.dist;
+            for (int i = 0; i < edges[info.cur].size(); i++) {
+                Edge next = edges[info.cur].get(i);
+                if (cost[next.to] < cost[info.cur] + next.weight) continue;
+                cost[next.to] = cost[info.cur] + next.weight;
                 pq.add(new Info(next.to, cost[next.to]));
             }
         }
@@ -224,7 +224,7 @@ public class ProjectRecommendBusiness {
         while (!que.isEmpty()) {
             int cur = que.poll();
             if (cur == start) break;
-            for (Edge next: shortestEdges[cur]) {
+            for (Edge next: edges[cur]) {
                 if (visit[next.to]) continue;
                 if (shortestCost[cur] - next.dist == shortestCost[next.to]) {
                     pathRoadsHash.add(next.roadHash);
@@ -237,24 +237,67 @@ public class ProjectRecommendBusiness {
     }
 // ----------------------------------------------------------------
     /**
-     * hash값이 저장된 road값을 tmap api 제공 id값으로 변환하는 함수
-     * @param pathRoadsHash hashing된 road 번호들의 list
-     * @return hash값이 없어진 tmap api 제공 id로 변환된 List
+     * 역방향 bfs를 통해 앞에서 계산된 최단거리를 기반으로 최단 경로 확인
+     * @param end 끝 점
+     * @param recommendCost 시작점으로부터 모든 점 까지의 최단경로 Long[]
+     * @return hash값이 적용된 road값이 반환, roadHash를 이용해 변환 필요
      */
-//    public List<Long> roadHashToTmapRoad(List<Integer> pathRoadsHash) {
-//
-//        HashMap<Long,Long> roadHashMap = new HashMap<Long,Long>();
-//        List<RoadHash> roadHashList = roadHashService.getAllRoadHash();
-//        for (RoadHash roadHash : roadHashList) {
-//            roadHashMap.put(roadHash.getRoadHashId(), roadHash.getTmapId());
-//        }
-//
-//        List<Long> tmapRoadList = new ArrayList<>();
-//        for (int road : pathRoadsHash) {
-//            tmapRoadList.add(roadHashMap.get(road));
-//        }
-//
-//        return tmapRoadList;
-//    }
-// ----------------------------------------------------------------
+    public List<Long> getRecommendRoadHashRevBfs(int start, int end, long[] recommendCost) {
+
+        List<Long> pathRoadsHash = new ArrayList<>();
+        boolean[] visit = new boolean[vertexCnt];
+        visit[end] = true;
+
+        Deque<Integer> que = new ArrayDeque<>();
+        que.add(end);
+
+        while (!que.isEmpty()) {
+            int cur = que.poll();
+            if (cur == start) break;
+            for (Edge next: edges[cur]) {
+                if (visit[next.to]) continue;
+                if (recommendCost[cur] - next.weight == recommendCost[next.to]) {
+                    pathRoadsHash.add(next.roadHash);
+                    visit[next.to] = true;
+                    que.add(next.to);
+                }
+            }
+        }
+        return pathRoadsHash;
+    }
+
+    public List<org.springframework.data.geo.Point> getListFromTmapRoad(Point start, Point end, List<TmapRoad> tmapRoadList) {
+
+        HashSet<org.springframework.data.geo.Point> shortestPointSet = new HashSet<>();
+        List<org.springframework.data.geo.Point> shortesetPointList = new ArrayList<>();
+
+
+        shortestPointSet.add(
+                new org.springframework.data.geo.Point(
+                                start.getCoordinate().getX(), start.getCoordinate().getY()
+                )
+        );
+        shortesetPointList.add(
+                new org.springframework.data.geo.Point(
+                        start.getCoordinate().getX(), start.getCoordinate().getY()
+                )
+        );
+
+        for (TmapRoad tmapRoad : tmapRoadList) {
+            for (org.springframework.data.geo.Point point: tmapRoad.getGeometry().getCoordinates()) {
+                if (shortestPointSet.add(new org.springframework.data.geo.Point(point.getX(), point.getY()))) {
+                    shortesetPointList.add(new org.springframework.data.geo.Point(point.getX(), point.getY()));
+                }
+            }
+        }
+        if (shortestPointSet.contains(new org.springframework.data.geo.Point(
+                start.getCoordinate().getX(), start.getCoordinate().getY()))) {
+            shortesetPointList.add(
+                    new org.springframework.data.geo
+                            .Point(end.getCoordinate().getX(), end.getCoordinate().getY()
+                    )
+            );
+        }
+        return shortesetPointList;
+    }
 }
