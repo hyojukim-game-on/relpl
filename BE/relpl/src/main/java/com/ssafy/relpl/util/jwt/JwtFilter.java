@@ -22,15 +22,30 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final ExceptionResponseHandler exceptionResponseHandler;
+    private List<String> disabledEndpoints;
+
+
+    public JwtFilter disableAuth(String... endpoints) {
+        this.disabledEndpoints = Arrays.asList(endpoints);
+        for(String point : disabledEndpoints) log.info(point);
+        return this;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI().substring(request.getContextPath().length());
+        if (disabledEndpoints != null && disabledEndpoints.contains(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         try {
             // HTTP 요청에서 JWT 토큰 추출
             String token = jwtTokenProvider.resolveToken(request);
@@ -43,8 +58,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (BaseException e) {
+            log.info("JwtFilter 401 error");
             ResponseEntity<String> responseEntity = exceptionResponseHandler.handleBaseException(e);
-            response.setStatus(HttpStatus.GONE.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write(responseEntity.getBody());
             return;

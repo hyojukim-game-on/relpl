@@ -2,21 +2,15 @@ package com.ssafy.relpl.service;
 
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
-import com.ssafy.relpl.dto.request.UserAutoLoginRequest;
-import com.ssafy.relpl.dto.request.UserLoginRequest;
-import com.ssafy.relpl.dto.request.UserSignupRequest;
-import com.ssafy.relpl.dto.response.UserLoginResponse;
-import com.ssafy.relpl.dto.response.UserSignupResponse;
+import com.ssafy.relpl.dto.request.*;
+import com.ssafy.relpl.dto.response.*;
 import com.ssafy.relpl.service.result.CommonResult;
-import com.ssafy.relpl.util.jwt.JwtConstants;
 import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import com.ssafy.relpl.util.exception.BaseException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,9 +31,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    @Qualifier("redisTemplate")  // 여기에 @Qualifier 어노테이션 추가
+    private final RedisTemplate<String, Object> redisTemplate;
+//    private final RedisTemplate redisTemplate;
+    private final AuthenticationManager authenticationManager;
 
     public ResponseEntity<CommonResult> save(UserSignupRequest request) throws BaseException {
         //사용자가 이미 존재하는지 확인
@@ -72,11 +67,11 @@ public class UserService {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(String.valueOf(user.get().getUserId()), request.getUserPassword())
             );
-            log.info("UserService authentication: " + authentication);
+            log.info("Userservice login authentication: " + authentication);
 
             //토큰 생성
-            String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, authentication, user.get().getUserId());
-            String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, authentication);
+            String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, user.get().getUserId());
+            String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, authentication.getName());
 
             return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), accessToken, refreshToken), "로그인 성공", 200));
         }
@@ -104,6 +99,64 @@ public class UserService {
         //유저가 존재하지 않은 경우
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "로그인 실패"));
     }
+
+    public ResponseEntity<CommonResult> reissue(UserReissueRequest request) {
+        Optional<User> user = userRepository.findById(request.getUserId());
+        if(!(user.isPresent() && user.get().isUserIsActive())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "존재하지 않는 유저입니다."));
+        }
+        try {
+            // JWT 토큰이 존재하고 유효한 경우
+            if (!request.getRefreshToken().isEmpty() && jwtTokenProvider.validateToken(request.getRefreshToken())) {
+                //refreshToken 의 name 으로 조회했을 때 존재하고, refreshToken 과 일치하는지 확인
+                String savedToken = (String) redisTemplate.opsForValue().get("token_" + request.getUserId());
+                log.info("saved refreshToken: " + savedToken);
+                if(request.getRefreshToken().equals(savedToken)) {
+                    //재발급
+                    String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, request.getUserId());
+                    String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, String.valueOf(request.getUserId()));
+
+                    log.info("reissue success");
+                    return ResponseEntity.ok(responseService.getSingleResult(UserReissueResponse.createUserReissueResponse(accessToken, refreshToken), "재발급 성공", 200));
+                }
+                log.info("reissue 401 error : refresh token 이 일치하지 않습니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "refresh token 이 일치하지 않습니다."));
+            }
+            log.info("reissue 401 error : 재발급 실패");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
+        } catch (BaseException e) {
+            log.info("reissue 401 error : 만료된 토큰입니다. 다시 로그인하세요.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "만료된 토큰입니다. 다시 로그인하세요."));
+        } catch (Exception e) {
+            log.info("reissue 401 error : 재발급 실패");
+            log.info("error 5 : " + e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
+        }
+    }
+
+    public ResponseEntity<CommonResult> duplicateNickname(String nickname) {
+        if(userRepository.findByUserNickname(nickname).isPresent()) {
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(true), "휴대폰번호 사용 불가능", 200));
+        }
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(false), "휴대폰번호 사용 가능", 200));
+    }
+
+    public ResponseEntity<CommonResult> duplicateUserPhone(UserDuplicatePhoneRequest request) {
+        if(userRepository.findByUserPhone(request.getUserPhone()).isPresent()) {
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(true), "휴대폰번호 사용 불가능", 200));
+        }
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(false), "휴대폰번호 사용 가능", 200));
+    }
+
+    public ResponseEntity<CommonResult> duplicateUserId(UserDuplicateIdRequest request) {
+        if(userRepository.findByUserUid(request.getUserUid()).isPresent()){
+            //중복된 ID 있음
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(true), "아이디 사용 불가능", 200));
+        }
+        //중복된 ID 없음
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
+    }
+
 
     public ResponseEntity<String> test() {
 
