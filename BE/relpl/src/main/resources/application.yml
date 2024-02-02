@@ -17,6 +17,7 @@ spring:
     redis:
       host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
       port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 tmap:
   road-expiration-time: 86400000  # 24시간

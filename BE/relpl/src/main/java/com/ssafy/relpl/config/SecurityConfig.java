@@ -49,6 +49,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/user/isExist/nickname/**").permitAll() //유저 닉네임 중복체크
                             .requestMatchers("/api/sample/post").permitAll()
                             .requestMatchers("/api/sample/get/**").permitAll()
+                            .requestMatchers("/api/project/recommend/").permitAll()
                             .anyRequest().authenticated(); //인증 필요
                 })
                 .csrf((csrf) -> csrf.disable())

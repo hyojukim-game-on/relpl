@@ -4,8 +4,11 @@ import com.ssafy.relpl.business.ProjectRecommendBusiness;
 import com.ssafy.relpl.db.mongo.entity.TmapRoad;
 import com.ssafy.relpl.db.postgre.entity.PointHash;
 import com.ssafy.relpl.dto.request.ProjectRecommendRequestDto;
+import com.ssafy.relpl.dto.response.SampleResponseDto;
 import com.ssafy.relpl.service.PointHashService;
+import com.ssafy.relpl.service.ResponseService;
 import com.ssafy.relpl.service.TmapRoadService;
+import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -26,6 +29,7 @@ import java.util.List;
 public class RoadController {
 
     private final ProjectRecommendBusiness projectRecommendBusiness;
+    private final ResponseService responseService;
     private final PointHashService pointHashService;
     private final TmapRoadService tmapRoadService; // test
     private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
@@ -42,6 +46,25 @@ public class RoadController {
         return projectRecommendBusiness.recommendRoad(startPoint, endPoint);
     }
 
+    @GetMapping("/get/{path1}/{path2}")
+    public ResponseEntity<?> getSample(@PathVariable String path1, @PathVariable String path2) {
+
+        SingleResult<SampleResponseDto> result = new SingleResult<>();
+        responseService.getSingleResult("data", "OK", 200);
+        result.setCode(200);
+        result.setMessage("뭔가뭔가 성공");
+        result.setData(SampleResponseDto
+                .builder()
+                .test1(path1)
+                .test2(path2)
+                .build());
+//        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(responseService.getSingleResult(
+                SampleResponseDto.builder()
+                        .test1(path1)
+                        .test2(path2)
+                        .build()));
+    }
 //    @GetMapping("/test/{x}/{y}")
 //    public ResponseEntity<?> testProject(@PathVariable double x, @PathVariable double y) {
 //        try {
@@ -55,16 +78,4 @@ public class RoadController {
 //        return ResponseEntity.badRequest().body("");
 //    }
 
-    @GetMapping("/test/{x}/{y}")
-    public ResponseEntity<?> testProject(@PathVariable Long x, @PathVariable int y) {
-        List<Long> list = new ArrayList<>();
-        list.add(x);
-        List<TmapRoad> roads = tmapRoadService.getAllTmapRoadById(list);
-        String s = "";
-        for (TmapRoad road: roads) {
-            s += road.toString();
-            s += "\n";
-        }
-        return ResponseEntity.ok(s);
-    }
 }

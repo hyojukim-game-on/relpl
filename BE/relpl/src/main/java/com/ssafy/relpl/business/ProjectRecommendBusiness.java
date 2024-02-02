@@ -135,10 +135,10 @@ public class ProjectRecommendBusiness {
             int report = roadInfo.getRoadInfoReport(); // n
             if (report ==0) report++;
 
-            int totalReport = roadInfo.getRoadInfoTotalReport(); // m
+            int totalReport = (int)(Math.log(roadInfo.getRoadInfoTotalReport()) + 0.5); // m
             if (totalReport == 0) totalReport++;
 
-            int weight = (int)(Math.log(len) / Math.log(totalReport) * 5 / report); // 5/n * ln(d) / ln(m) + b
+            int weight = (int)((Math.log(len) + 0.5) / totalReport * 5 / report) + 1; // 5/n * ln(d) / ln(m) + b
             String cleanRoad = redisTemplate.opsForValue().get("road_"+roadInfos);
             if (cleanRoad != null) weight += 25; // b
 
