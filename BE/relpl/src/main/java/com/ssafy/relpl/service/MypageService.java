@@ -10,13 +10,18 @@ import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.MypageChangePasswordRequest;
 import com.ssafy.relpl.dto.request.MypageChangeRequest;
+import com.ssafy.relpl.dto.request.MypageExitRequest;
 import com.ssafy.relpl.service.result.CommonResult;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,7 +40,8 @@ public class MypageService {
     @Value("${cloud.aws.s3.base-url}")
     private String baseUrl;
 
-
+    @Qualifier("redisTemplate")
+    private final RedisTemplate<String, Object> redisTemplate;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
@@ -182,6 +188,41 @@ public class MypageService {
                 log.error(e.getMessage());
                 return null;
             }
+        }
+
+        @Transactional
+        public ResponseEntity<CommonResult> exit(MypageExitRequest request) {
+            log.info("회원탈퇴");
+
+            //유저 조회
+            Optional<User> userOptional = userRepository.findByUserUid(request.getUserUid());
+
+            //유저가 존재하는지 확인
+            if(userOptional.isPresent()) {
+                User user = userOptional.get();
+
+                //유저의 패스워드 일치 확인
+                if (passwordEncoder.matches(request.getUserPassword(), user.getUserPassword())) {
+
+                    //유저 refresh token 조회
+                    String refreshToken = (String) redisTemplate.opsForValue().get("token_" + user.getUserId());
+
+                    //조회에서 존재하는 경우 삭제
+                    if(refreshToken != null) {
+                        redisTemplate.delete("token_" + user.getUserId());
+                    }
+
+                    //유저 비활성화
+                    user.setUserIsActive(false);
+
+                    //회원탈퇴 성공
+                    return ResponseEntity.ok(responseService.getSingleResult(true, "회원탈퇴 성공", 200));
+                }
+                //회원탈퇴 실패(비밀번호 불일치)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "비밀번호 일치하지 않음"));
+            }
+            //회원탈퇴 실패(유저가 존재하지 않음)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "회원탈퇴 실패"));
         }
 
     }
