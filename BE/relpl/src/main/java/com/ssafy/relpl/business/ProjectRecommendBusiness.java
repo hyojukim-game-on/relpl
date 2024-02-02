@@ -67,13 +67,13 @@ public class ProjectRecommendBusiness {
         log.info("dijkstraShortestPath 완료");
 
         // 3번
-        List<Integer> shortestRoadHash = getShortestRoadHashRevBfs(Math.toIntExact(realEndHash.getPointHashId()), shortestCost);
+        List<Long> shortestRoadHash = getShortestRoadHashRevBfs(Math.toIntExact(realEndHash.getPointHashId()), shortestCost);
         log.info("getShortestRoadHashRevBfs 완료");
 
-        List<Long> shortestTmapRoadId = roadHashToTmapRoad(shortestRoadHash);
+//        List<Long> shortestTmapRoadId = roadHashToTmapRoad(shortestRoadHash);
         log.info("shortestTmapRoadId 완료");
 
-        List<TmapRoad> shortestTmapRoad = tmapRoadService.getAllTmapRoadById(shortestTmapRoadId);
+        List<TmapRoad> shortestTmapRoad = tmapRoadService.getAllTmapRoadById(shortestRoadHash);
         log.info("shortestTmapRoad 완료");
 
         List<GeoJsonLineString> line = new ArrayList<>();
@@ -193,9 +193,9 @@ public class ProjectRecommendBusiness {
      * @param shortestCost 시작점으로부터 모든 점 까지의 최단경로 Long[]
      * @return hash값이 적용된 road값이 반환, roadHash를 이용해 변환 필요
      */
-    public List<Integer> getShortestRoadHashRevBfs(int end, long[] shortestCost) {
+    public List<Long> getShortestRoadHashRevBfs(int end, long[] shortestCost) {
 
-        List<Integer> pathRoadsHash = new ArrayList<>();
+        List<Long> pathRoadsHash = new ArrayList<>();
         boolean[] visit = new boolean[vertexCnt];
         visit[end] = true;
 
@@ -207,13 +207,12 @@ public class ProjectRecommendBusiness {
             for (Edge next: shortestEdges[cur]) {
                 if (visit[next.to]) continue;
                 if (shortestCost[cur] - next.dist == shortestCost[next.to]) {
-                    pathRoadsHash.add(next.to);
+                    pathRoadsHash.add(next.roadHash);
                     visit[next.to] = true;
                     que.add(next.to);
                 }
             }
         }
-        log.info("{}", Arrays.toString(shortestCost));
         return pathRoadsHash;
     }
 // ----------------------------------------------------------------

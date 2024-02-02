@@ -44,6 +44,7 @@ class TmapService {
     private val baseUrl = "https://apis.openapi.sk.com/tmap/road/nearToRoad"
 
     private val geometryFactory = GeometryFactory(PrecisionModel(), 4326)
+
     fun callTmapApi(latitude: Double, longitude: Double, apiKey: String): String? {
         val url = "$baseUrl?version=1&appKey=$apiKey&lat=$latitude&lon=$longitude"
         val restTemplate = RestTemplate()
@@ -52,11 +53,11 @@ class TmapService {
         }
     }
 
-    suspend fun getAllRoads(startLat: BigDecimal, startLng: BigDecimal, endLat: BigDecimal, endLng: BigDecimal): TmapData {
+    suspend fun getAllRoads(startLat: BigDecimal, startLng: BigDecimal, endLat: BigDecimal, endLng: BigDecimal) {
 
         val roadSet = mutableSetOf<Long>()
-        val roadDetailList = mutableListOf<TmapRoad>()
-        val roadHashList = mutableListOf<RoadHash>()
+//        val roadDetailList = mutableListOf<TmapRoad>()
+//        val roadHashList = mutableListOf<RoadHash>()
         val pointHashMap = mutableMapOf<Point, Long>()
 
         var hashVal = 0L
@@ -92,8 +93,7 @@ class TmapService {
 //                                    roadDetailList.add(TmapRoad.createRoad(responseDTO, hashVal))
                                     val tmapRoad = TmapRoad.createRoad(responseDTO, hashVal);
                                     insertTmapRoad(tmapRoad)
-                                    insertRoadHash(RoadHash.createRoadHash(hashVal++, responseDTO.resultData.header.linkId))
-
+//                                    insertRoadHash(RoadHash.createRoadHash(hashVal++, responseDTO.resultData.header.linkId))
 
                                     val start = tmapRoad.geometry.coordinates.first()
                                     val startPoint = geometryFactory.createPoint(Coordinate(start.x, start.y))
@@ -135,20 +135,93 @@ class TmapService {
                 }
             }
         }
-        return TmapData(roadDetailList, roadHashList)
     }
 
-//    fun insertAllRoads(roads: List<TmapRoad>) {
-//        tmapRoadRepository.saveAll(roads)
-//    }
-//
-//    fun insertAllRoadHash(roadsHash: List<RoadHash>) {
-//        roadHashRepository.saveAll(roadsHash)
-//    }
-//
-//    fun insertAllPointHash(pointHashList: List<PointHash>){
-//        pointHashRepository.saveAll(pointHashList)
-//    }
+    suspend fun addAdditionalRoads(startLat: BigDecimal, startLng: BigDecimal, endLat: BigDecimal, endLng: BigDecimal): TmapData {
+
+        val roadSet = mutableSetOf<Long>()
+        val roadDetailList = mutableListOf<TmapRoad>()
+//        val roadHashList = mutableListOf<RoadHash>()
+        val pointHashMap = mutableMapOf<Point, Long>()
+
+        var hashVal = 0L
+
+        var lat = startLat
+        var count = 0
+        var holeCnt = ((startLat - endLat).div(BigDecimal(0.00005)) * ((endLng - startLng).div(BigDecimal(0.00005)))).toInt() + 2
+        var i = 0
+        var roadHashIndex = 0L
+        var apiKey = getkeys().get(i++)
+        coroutineScope {
+            launch {
+                while (lat >= endLat) {
+                    lat = lat.minus(BigDecimal(0.00005))
+                    var lng = startLng;
+                    while (lng <= endLng) {
+                        lng = lng.plus(BigDecimal(0.00005))
+                        try {
+                            ++count
+                            if (count % 20000 == 0) {
+                                count %= 20000
+                                apiKey = getkeys().get(i++)
+                            }
+                            val responseData = callTmapApi(lat.toDouble(), lng.toDouble(), apiKey)
+                            val objectMapper = ObjectMapper()
+                            val responseDTO: TmapApiResponseDTO = objectMapper.readValue(responseData, TmapApiResponseDTO::class.java)
+                            log.info("count: ${--holeCnt}")
+                            responseDTO.resultData.let {
+                                if (!roadSet.contains(responseDTO.resultData.header.linkId)) {
+
+                                    roadSet.add(responseDTO.resultData.header.linkId)
+                                    log.info(" lat: $lat, lng: $lng, API Call: $responseDTO\"")
+//                                    roadDetailList.add(TmapRoad.createRoad(responseDTO, hashVal))
+                                    val tmapRoad = TmapRoad.createRoad(responseDTO, hashVal);
+                                    insertTmapRoad(tmapRoad)
+//                                    insertRoadHash(RoadHash.createRoadHash(hashVal++, responseDTO.resultData.header.linkId))
+
+                                    val start = tmapRoad.geometry.coordinates.first()
+                                    val startPoint = geometryFactory.createPoint(Coordinate(start.x, start.y))
+                                    var startPointHash = -1L
+
+                                    val end = tmapRoad.geometry.coordinates.last()
+                                    val endPoint = geometryFactory.createPoint(Coordinate(end.x, end.y))
+                                    var endPointHash = -1L
+
+
+                                    if (!pointHashMap.contains(startPoint)) {
+                                        startPointHash = roadHashIndex
+                                        val pointHashEntity = PointHash.createPointHash(roadHashIndex, startPoint)
+                                        insertPointHash(pointHashEntity)
+                                        pointHashMap.put(startPoint, roadHashIndex++)
+                                    } else {
+                                        startPointHash = pointHashMap.get(startPoint)!!
+                                    }
+
+                                    if (!pointHashMap.contains(endPoint)) {
+                                        endPointHash = roadHashIndex
+                                        insertPointHash(PointHash.createPointHash(roadHashIndex, endPoint))
+                                        pointHashMap.put(endPoint, roadHashIndex++)
+                                    } else {
+                                        endPointHash = pointHashMap.get(endPoint)!!
+                                    }
+                                    // point hash 관련 로직 작성 완료
+                                    // tmap 데이터 넣는 로직 작성 필요
+                                    val roadInfo = RoadInfo.createRoadInfo(tmapRoad.tmapId, startPointHash, endPointHash, tmapRoad.totalDistance)
+                                    insertRoadInfo(roadInfo)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            log.info(e.message)
+                        }
+                    }
+
+                }
+            }
+        }
+        return TmapData(roadDetailList)
+    }
+
     fun insertPointHash(pointHash: PointHash) {
         pointHashRepository.save(pointHash)
     }
@@ -163,55 +236,6 @@ class TmapService {
 
     fun insertRoadInfo(roadInfo: RoadInfo) {
         roadInfoRepository.save(roadInfo)
-    }
-
-    fun insertAllRoadInfo(tmapData: TmapData) : List<PointHash>{
-
-        val tmapToRoadHashMap = mutableMapOf<Long, Long>()
-        val roadHashList = tmapData.roadsHash
-
-        for (roadHash in roadHashList) {
-            tmapToRoadHashMap.put(roadHash.tmapId, roadHash.roadHashId)
-        }
-
-
-        val pointSet = mutableSetOf<Point>()
-        val indexPointMap = mutableMapOf<Point, Long>()
-        val pointHashList = mutableListOf<PointHash>();
-        var index = 0L
-
-        val roadInfoList = mutableListOf<RoadInfo>()
-
-        for (road in tmapData.roads) {
-
-            val start = road.geometry.coordinates.first()
-            val startPoint = geometryFactory.createPoint(Coordinate(start.x, start.y))
-            var startPointHash = -1L
-
-            val end = road.geometry.coordinates.last()
-            val endPoint = geometryFactory.createPoint(Coordinate(end.x, end.y))
-            var endPointHash = -1L
-
-            if (pointSet.add(startPoint)) {
-                startPointHash = index
-                indexPointMap.put(startPoint, index)
-                pointHashList.add(PointHash.createPointHash(index++, startPoint))
-            } else {
-                startPointHash = indexPointMap.get(startPoint)!!
-            }
-
-            if (pointSet.add(endPoint)) {
-                endPointHash = index
-                indexPointMap.put(endPoint, index)
-                pointHashList.add(PointHash.createPointHash(index++, endPoint))
-            } else {
-                endPointHash = indexPointMap.get(endPoint)!!
-            }
-            roadInfoList.add(RoadInfo.createRoadInfo(tmapToRoadHashMap.get(road.tmapId), startPointHash, endPointHash, road.totalDistance))
-            log.info(roadInfoList.last().toString())
-        }
-        roadInfoRepository.saveAll(roadInfoList)
-        return pointHashList
     }
 
     @Value("\${tmap.api.key1}")
@@ -240,7 +264,7 @@ class TmapService {
 
     var keys = mutableListOf<String>()
     fun getkeys(): List<String> {
-        if (keys.isEmpty()) keys = mutableListOf(key7, key8)
+        if (keys.isEmpty()) keys = mutableListOf(key1, key2, key3, key4, key5, key6, key7, key8)
         return keys
     }
 }
