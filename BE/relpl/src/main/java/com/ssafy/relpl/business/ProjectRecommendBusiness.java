@@ -25,7 +25,7 @@ import java.util.*;
 @Slf4j
 @RequiredArgsConstructor
 public class ProjectRecommendBusiness {
-// for code review
+
     private final RoadInfoService roadService;
     private final PointHashService pointHashService;
     private final TmapRoadService tmapRoadService;
