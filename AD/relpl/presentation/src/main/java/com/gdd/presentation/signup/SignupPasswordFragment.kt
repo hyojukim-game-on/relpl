@@ -3,6 +3,7 @@ package com.gdd.presentation.signup
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupPasswordBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "SignupPasswordFragment_Genseong"
 @AndroidEntryPoint
 class SignupPasswordFragment : BaseFragment<FragmentSignupPasswordBinding>(
     FragmentSignupPasswordBinding::bind, R.layout.fragment_signup_password
@@ -26,7 +28,8 @@ class SignupPasswordFragment : BaseFragment<FragmentSignupPasswordBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         signupActivity = _activity as SignupActivity
-
+        Log.d(TAG, "onViewCreated: ${activityViewModel.id}")
+        
         initView()
         registerListener()
         registerObserver()

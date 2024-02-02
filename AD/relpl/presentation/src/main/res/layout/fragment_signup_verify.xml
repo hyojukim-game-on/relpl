@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/signup_verify_main"
-        android:textAppearance="@style/Relpl.Text.Signup.Main" />
+        style="@style/Relpl.Text.Signup.Main" />
 
     <TextView
         android:id="@+id/tv_verify_content"
@@ -24,7 +24,7 @@
         android:layout_marginBottom="50dp"
         android:gravity="center"
         android:text="@string/signup_verify_content"
-        android:textAppearance="@style/Relpl.Text.Signup.Content" />
+        style="@style/Relpl.Text.Signup.Content" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
@@ -106,6 +106,8 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_verify"
         style="@style/Relpl.FullButton.Signup"
+        android:textAppearance="@style/Relpl.Text.SB.16"
+        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"

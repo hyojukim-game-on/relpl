@@ -1,5 +1,6 @@
 package com.gdd.presentation.signup
 
+import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.math.log
 
 
 private const val TAG = "SignupViewModel_Genseong"
@@ -95,10 +97,12 @@ class SignupViewModel @Inject constructor(
     }
 
     fun isDuplicatedId(id: String){
+        Log.d(TAG, "isDuplicatedId: $id")
         viewModelScope.launch {
             idDuplicatedCheckUseCase(id).let {
                 if (it.isSuccess){
                     this@SignupViewModel.id = id
+                    Log.d(TAG, "isDuplicatedId!: ${this@SignupViewModel.id}")
                 }
                 _idDupResult.postValue(it)
             }
@@ -118,7 +122,8 @@ class SignupViewModel @Inject constructor(
 
     fun signUp(){
         viewModelScope.launch {
-            signUpUseCase(phoneNumber,id, pw, nickname).let {
+            Log.d(TAG, "signUp: $id")
+            signUpUseCase(phoneNumber, id, pw, nickname).let {
                 _signUpResult.postValue(it)
             }
         }
