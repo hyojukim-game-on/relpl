@@ -12,6 +12,7 @@ import com.gdd.domain.usecase.relay.GetDistanceRelayInfoUseCase
 import com.gdd.domain.usecase.relay.IsExistDistanceRelayUseCase
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,26 +47,30 @@ class LoadRelayViewModel @Inject constructor(
 
     fun getAllMarker(){
         viewModelScope.launch {
+            delay(300)
+            _markerResult.postValue(Result.success(tempMarkerList))
             getAllRelayMarkerUseCase().let {
-                _markerResult.postValue(it)
-//                _markerResult.postValue(tempMarkerList)
+//                _markerResult.postValue(it)
             }
         }
     }
 
     fun isExistDistanceRelay(lat: Double, lng: Double){
         viewModelScope.launch {
-            isExistDistanceRelayUseCase(lat, lng).let {
-                _isExistDistanceResult.postValue(it)
-            }
+            _isExistDistanceResult.postValue(Result.success(System.currentTimeMillis()%5 == 0L))
+//            isExistDistanceRelayUseCase(lat, lng).let {
+//                _isExistDistanceResult.postValue(it)
+//            }
         }
     }
 
     fun getDistanceRelayInfo(projectId: Long){
         viewModelScope.launch {
-            getDistanceRelayInfoUseCase(projectId).let {
-                _distanceRelayInfoResult.postValue(it)
-            }
+            delay(200)
+            _distanceRelayInfoResult.postValue(Result.success(distanceRelayInfoEx))
+//            getDistanceRelayInfoUseCase(projectId).let {
+//                _distanceRelayInfoResult.postValue(it)
+//            }
         }
     }
 
@@ -105,6 +110,20 @@ class LoadRelayViewModel @Inject constructor(
             RelayMarker(9, Point(36.101640, 128.421811), false),
             RelayMarker(10, Point(36.100745, 128.420818), true),
             RelayMarker(11, Point(36.104214, 128.425846), false),
+        )
+
+        val distanceRelayInfoEx = DistanceRelayInfo(
+            2,
+            "진평동 플로깅 합시다 제발~",
+            3,
+            "2km 230m",
+            "1km 10m",
+            "2024년 1월 31일",
+            "2024년 2월 5일",
+            false,
+            Point(36.108540, 128.420353),
+            "47%",
+            "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세"
         )
     }
 }

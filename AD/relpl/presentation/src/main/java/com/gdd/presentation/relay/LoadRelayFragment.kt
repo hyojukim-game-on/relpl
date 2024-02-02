@@ -89,22 +89,6 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
 
     private fun registerObserver(){
         viewModel.markerResult.observe(viewLifecycleOwner){ result ->
-            /*
-            result.forEach{
-                Marker().apply {
-                    position =  it.stopCoordinate.toLatLng()
-                    map = naverMap
-                    icon = OverlayImage.fromResource(R.drawable.ic_marker)
-                    iconTintColor = if (it.isPath) resources.getColor(R.color.sage_green_dark) else resources.getColor(R.color.sage_brown)
-                    tag = it.projectId
-                    setOnClickListener {marker ->
-                        showSnackBar(marker.tag.toString())
-                        true
-                    }
-                }
-            }
-             */
-
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     it.forEach{
@@ -142,6 +126,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                         showCannotCreateDistanceProjectDialog()
                     }else{
                         // 거리 릴레이 생성 다이얼로그
+                        showCreateDistanceRelayDialog()
                     }
                 }
             }else{
@@ -151,6 +136,14 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                     } else {
                         showSnackBar(resources.getString(R.string.all_net_err))
                     }
+                }
+            }
+        }
+
+        viewModel.distanceRelayInfoResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+
                 }
             }
         }
@@ -291,8 +284,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                 R.id.fab_create_distance -> {
                     val locationManager = mainActivity.getSystemService(LOCATION_SERVICE) as LocationManager
                     val current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-                    viewModel.isExistDistanceRelay(current.latitude, current.longitude)
-                    showCannotCreateDistanceProjectDialog()
+//                    viewModel.isExistDistanceRelay(current.latitude, current.longitude)
                 }
             }
             binding.fabCreateRelay.close()
