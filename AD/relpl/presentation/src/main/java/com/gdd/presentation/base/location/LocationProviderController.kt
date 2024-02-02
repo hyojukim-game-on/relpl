@@ -34,8 +34,9 @@ class LocationProviderController(
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
+            Log.d(TAG, "onLocationResult: $locationResult")
             if (locationResult.lastLocation != null) {
-
+                
                 if (beforeLocation == null){
                     beforeLocation = locationResult.lastLocation!!
                 } else if (beforeLocation!!.distanceTo(locationResult.lastLocation!!) >= distanceFlag) {

@@ -5,8 +5,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application android:theme="@style/Theme.Relpl">
+        <service
+            android:name=".base.location.LocationTrackingService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -18,15 +25,14 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".SignupActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true"/>
     </application>
 
 </manifest>
