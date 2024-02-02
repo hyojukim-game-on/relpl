@@ -44,7 +44,7 @@ public class JwtTokenProvider {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    public static String createAccessToken(JwtTokenProvider jwtTokenProvider, Authentication authentication, Long userId) {
+    public static String createAccessToken(JwtTokenProvider jwtTokenProvider, Long userId) {
         Claims claims = Jwts.claims();
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + jwtTokenProvider.accessExpirationTime);
@@ -64,8 +64,8 @@ public class JwtTokenProvider {
     /**
      * Refresh 토큰 생성
      */
-    public String createRefreshToken(JwtTokenProvider jwtTokenProvider, Authentication authentication){
-        Claims claims = Jwts.claims().setSubject(authentication.getName());
+    public String createRefreshToken(JwtTokenProvider jwtTokenProvider, String userId){
+        Claims claims = Jwts.claims().setSubject(userId);
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + jwtTokenProvider.refreshExpirationTime);
         Key key = new SecretKeySpec(jwtTokenProvider.secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
@@ -78,12 +78,12 @@ public class JwtTokenProvider {
                 .compact();
 
         // redis에 저장
-//        redisTemplate.opsForValue().set(
-//                authentication.getName(),
-//                refreshToken,
-//                refreshExpirationTime,
-//                TimeUnit.MILLISECONDS
-//        );
+        redisTemplate.opsForValue().set(
+                "token_"+userId,
+                refreshToken,
+                refreshExpirationTime,
+                TimeUnit.MILLISECONDS
+        );
 
         return refreshToken;
     }
@@ -126,4 +126,6 @@ public class JwtTokenProvider {
             throw new BaseException(JwtConstants.INVALID_JWT_MESSAGE);
         }
     }
+
+
 }

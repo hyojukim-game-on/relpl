@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 public class SampleController {
 
-
-    private final UserService userService;
     private final ResponseService responseService;
 
 //    @GetMapping(value = "/save")

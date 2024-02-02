@@ -6,6 +6,7 @@ import com.ssafy.relpl.service.result.SingleResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ResponseService {
@@ -71,6 +72,9 @@ public class ResponseService {
         setSuccessResult(result);
         return result;
     }
+
+
+
     // 성공 결과만 처리하는 메소드
     public CommonResult getSuccessResult() {
         CommonResult result = new CommonResult();
@@ -99,6 +103,7 @@ public class ResponseService {
         result.setData(data);
         return result;
     }
+    // 실패 결과만 처리하는 메소드 + data=null
     public <T> SingleResult<T> getFailResult(int code, String msg, T data) {
         SingleResult<T> result = new SingleResult<>();
         result.setData(data);
