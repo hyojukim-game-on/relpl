@@ -4,6 +4,7 @@ import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
+import com.ssafy.relpl.dto.response.ProjectCreateDistanceResponse;
 import com.ssafy.relpl.dto.response.ProjectExistResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,10 @@ public class ProjectService {
                     .projectTotalContributer(1)
                     .build();
             project = projectRepository.save(project);
-            return ResponseEntity.ok(responseService.getSingleResult(project.getProjectId(), "거리 프로젝트 생성 완료", 200));
+            ProjectCreateDistanceResponse response = ProjectCreateDistanceResponse.builder()
+                    .projectId(project.getProjectId())
+                    .build();
+            return ResponseEntity.ok(responseService.getSingleResult(response, "거리 프로젝트 생성 완료", 200));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "거리 프로젝트 생성 실패"));
         }
