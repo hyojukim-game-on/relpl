@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.data.geo.Point;
 
 @Data
-public class ProjectRecommendRequestDto {
+public class ProjectRecommendRequest {
 
     Point startPoint;
     Point endPoint;

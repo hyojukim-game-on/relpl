@@ -41,6 +41,12 @@ public class ProjectController {
     public ResponseEntity<?> projectExist(@PathVariable double x, @PathVariable double y) {
         return projectService.projectExist(x, y, 50);
     }
+
+    @PostMapping("/create/distance")
+    public ResponseEntity<?> projectCreateDistance(@RequestBody ProjectCreateDistanceRequest request) {
+        return projectService.createDistanceProject(request);
+    }
+
 //    @PostMapping("/project/create/route")
 //    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {
 //

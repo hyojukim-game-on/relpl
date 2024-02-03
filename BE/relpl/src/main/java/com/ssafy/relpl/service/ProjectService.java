@@ -36,4 +36,29 @@ public class ProjectService {
         }
 
     }
+
+    public ResponseEntity<?> createDistanceProject(ProjectCreateDistanceRequest request) {
+        try {
+            Point startPoint = geomFactoryConfig.getGeometryFactory().createPoint(new Coordinate(request.getProjectStartPoint().getX(), request.getProjectStartPoint().getY()));
+            Project project = Project.builder()
+                    .userId(request.getUserId())
+                    .projectName(request.getProjectName())
+                    .projectCreateDate(request.getProjectCreateDate())
+                    .projectEndDate(request.getProjectEndDate())
+                    .projectStartCoordinate(startPoint)
+                    .projectStopCoordinate(startPoint)
+                    .projectEndCoordinate(null)
+                    .projectIsPath(false)
+                    .projectRemainingDistance(request.getProjectTotalDistance())
+                    .projectTotalDistance(request.getProjectTotalDistance())
+                    .projectIsDone(false)
+                    .projectIsPlogging(true)
+                    .projectTotalContributer(1)
+                    .build();
+            project = projectRepository.save(project);
+            return ResponseEntity.ok(responseService.getSingleResult(project.getProjectId(), "거리 프로젝트 생성 완료", 200));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "거리 프로젝트 생성 실패"));
+        }
+    }
 }
