@@ -18,9 +18,8 @@ public interface PointHashRepository extends JpaRepository<PointHash, Long>, Que
     @Override
     <S extends PointHash> @NotNull List<S> saveAll(@NotNull Iterable<S> entities);
 
-    @NotNull
-    @Override
-    List<PointHash> findAll();
+    @Query(value = "SELECT COUNT(*) FROM pointhash", nativeQuery = true)
+    int countAllPointHash();
     @Query(value =
             "SELECT *\n" +
             "FROM \n" +

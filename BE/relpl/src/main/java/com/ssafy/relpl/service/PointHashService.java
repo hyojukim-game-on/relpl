@@ -19,7 +19,7 @@ public class PointHashService {
         return pointHashRepository.findFirstByPointCoordinate(x, y);
     }
 
-    public List<PointHash> getAllPointHash() {
-        return pointHashRepository.findAll();
+    public int countAllPointHash() {
+        return pointHashRepository.countAllPointHash();
     }
 }

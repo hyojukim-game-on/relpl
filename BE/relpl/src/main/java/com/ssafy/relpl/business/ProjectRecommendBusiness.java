@@ -14,16 +14,11 @@ import com.ssafy.relpl.util.common.Info;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Business
 @Slf4j
@@ -38,54 +33,64 @@ public class ProjectRecommendBusiness {
     private final ResponseService responseService;
 
     private final RedisTemplate<String, String> redisTemplate;
-    List<RoadInfo> roadInfos;
+
 
     /**
-     * 해야하는 것
-     * 0. 만약 최적경로 제공을 위한 세팅이 안되있을 경우 값을 RoadInfo DB에서 가져오기
-     * 1. 입력된 시작점, 끝 점으로 부터 가장 가까운 시작점과 끝 점을 RoadHash DB에서 검색
-     * 2. 해당 점을 가지고 다익스트라 알고리즘 진행 => 결과값은 시작 점으로부터 모든 점 까지의 최단거리
-     * 3. 다익스트라로 나온 최단 거리를 바탕으로 역방향 BFS를 진행해서 최단 경로를 계산
-     * 3-1. 3번의 결과값으로 나온 도로의 결과는 hashing된 도로 번호
-     * 4. roadHash Table에서 Tmap Id값을 가져옴
-     * 5. 4번의 결과값을 가지고 PostgreSQL의 roadHash 테이블에서 MongoDB에서 실제 결과값을 가져옴
-     * 6. 가져온 결과값의 앞 뒤에 시작점 끝점을 붙여서 추천 경로 테이블에 insert
-     * 7. 6번의 결과값을 return
+     * 경로 추천 방법
+     * 1. PointHash DB에서 도로에 사용하는 모든 정점의 개수 가져오기 select count(*) from pointhash
+     * 2. RoadInfo DB에서 정점(도로의 시작점 & 끝점)과 길이(최단경로) 가져오고, 가중치(추천경로)도 계산
+     * 3. 입력된 시작점, 끝 점으로 부터 가장 가까운 시작점과 끝 점을 RoadHash DB에서 검색
+     * 4. 해당 점을 가지고 다익스트라 알고리즘 진행 => 결과값은 시작 점으로부터 모든 점 까지의 최단거리
+     * 5. 다익스트라로 나온 최단 거리를 바탕으로 역방향 BFS를 진행해서 최단 경로를 계산
+     * 5-1. 3번의 결과값으로 나온 도로의 결과는 tamp이 관리하는 도로 번호
+     * 6. 5번의 결과값을 MongoDB에서 tmapid를 이용해 검색해 실제 경로(List<Point>)를 가져옴
+     * 7. 가져온 도로들의 List를 Point<List>로 변환하고, 앞 뒤에 시작점 끝점을 붙여줌
+     * 8. 7번의 결과값을 최단/추천 경로 DB(recommendproject)에 insert
+     * 8-1. DB에 저장된 경로은 프로젝트 생성시 해당 프로젝트 id를 넣어는 작업 필요
+     * 9. 7번의 결과값을 return
      * @param start 시작점
      * @param end 끝 점
-     * @return
+     * @return ProjectRecommendResponseDto
      */
     @Transactional
-    public ResponseEntity<?> recommendRoad(Point start, Point end) {
+    public ResponseEntity<?> recommendProject(Point start, Point end) {
 
-        // 0번
-        initSettings();
-        initArrayList();
         // 1번
+        vertexCnt = countAllPointHash();
+
+        // 2번
+        initRoadInfoList();
+
+        // 3번
         PointHash realStartHash = pointHashService.getNearPoint(start.getX(), start.getY());
         PointHash realEndHash = pointHashService.getNearPoint(end.getX(), end.getY());
         log.info("realStartHash: {}, realEndHash: {}", realStartHash.toString(), realEndHash.toString());
-        // 2번
+
+        // 4번
         long[] shortestCost = dijkstraShortestPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
         long[] recommendCost = dijkstraRecommendPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
         log.info("dijkstraShortestPath 완료");
 
-        // 3번
+        // 5번
         List<Long> shortestRoadHash = getShortestRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), shortestCost);
         List<Long> recommendRoadHash = getRecommendRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), recommendCost);
         log.info("getShortestRoadHashRevBfs 완료");
 
-//        List<Long> shortestTmapRoadId = roadHashToTmapRoad(shortestRoadHash);
-//        log.info("shortestTmapRoadId 완료");
-
+        // 6번
         List<TmapRoad> shortestTmapRoad = tmapRoadService.getAllTmapRoadById(shortestRoadHash);
-        List<org.springframework.data.geo.Point> shortestPointList = getListFromTmapRoad(start, end, shortestTmapRoad);
-
         List<TmapRoad> recommendTmapRoad = tmapRoadService.getAllTmapRoadById(recommendRoadHash);
-        List<org.springframework.data.geo.Point> recommendPointList = getListFromTmapRoad(start, end, recommendTmapRoad);
+        log.info("shortestTmapRoad > getAllTmapRoadById 완료");
 
+        // 7번
+        List<org.springframework.data.geo.Point> shortestPointList = getListFromTmapRoad(start, end, shortestTmapRoad);
+        List<org.springframework.data.geo.Point> recommendPointList = getListFromTmapRoad(start, end, recommendTmapRoad);
+        log.info("recommendTmapRoad > getAllTmapRoadById 완료");
+
+        // 8번
         RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList);
         RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList);
+
+        // 9번
         ProjectRecommendResponseDto response
                 = ProjectRecommendResponseDto.builder()
                 .shortestId(shortestProject.getId())
@@ -100,31 +105,30 @@ public class ProjectRecommendBusiness {
     // ------------------------------------------------ 경로 추천 알고리즘 관련
     ArrayList<Edge>[] edges;
     int vertexCnt = -1; // 꼭짓점 수
-    HashMap<Long, Point> pointHashMap;
+    List<RoadInfo> roadInfos;
 
     /**
-     * DB에서 값을 가져와서 다익스트라를 위한 ArrayList에 값을 넣어주는 함수
+     * PointHash table에서 값을 가져옴
+     * 해당 테이블은 Point(위도, 경도)를 Long 값으로 변환해둔 테이블
      */
-    public void initSettings() {
+    public int countAllPointHash() {
+        return pointHashService.countAllPointHash();
+    }
 
-        List<PointHash> pointHashList = pointHashService.getAllPointHash();
-        pointHashMap = new HashMap<>();
-        for (PointHash pointHash : pointHashList) {
-            pointHashMap.put(pointHash.getPointHashId(), pointHash.getPointCoordinate());
-        }
-        vertexCnt = pointHashMap.size();
+    /**
+     * DB에서 가져온 값을 바탕으로 다익스트라를 위해 ArrayList에 시작점, 끝점, 길이, 가중치값을 넣어주는 함수
+     */
+    public void initRoadInfoList() {
+
         edges = new ArrayList[vertexCnt];
         for (int i = 0; i < vertexCnt; i++) {
             edges[i] = new ArrayList<>();
         }
-    }
 
-    /**
-     * DB에서 가져온 값을 바탕으로 다익스트라를 위해 ArrayList에 값을 넣어주는 함수
-     */
-    public void initArrayList() {
         roadInfos = roadService.getRoadInfo();
-        log.info("initArrayList()");
+        Set<String> cleanRoadSet = new HashSet<>(Objects.requireNonNull(redisTemplate.keys(("road_*"))));
+
+        log.info("initRoadInfo 시작");
         for (RoadInfo roadInfo: roadInfos) {
             int start = Math.toIntExact(roadInfo.getPointHashIdStart());
             int end = Math.toIntExact(roadInfo.getPointHashIdEnd());
@@ -139,12 +143,12 @@ public class ProjectRecommendBusiness {
             if (totalReport == 0) totalReport++;
 
             int weight = (int)((Math.log(len) + 0.5) / totalReport * 5 / report) + 1; // 5/n * ln(d) / ln(m) + b
-            String cleanRoad = redisTemplate.opsForValue().get("road_"+roadInfos);
-            if (cleanRoad != null) weight += 25; // b
+            if (cleanRoadSet.contains("road_"+roadInfos))weight += 25; // b
 
-            edges[start].add(new Edge(end, roadInfo.getRoadInfoLen(), roadInfo.getRoadHashId(), weight));
-            edges[end].add(new Edge(start, roadInfo.getRoadInfoLen(), roadInfo.getRoadHashId(), weight));
+            edges[start].add(new Edge(end, len, roadInfo.getRoadHashId(), weight));
+            edges[end].add(new Edge(start, len, roadInfo.getRoadHashId(), weight));
         }
+        log.info("initArrayList 완료");
     }
 // ----------------------------------------------------------------
     /**
@@ -180,7 +184,7 @@ public class ProjectRecommendBusiness {
     /**
      * 다익스트라 추천경로 결과값
      * @param start
-     * @return start로부터의 모든 점 까지의 최단거리 Long[]
+     * @return start로부터의 모든 점 까지의 최단 가중치 Long[]
      */
     public long[] dijkstraRecommendPath(int start, int end) {
         boolean[] visit = new boolean[vertexCnt];
@@ -210,7 +214,7 @@ public class ProjectRecommendBusiness {
      * 역방향 bfs를 통해 앞에서 계산된 최단거리를 기반으로 최단 경로 확인
      * @param end 끝 점
      * @param shortestCost 시작점으로부터 모든 점 까지의 최단경로 Long[]
-     * @return hash값이 적용된 road값이 반환, roadHash를 이용해 변환 필요
+     * @return 최단경로들의 list가 반환, 이 때 요소는 tmapId > List<TmapId>
      */
     public List<Long> getShortestRoadHashRevBfs(int start, int end, long[] shortestCost) {
 
@@ -237,10 +241,10 @@ public class ProjectRecommendBusiness {
     }
 // ----------------------------------------------------------------
     /**
-     * 역방향 bfs를 통해 앞에서 계산된 최단거리를 기반으로 최단 경로 확인
+     * 역방향 bfs를 통해 앞에서 계산된 추천거리를 기반으로 추천 경로 확인
      * @param end 끝 점
-     * @param recommendCost 시작점으로부터 모든 점 까지의 최단경로 Long[]
-     * @return hash값이 적용된 road값이 반환, roadHash를 이용해 변환 필요
+     * @param recommendCost 시작점으로부터 모든 점 까지의 추천경로 Long[]
+     * @return 추천경로들의 list가 반환, 이 때 요소는 tmapId > List<TmapId>
      */
     public List<Long> getRecommendRoadHashRevBfs(int start, int end, long[] recommendCost) {
 
@@ -266,38 +270,49 @@ public class ProjectRecommendBusiness {
         return pathRoadsHash;
     }
 
+    /**
+     * 시작점, 끝점, 제공된 최단 or 추천경로를 가지고 List<Point>로 반환하는 함수
+     * 역방향 bfs를 통해 가져왔으므로 주어진 tmapList는 끝점 > 시작점 순으로 정렬이 되어있음
+     * 따라서 마지막에 return할 떄 Collectios.reverse() 필요
+     * @param start 시작점
+     * @param end 끝 점
+     * @param tmapRoadList 길이/가중치를 가지고 계산한 최단/추천경로
+     * @return 추천/최단경로의 List<Point>
+     */
     public List<org.springframework.data.geo.Point> getListFromTmapRoad(Point start, Point end, List<TmapRoad> tmapRoadList) {
 
-        HashSet<org.springframework.data.geo.Point> shortestPointSet = new HashSet<>();
-        List<org.springframework.data.geo.Point> shortesetPointList = new ArrayList<>();
+        HashSet<org.springframework.data.geo.Point> pointSet = new HashSet<>();
+        List<org.springframework.data.geo.Point> pointList = new ArrayList<>();
 
 
-        shortestPointSet.add(
+        pointSet.add(
                 new org.springframework.data.geo.Point(
-                                start.getCoordinate().getX(), start.getCoordinate().getY()
+                                end.getCoordinate().getX(), end.getCoordinate().getY()
                 )
         );
-        shortesetPointList.add(
+        pointList.add(
                 new org.springframework.data.geo.Point(
-                        start.getCoordinate().getX(), start.getCoordinate().getY()
+                        end.getCoordinate().getX(), end.getCoordinate().getY()
                 )
         );
 
         for (TmapRoad tmapRoad : tmapRoadList) {
             for (org.springframework.data.geo.Point point: tmapRoad.getGeometry().getCoordinates()) {
-                if (shortestPointSet.add(new org.springframework.data.geo.Point(point.getX(), point.getY()))) {
-                    shortesetPointList.add(new org.springframework.data.geo.Point(point.getX(), point.getY()));
+                if (pointSet.add(new org.springframework.data.geo.Point(point.getX(), point.getY()))) {
+                    pointList.add(new org.springframework.data.geo.Point(point.getX(), point.getY()));
                 }
             }
         }
-        if (shortestPointSet.contains(new org.springframework.data.geo.Point(
+        if (pointSet.contains(new org.springframework.data.geo.Point(
                 start.getCoordinate().getX(), start.getCoordinate().getY()))) {
-            shortesetPointList.add(
+            pointList.add(
                     new org.springframework.data.geo
-                            .Point(end.getCoordinate().getX(), end.getCoordinate().getY()
+                            .Point(start.getCoordinate().getX(), start.getCoordinate().getY()
                     )
             );
         }
-        return shortesetPointList;
+
+        Collections.reverse(pointList);
+        return pointList;
     }
 }
