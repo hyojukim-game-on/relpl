@@ -22,10 +22,11 @@ public interface PointHashRepository extends JpaRepository<PointHash, Long>, Que
     int countAllPointHash();
     @Query(value =
             "SELECT *\n" +
-            "FROM \n" +
-            "    pointhash \n" +
-            "ORDER BY \n" +
-            "    ST_Distance(pointhash.point_coordinate , ST_SetSRID(ST_MakePoint(:x, :y), 4326))\n" +
-            "LIMIT 1;", nativeQuery = true)
-    PointHash findFirstByPointCoordinate(@NotNull @Param("x") double x, @Param("y") double y);
+            "FROM\n" +
+            "    pointhash\n" +
+            "ORDER BY\n" +
+            "    ST_Distance(pointhash.point_coordinate , ST_SetSRID(ST_MakePoint(:x, :y), 4326), true)\n" +
+            "LIMIT 1;"
+            , nativeQuery = true)
+    PointHash findFirstByPointCoordinate(@Param("x") double x, @Param("y") double y);
 }

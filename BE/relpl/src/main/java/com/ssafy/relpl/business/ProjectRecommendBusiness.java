@@ -34,7 +34,6 @@ public class ProjectRecommendBusiness {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-
     /**
      * 경로 추천 방법
      * 1. PointHash DB에서 도로에 사용하는 모든 정점의 개수 가져오기 select count(*) from pointhash
@@ -54,57 +53,62 @@ public class ProjectRecommendBusiness {
      */
     @Transactional
     public ResponseEntity<?> recommendProject(Point start, Point end) {
+        try {
+            // 1번
+            vertexCnt = countAllPointHash();
 
-        // 1번
-        vertexCnt = countAllPointHash();
+            // 2번
+            initRoadInfoList();
 
-        // 2번
-        initRoadInfoList();
+            // 3번
+            PointHash realStartHash = pointHashService.getNearPoint(start.getX(), start.getY());
+            PointHash realEndHash = pointHashService.getNearPoint(end.getX(), end.getY());
+            log.info("realStartHash: {}, realEndHash: {}", realStartHash.toString(), realEndHash.toString());
 
-        // 3번
-        PointHash realStartHash = pointHashService.getNearPoint(start.getX(), start.getY());
-        PointHash realEndHash = pointHashService.getNearPoint(end.getX(), end.getY());
-        log.info("realStartHash: {}, realEndHash: {}", realStartHash.toString(), realEndHash.toString());
+            // 4번
+            long[] shortestCost = dijkstraShortestPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
+            long[] recommendCost = dijkstraRecommendPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
+            log.info("dijkstraShortestPath 완료");
 
-        // 4번
-        long[] shortestCost = dijkstraShortestPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
-        long[] recommendCost = dijkstraRecommendPath(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()));
-        log.info("dijkstraShortestPath 완료");
+            // 5번
+            List<Long> shortestRoadHash = getShortestRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), shortestCost);
+            List<Long> recommendRoadHash = getRecommendRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), recommendCost);
+            log.info("getShortestRoadHashRevBfs 완료");
 
-        // 5번
-        List<Long> shortestRoadHash = getShortestRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), shortestCost);
-        List<Long> recommendRoadHash = getRecommendRoadHashRevBfs(Math.toIntExact(realStartHash.getPointHashId()), Math.toIntExact(realEndHash.getPointHashId()), recommendCost);
-        log.info("getShortestRoadHashRevBfs 완료");
+            // 6번
+            List<TmapRoad> shortestTmapRoad = tmapRoadService.getAllTmapRoadById(shortestRoadHash);
+            List<TmapRoad> recommendTmapRoad = tmapRoadService.getAllTmapRoadById(recommendRoadHash);
+            log.info("shortestTmapRoad > getAllTmapRoadById 완료");
 
-        // 6번
-        List<TmapRoad> shortestTmapRoad = tmapRoadService.getAllTmapRoadById(shortestRoadHash);
-        List<TmapRoad> recommendTmapRoad = tmapRoadService.getAllTmapRoadById(recommendRoadHash);
-        log.info("shortestTmapRoad > getAllTmapRoadById 완료");
+            // 7번
+            List<org.springframework.data.geo.Point> shortestPointList = getListFromTmapRoad(start, end, shortestTmapRoad);
+            List<org.springframework.data.geo.Point> recommendPointList = getListFromTmapRoad(start, end, recommendTmapRoad);
+            log.info("recommendTmapRoad > getAllTmapRoadById 완료");
 
-        // 7번
-        List<org.springframework.data.geo.Point> shortestPointList = getListFromTmapRoad(start, end, shortestTmapRoad);
-        List<org.springframework.data.geo.Point> recommendPointList = getListFromTmapRoad(start, end, recommendTmapRoad);
-        log.info("recommendTmapRoad > getAllTmapRoadById 완료");
+            // 8번
+            RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList, pathLen, -1);
+            RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList, pathLen, -2);
 
-        // 8번
-        RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList);
-        RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList);
+            // 9번
+            ProjectRecommendResponseDto response
+                    = ProjectRecommendResponseDto.builder()
+                    .shortestId(shortestProject.getId())
+                    .shortestPath(shortestPointList)
+                    .recommendId(recommendProject.getId())
+                    .recommendPath(recommendPointList)
+                    .build();
+            return ResponseEntity.ok(responseService.getSingleResult(response, "경로 추천 성공.", 200));
+        } catch (Exception e) {
+            return ResponseEntity.ok(responseService.getFailResult(400, "경로 추천 실패"));
+        }
 
-        // 9번
-        ProjectRecommendResponseDto response
-                = ProjectRecommendResponseDto.builder()
-                .shortestId(shortestProject.getId())
-                .shortestPath(shortestPointList)
-                .recommendId(recommendProject.getId())
-                .recommendPath(recommendPointList)
-                .build();
-        return ResponseEntity.ok(responseService.getSingleResult(response, "경로 추천 성공.", 200));
     }
 
 
     // ------------------------------------------------ 경로 추천 알고리즘 관련
     ArrayList<Edge>[] edges;
     int vertexCnt = -1; // 꼭짓점 수
+    int pathLen = 0;
     List<RoadInfo> roadInfos;
 
     /**
@@ -274,6 +278,7 @@ public class ProjectRecommendBusiness {
      * 시작점, 끝점, 제공된 최단 or 추천경로를 가지고 List<Point>로 반환하는 함수
      * 역방향 bfs를 통해 가져왔으므로 주어진 tmapList는 끝점 > 시작점 순으로 정렬이 되어있음
      * 따라서 마지막에 return할 떄 Collectios.reverse() 필요
+     * + 도로의 총 길이를 계산
      * @param start 시작점
      * @param end 끝 점
      * @param tmapRoadList 길이/가중치를 가지고 계산한 최단/추천경로
@@ -284,6 +289,10 @@ public class ProjectRecommendBusiness {
         HashSet<org.springframework.data.geo.Point> pointSet = new HashSet<>();
         List<org.springframework.data.geo.Point> pointList = new ArrayList<>();
 
+        org.springframework.data.geo.Point tmapStartPoint = tmapRoadList.get(0).getGeometry().getCoordinates().get(0);
+        double startDiff = Math.sqrt(Math.pow(Math.abs(start.getX() - tmapStartPoint.getX()), 2) + Math.pow(Math.abs(start.getY() - tmapStartPoint.getY()), 2));
+        pathLen = 0;
+        pathLen += (int) startDiff; // 두 점 사이의 거리
 
         pointSet.add(
                 new org.springframework.data.geo.Point(
@@ -296,22 +305,27 @@ public class ProjectRecommendBusiness {
                 )
         );
 
+        org.springframework.data.geo.Point tmapcurPoint = new org.springframework.data.geo.Point(-1, -1);
         for (TmapRoad tmapRoad : tmapRoadList) {
+            pathLen += tmapRoad.getTotalDistance();
             for (org.springframework.data.geo.Point point: tmapRoad.getGeometry().getCoordinates()) {
                 if (pointSet.add(new org.springframework.data.geo.Point(point.getX(), point.getY()))) {
-                    pointList.add(new org.springframework.data.geo.Point(point.getX(), point.getY()));
+                    tmapcurPoint = new org.springframework.data.geo.Point(point.getX(), point.getY());
+                    pointList.add(tmapcurPoint);
                 }
             }
         }
+
         if (pointSet.contains(new org.springframework.data.geo.Point(
-                start.getCoordinate().getX(), start.getCoordinate().getY()))) {
+                end.getCoordinate().getX(), end.getCoordinate().getY()))) {
             pointList.add(
                     new org.springframework.data.geo
-                            .Point(start.getCoordinate().getX(), start.getCoordinate().getY()
+                            .Point(end.getCoordinate().getX(), end.getCoordinate().getY()
                     )
             );
+            double endDiff = Math.sqrt(Math.pow(Math.abs(end.getX() - tmapcurPoint.getX()), 2) + Math.pow(Math.abs(end.getY() - tmapcurPoint.getY()), 2));
+            pathLen += (int)endDiff;
         }
-
         Collections.reverse(pointList);
         return pointList;
     }

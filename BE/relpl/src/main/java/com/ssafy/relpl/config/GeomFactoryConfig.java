@@ -11,14 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GeomFactoryConfig {
-
     @Bean
     public GeometryFactory getGeometryFactory() {
         return new GeometryFactory();
     }
-
-//    @Bean
-//    public Point coordinateToPoint() {
-//        return new geometryFactory.createPoint(new Coordinate(x, y));
-//    }
 }
