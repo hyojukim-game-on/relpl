@@ -19,64 +19,43 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-@Document(collection = "road")
+@Document(collection = "tmaproad")
 public class TmapRoad {
 
     @Id
     private String id;
-    private Long tmap_id; // link_id
-    private String road_name;
-    private GeoJsonLineString geometry;
+    public Long tmapId; // link_id
+    public String roadName;
+    public GeoJsonLineString geometry;
     private int lanetype;
     private int speed;
-    private int total_distance;
+    public int totalDistance;
     private int lane;
+    public Long roadHash;
 
     private static final Logger logger = LoggerFactory.getLogger(TmapRoad.class);
 
-    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO) {
+    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO, Long roadHash) {
 
         TmapApiResponseDTO.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
 
         // List<List<Double>>를 List<GeoJsonPoint>로 변환
         List<Point> geoJsonPoints = Arrays.stream(coordinates)
-                .map(coordinate -> new Point(coordinate.getLocation().getLatitude(), coordinate.getLocation().getLongitude()))
+                .map(coordinate -> new Point(coordinate.getLocation().getLongitude(), coordinate.getLocation().getLatitude()))
                 .collect(Collectors.toList());
 
         // List<GeoJsonPoint>로 GeoJsonLineString 생성
         GeoJsonLineString geoJsonLineString = new GeoJsonLineString(geoJsonPoints);
 
         return TmapRoad.builder()
-                .tmap_id(responseDTO.getResultData().getHeader().getLinkId())
-                .road_name(responseDTO.getResultData().getHeader().getRoadName())
+                .tmapId(responseDTO.getResultData().getHeader().getLinkId())
+                .roadName(responseDTO.getResultData().getHeader().getRoadName())
                 .geometry(geoJsonLineString)
                 .lanetype(responseDTO.getResultData().getHeader().getLaneType())
                 .speed(responseDTO.getResultData().getHeader().getSpeed())
-                .total_distance(responseDTO.getResultData().getHeader().getTotalDistance())
+                .totalDistance(responseDTO.getResultData().getHeader().getTotalDistance())
                 .lane(responseDTO.getResultData().getHeader().getLane())
-                .build();
-    }
-
-    public static TmapRoad createRoad(RoadRequest request) {
-
-        List<List<Double>> coordinates = request.getCoordinates();
-
-        // List<List<Double>>를 List<GeoJsonPoint>로 변환
-        List<Point> geoJsonPoints = coordinates.stream()
-                .map(coordinate -> new Point(coordinate.get(0), coordinate.get(1)))
-                .collect(Collectors.toList());
-
-
-        // List<GeoJsonPoint>로 GeoJsonLineString 생성
-        GeoJsonLineString geoJsonLineString = new GeoJsonLineString(geoJsonPoints);
-
-        return TmapRoad.builder()
-                .tmap_id(request.getTmap_id())
-                .geometry(geoJsonLineString)
-                .lanetype(request.getLanetype())
-                .speed(request.getSpeed())
-                .total_distance(request.getTotal_distance())
-                .lane(request.getLane())
+                .roadHash(roadHash)
                 .build();
     }
 }

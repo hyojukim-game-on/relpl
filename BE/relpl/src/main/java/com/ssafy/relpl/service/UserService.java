@@ -15,6 +15,7 @@ import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,6 @@ public class UserService {
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
-//    private final RedisTemplate redisTemplate;
     private final AuthenticationManager authenticationManager;
 
     @Value("${cloud.aws.s3.bucket}")

@@ -20,8 +20,10 @@ spring:
       password: ${REDIS_PASSWORD}
 
 tmap:
+  road-expiration-time: 86400000  # 24시간
   api:
     key: ENC(j3VH+078nbLoa1HuTYtNVreeXtj/cODQErEpIUC/NcckXD3SYyhfraK8uCDhTdc3ZCQdbSbDSKYq2/kZPpWQuUpDODD9mggw)
+
 
 jwt:
   token:
