@@ -15,6 +15,6 @@ interface ReportService {
 
     @POST("report/list")
     suspend fun getReportRecordList(
-        userIdRequest: UserIdRequest
+        @Body userIdRequest: UserIdRequest
     ): Result<DefaultResponse<List<ReportRecordResponse>>>
 }

@@ -114,6 +114,9 @@
     <string name="report_cur_point">현재 보유 포인트</string>
     <string name="report_use_point">소모 포인트</string>
     <string name="report_report">제보하기</string>
+    
+    <string name="report_record_nickname">%1$s님의\n제보 내역입니다</string>
+    <string name="report_record_count">총 %1$s번 제보해주셨어요</string>
 
     <string name="dlg_create_all_relay_name">릴레이 이름을 입력해 주세요</string>
     <string name="dlg_create_all_relay_crate">생성</string>

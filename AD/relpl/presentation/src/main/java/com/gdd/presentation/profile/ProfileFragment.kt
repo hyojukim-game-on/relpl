@@ -29,6 +29,7 @@ import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentProfileBinding
 import com.gdd.presentation.point.PointRecordFragment
 import com.gdd.presentation.point.PointUseFragment
+import com.gdd.presentation.report.ReportRecordFragment
 import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.MaterialContainerTransform
@@ -113,6 +114,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
         binding.llPoint.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, PointUseFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.llReportHistory.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, ReportRecordFragment())
                 .addToBackStack(null)
                 .commit()
         }
