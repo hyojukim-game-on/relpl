@@ -1,10 +1,8 @@
 package com.ssafy.relpl.controller.rest;
 
 import com.ssafy.relpl.db.postgre.entity.User;
-import com.ssafy.relpl.dto.response.SampleResponseDto;
-import com.ssafy.relpl.dto.response.SampleResponseDto2;
+import com.ssafy.relpl.dto.response.SampleResponse;
 import com.ssafy.relpl.service.ResponseService;
-import com.ssafy.relpl.service.UserService;
 import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,18 +30,18 @@ public class SampleController {
     @GetMapping("/get/{path1}/{path2}")
     public ResponseEntity<?> getSample(@PathVariable String path1, @PathVariable String path2) {
 
-        SingleResult<SampleResponseDto> result = new SingleResult<>();
+        SingleResult<SampleResponse> result = new SingleResult<>();
          responseService.getSingleResult("data", "OK", 200);
         result.setCode(200);
         result.setMessage("뭔가뭔가 성공");
-        result.setData(SampleResponseDto
+        result.setData(SampleResponse
                 .builder()
                 .test1(path1)
                 .test2(path2)
                 .build());
 //        return ResponseEntity.ok(result);
         return ResponseEntity.ok(responseService.getSingleResult(
-                SampleResponseDto.builder()
+                SampleResponse.builder()
                 .test1(path1)
                 .test2(path2)
                 .build()));
@@ -52,7 +50,7 @@ public class SampleController {
 
     @PostMapping(value = "/post")
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        SingleResult<SampleResponseDto2> result = new SingleResult<>();
+        SingleResult<SampleResponse> result = new SingleResult<>();
         result.setCode(400);
         result.setMessage("뭔가뭔가 실패");
         return ResponseEntity.badRequest().body(result);

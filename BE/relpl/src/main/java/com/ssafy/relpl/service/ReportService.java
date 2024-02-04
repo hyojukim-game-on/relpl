@@ -4,8 +4,8 @@ import com.ssafy.relpl.db.postgre.entity.Report;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.ReportRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
-import com.ssafy.relpl.dto.request.ReportRegistRequestDto;
-import com.ssafy.relpl.dto.response.ReportListResponseDto;
+import com.ssafy.relpl.dto.request.ReportRegistRequest;
+import com.ssafy.relpl.dto.response.ReportListResponse;
 import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.ListResult;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class ReportService {
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
     // 더미 데이터 생성 메서드
-    private Report createDummyReport(User user, ReportRegistRequestDto requestDto) {
+    private Report createDummyReport(User user, ReportRegistRequest requestDto) {
         Report dummyReport = new Report();
         dummyReport.setUser(user);
         dummyReport.setReportDate(requestDto.getReportDate());
@@ -45,11 +45,11 @@ public class ReportService {
     }
 
     // 제보 등록 메서드
-    public CommonResult registerReport(ReportRegistRequestDto reportRegistRequestDto) {
+    public CommonResult registerReport(ReportRegistRequest reportRegistRequest) {
         log.info("여기는 서비스단이다. 제보 등록 여부를 확인한다.");
 
         // userId 체크
-        Long userId = reportRegistRequestDto.getUserId();
+        Long userId = reportRegistRequest.getUserId();
         if (userId == null) {
             // userId가 null인 경우 처리
             return responseService.getFailResult(400, "유저 정보가 없습니다.");
@@ -59,7 +59,7 @@ public class ReportService {
         User existingUser = userRepository.findById(userId).orElse(null);
         if (existingUser != null) {
             // 등록되어 존재하는 유저인 경우
-            Report dummyReport = createDummyReport(existingUser, reportRegistRequestDto);
+            Report dummyReport = createDummyReport(existingUser, reportRegistRequest);
             dummyReport = reportRepository.save(dummyReport);
 
             if (dummyReport.getUser() != null) {
@@ -74,7 +74,7 @@ public class ReportService {
     }
 
     // 제보 내역 조회 메서드
-    public ListResult<ReportListResponseDto> getReportList(Long userId) {
+    public ListResult<ReportListResponse> getReportList(Long userId) {
         log.info("여기는 서비스단이다. 제보 내역을 조회한다.");
 
         // userId 체크
@@ -92,9 +92,9 @@ public class ReportService {
             // 제보 내역이 존재하는지 확인.
             if (!reportList.isEmpty()) {
                 // 제보내역이 있으면 리스트 형태로 반환하기
-                List<ReportListResponseDto> responseList = new ArrayList<>();
+                List<ReportListResponse> responseList = new ArrayList<>();
                 for (Report report : reportList) {
-                    ReportListResponseDto responseDto = new ReportListResponseDto(report);
+                    ReportListResponse responseDto = new ReportListResponse(report);
                     responseList.add(responseDto);
                 }
 

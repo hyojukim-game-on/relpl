@@ -1,7 +1,7 @@
 package com.ssafy.relpl.db.mongo.entity;
 
 import com.ssafy.relpl.dto.request.RoadRequest;
-import com.ssafy.relpl.dto.response.TmapApiResponseDTO;
+import com.ssafy.relpl.dto.response.TmapApiResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,9 +34,9 @@ public class TmapRoad {
 
     private static final Logger logger = LoggerFactory.getLogger(TmapRoad.class);
 
-    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO) {
+    public static TmapRoad createRoad(TmapApiResponse responseDTO) {
 
-        TmapApiResponseDTO.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
+        TmapApiResponse.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
 
         // List<List<Double>>를 List<GeoJsonPoint>로 변환
         List<Point> geoJsonPoints = Arrays.stream(coordinates)

@@ -2,10 +2,9 @@ package com.ssafy.relpl.service;
 
 
 
-import com.ssafy.relpl.dto.response.RankingDataDto;
-import com.ssafy.relpl.dto.response.RankingEntry;
+import com.ssafy.relpl.dto.response.RankingData;
+import com.ssafy.relpl.util.common.RankingEntry;
 import com.ssafy.relpl.service.result.CommonResult;
-import com.ssafy.relpl.service.result.SingleResult;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -145,13 +144,13 @@ public class RankingService {
             }
 
             // 빌더 패턴을 사용하여 RankingDataDto 객체를 생성
-            RankingDataDto rankingDataDto = RankingDataDto.builder()
+            RankingData rankingData = RankingData.builder()
                     .dailyRanking(dailyRankingList)
                     .weeklyRanking(weeklyRankingList)
                     .monthlyRanking(monthlyRankingList)
                     .build();
 
-            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(rankingDataDto, "랭킹 조회 성공했습니다.", 200));
+            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(rankingData, "랭킹 조회 성공했습니다.", 200));
 
         } catch (RedisConnectionFailureException e) {
             log.error("Redis 연결 실패: {}", e.getMessage());

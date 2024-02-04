@@ -1,10 +1,8 @@
 package com.ssafy.relpl.controller.rest;
 
 
-import com.ssafy.relpl.dto.response.RankingDataDto;
 import com.ssafy.relpl.service.RankingService;
 import com.ssafy.relpl.service.result.CommonResult;
-import com.ssafy.relpl.service.result.SingleResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
