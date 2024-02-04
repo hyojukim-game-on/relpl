@@ -1,5 +1,7 @@
 package com.ssafy.relpl.db.postgre.entity;
 
+import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
+import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
@@ -57,4 +59,26 @@ public class Project {
 
     @Column (name = "project_total_contributer")
     private int projectTotalContributer;
+
+    public static Project createDistanceProject(ProjectCreateDistanceRequest request, Point startPoint) {
+        return Project.builder()
+                .userId(request.getUserId())
+                .projectName(request.getProjectName())
+                .projectCreateDate(request.getProjectCreateDate())
+                .projectEndDate(request.getProjectEndDate())
+                .projectStartCoordinate(startPoint)
+                .projectStopCoordinate(startPoint)
+                .projectEndCoordinate(null)
+                .projectIsPath(false)
+                .projectRemainingDistance(request.getProjectTotalDistance())
+                .projectTotalDistance(request.getProjectTotalDistance())
+                .projectIsDone(false)
+                .projectIsPlogging(true)
+                .projectTotalContributer(1)
+                .build();
+    }
+//
+//    public static Project createRouteProject(ProjectCreateRouteRequest request) {
+//
+//    }
 }
