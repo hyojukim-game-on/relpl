@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 
 @Slf4j
 @RestController
@@ -55,5 +57,11 @@ public class UserController {
     @GetMapping("/test")
     public ResponseEntity<String> test() {
         return userService.test();
+    }
+
+
+    @PostMapping(value = "/image", consumes = {"multipart/form-data"})
+    public ResponseEntity<CommonResult> setProfilePic(@ModelAttribute UserProfileRequest request) throws IOException {
+        return userService.setProfilePic(request);
     }
 }

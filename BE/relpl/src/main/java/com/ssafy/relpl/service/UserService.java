@@ -1,5 +1,10 @@
 package com.ssafy.relpl.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ssafy.relpl.config.AWSS3Config;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.*;
@@ -10,6 +15,7 @@ import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +24,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Slf4j
@@ -32,7 +41,18 @@ public class UserService {
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
+//    private final RedisTemplate redisTemplate;
     private final AuthenticationManager authenticationManager;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    @Value("${cloud.aws.s3.base-url}")
+    private String baseUrl;
+
+    private final AWSS3Config awss3Config;
+    private final AmazonS3Client amazonS3Client;
+
 
     public ResponseEntity<CommonResult> save(UserSignupRequest request) throws BaseException {
         //사용자가 이미 존재하는지 확인
@@ -152,7 +172,7 @@ public class UserService {
             return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(true), "아이디 사용 불가능", 200));
         }
         //중복된 ID 없음
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
     }
 
 
@@ -160,5 +180,101 @@ public class UserService {
 
         return ResponseEntity.ok("Success");
     }
+
+
+
+    /* setProfilePic : 유저가 제공한 사진 파일로 유저 프로필 사진 설정
+    @param : 유저가 제공한 사진 파일
+    @return : 성공 시) uploadedFileUrl s3에 업로드 한 프로필 사진 url , 실패 시) null
+    * */
+    public ResponseEntity<CommonResult> setProfilePic(UserProfileRequest request) throws IOException {
+
+        log.info("프로필 사진 설정");
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
+
+        // 가입한 유저가 존재함
+        if (userOptional.isPresent()) {
+
+            log.info("가입한 유저가 존재함");
+
+            // 가입한 유저 가져오기
+            User user = userOptional.get();
+
+            // 프로필 사진 설정
+            log.info("프로필 사진 url(처음이므로 null 나와야 함) : {}", user.getUserImage());
+
+            // 이미지를 s3에 올리고 받은 url
+            String resultUrl = setUserProfilePhoto(request.getFile());
+
+            if (resultUrl != null) {
+
+                    log.info("프로필 사진 s3에 업로드 성공");
+
+                    // s3에 올린 파일 주소를 db에 유저 객체로 저장하기
+                    user.setUserImage(resultUrl);
+                    userRepository.save(user);
+
+                    log.info("저장된 프로필 사진 url:{}",user.getUserImage());
+                    log.info(resultUrl);
+                    log.info("DB에 프로필 사진 업로드 성공");
+
+                // 업로드가 성공했을 경우 성공 응답 반환
+                return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(true, "OK", 200));
+            }
+            // 업로드가 실패했을 경우 실패 응답 반환
+            else {
+                log.info("프로필 사진 s3에 업로드 실패");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "Bad Request"));
+            }
+        }
+        // 기존 유저가 없음
+        log.info("기존 유저가 없음");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "Bad Request"));
+    }
+
+
+
+    /* setUserProfilePhoto : s3에 유저 프로필 사진 업로드하기
+    @param : 유저가 제공한 사진 파일
+    @return : 성공 시) uploadedFileUrl s3에 업로드 한 프로필 사진 url , 실패 시) null
+    * */
+    public String setUserProfilePhoto(MultipartFile file) {
+        try{
+
+            // 유저가 제공한 프로필 사진 파일의 원래 이름
+            String originalFileName = file.getOriginalFilename();
+
+            // 중복 방지를 위한 랜덤 값 String 을 앞에 추가
+            String s3UploadFileName = UUID.randomUUID() + originalFileName;
+
+            // S3에 업로드 된 파일의 url 주소..
+            String uploadedFileUrl = baseUrl + s3UploadFileName;
+
+            // S3에 파일과 함께 올릴 메타데이터
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getSize());
+
+            // S3에 요청 보낼 객체 생성
+            PutObjectRequest putObjectRequest = new PutObjectRequest(
+                    bucket, s3UploadFileName, file.getInputStream(), metadata
+            );
+
+            // S3에 요청 보내서 파일 업로드
+            putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+            amazonS3Client.putObject(putObjectRequest);
+
+            log.info("s3에 프로필 사진 파일 업로드 성공");
+
+            return uploadedFileUrl;
+        } // S3에 파일 업로드 실패 시 에러 출력하고 null 리턴
+        catch (IOException e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+
+
 
 }

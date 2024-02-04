@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class FcmTokenController {
 
-    private final UserService userService;
-    private final ResponseService responseService;
     private final FcmTokenService fcmTokenService;
 
     //fcmtoken 등록 여부 확인 메서드

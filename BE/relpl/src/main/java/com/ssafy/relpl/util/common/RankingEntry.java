@@ -1,4 +1,4 @@
-package com.ssafy.relpl.dto.response;
+package com.ssafy.relpl.util.common;
 
 import lombok.*;
 

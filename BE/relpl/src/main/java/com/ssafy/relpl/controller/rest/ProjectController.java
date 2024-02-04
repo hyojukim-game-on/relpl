@@ -3,7 +3,7 @@ package com.ssafy.relpl.controller.rest;
 import com.ssafy.relpl.business.ProjectRecommendBusiness;
 import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
-import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
+import com.ssafy.relpl.dto.request.ProjectJoinRequest;
 import com.ssafy.relpl.dto.request.ProjectRecommendRequest;
 import com.ssafy.relpl.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +47,10 @@ public class ProjectController {
         return projectService.createDistanceProject(request);
     }
 
+    @PostMapping("/join")
+    public ResponseEntity<?> join(@RequestBody ProjectJoinRequest request) {
+        return projectService.join(request);
+    }
 //    @PostMapping("/project/create/route")
 //    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {
 //

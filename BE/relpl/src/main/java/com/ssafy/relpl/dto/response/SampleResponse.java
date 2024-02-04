@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class SampleResponseDto {
+public class SampleResponse {
     private String test1;
     private String test2;
 }

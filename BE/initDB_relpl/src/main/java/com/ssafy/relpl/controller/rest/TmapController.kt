@@ -37,8 +37,7 @@ class TmapController {
         try {
             coroutineScope {
                 launch {
-                    val tmapData = tmapService.getAllRoads(
-                            BigDecimal(insertRoadRequestDto.startPoint.y)
+                    tmapService.getAllRoads(BigDecimal(insertRoadRequestDto.startPoint.y)
                             , BigDecimal(insertRoadRequestDto.startPoint.x)
                             , BigDecimal(insertRoadRequestDto.endPoint.y)
                             , BigDecimal(insertRoadRequestDto.endPoint.x))

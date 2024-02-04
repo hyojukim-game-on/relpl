@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
-@Getter
+@Data
 @Builder
 @Entity
 @AllArgsConstructor

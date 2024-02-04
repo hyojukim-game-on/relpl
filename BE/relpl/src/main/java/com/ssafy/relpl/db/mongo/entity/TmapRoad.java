@@ -1,6 +1,6 @@
 package com.ssafy.relpl.db.mongo.entity;
 
-import com.ssafy.relpl.dto.response.TmapApiResponseDTO;
+import com.ssafy.relpl.dto.response.TmapApiResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,13 +32,14 @@ public class TmapRoad {
     private int lane;
     private Long roadHash;
 
-    public static TmapRoad createRoad(TmapApiResponseDTO responseDTO, Long roadHash) {
+    public static TmapRoad createRoad(TmapApiResponse responseDTO, Long roadHash) {
 
-        TmapApiResponseDTO.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
+
+        TmapApiResponse.LinkPoint[] coordinates = responseDTO.getResultData().getLinkPoints();
 
         // List<List<Double>>를 List<GeoJsonPoint>로 변환
         List<Point> geoJsonPoints = Arrays.stream(coordinates)
-                .map(coordinate -> new Point(coordinate.getLocation().getLongitude(), coordinate.getLocation().getLatitude()))
+                .map(coordinate -> new Point(coordinate.getLocation().getLatitude(), coordinate.getLocation().getLongitude()))
                 .collect(Collectors.toList());
 
         // List<GeoJsonPoint>로 GeoJsonLineString 생성
