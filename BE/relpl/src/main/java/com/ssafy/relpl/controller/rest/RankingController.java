@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "api/rank")
+@RequestMapping(path = "/api/rank")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class RankingController {
