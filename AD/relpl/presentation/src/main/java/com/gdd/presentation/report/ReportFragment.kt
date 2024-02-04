@@ -10,11 +10,12 @@ import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
-import com.gdd.presentation.base.location.LocationTrackingService
+import com.gdd.presentation.base.location.LocationProviderController
 import com.gdd.presentation.databinding.FragmentReportBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -31,23 +32,20 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
-import com.naver.maps.map.overlay.Marker
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "ReportFragment_Genseong"
 
+@AndroidEntryPoint
 class ReportFragment : BaseFragment<FragmentReportBinding>(
     FragmentReportBinding::bind, R.layout.fragment_report
 ) {
     private lateinit var mainActivity: MainActivity
+    private val reportViewModel: ReportViewModel by viewModels()
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var naverMap: NaverMap
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
+    private lateinit var locationProviderController: LocationProviderController
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,14 +70,8 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
          * 이 이후로 위치 권한이 필요한 코드를 작성
          */
 
-
-
         registerListener()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        fusedLocationProviderClient.flushLocations()
+        registerObserve()
     }
 
     @SuppressLint("ClickableViewAccessibility", "MissingPermission")
@@ -94,8 +86,8 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
 
         binding.fabCurLocation.setOnClickListener {
             binding.fabCurLocation.isEnabled = false
-            fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                .addOnCompleteListener { task ->
+            locationProviderController.getCurrnetLocation {task ->
+                if (!task.isCanceled){
                     if (task.isSuccessful) {
                         task.result.also {
                             val latLng = LatLng(it)
@@ -116,11 +108,36 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
                     }
                     binding.fabCurLocation.isEnabled = true
                 }
+            }
         }
 
         binding.efabReportLocation.setOnClickListener {
-            Marker(naverMap.cameraPosition.target).map = naverMap
+            showReportDialog(naverMap.cameraPosition.target)
         }
+    }
+
+    private fun registerObserve() {
+        reportViewModel.registReportResult.observe(viewLifecycleOwner) { result ->
+            if (result.isSuccess){
+                showSnackBar("제보에 성공 했습니다\n우리 동네를 아껴주셔서 감사합니다!")
+            } else {
+                showSnackBar(result.exceptionOrNull()?.message ?: "")
+            }
+        }
+    }
+
+    private fun showReportDialog(latLng: LatLng){
+        MaterialAlertDialogBuilder(mainActivity)
+            .setTitle(mainActivity.getString(R.string.report_report))
+            .setMessage("해당 위치를 제보하시겠습니까?")
+            .setPositiveButton("확인"){ _,_ ->
+                reportViewModel.registReport(
+                    latLng.latitude,
+                    latLng.longitude
+                )
+            }
+            .setNegativeButton("취소"){ _,_ -> }
+            .show()
     }
 
     private fun checkLocationPermission() {
@@ -141,7 +158,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
     }
 
     private val locationPermissionGrantedListener: () -> Unit = {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mainActivity)
+        locationProviderController = LocationProviderController(mainActivity, viewLifecycleOwner)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.layout_map) as MapFragment?
             ?: MapFragment.newInstance().also {
@@ -185,18 +202,19 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
         setDefaultUI()
     }
 
-    private fun bottomSheetSetting(){
+    private fun bottomSheetSetting() {
         // 바텀시트 제어
         bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet)
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState){
+                when (newState) {
                     STATE_COLLAPSED -> {
-                        naverMap.setContentPadding(0,0,0,0)
+                        naverMap.setContentPadding(0, 0, 0, 0)
                     }
+
                     STATE_EXPANDED -> {
-                        naverMap.setContentPadding(0,0,0,binding.layoutBottomSheet.height)
+                        naverMap.setContentPadding(0, 0, 0, binding.layoutBottomSheet.height)
                     }
                 }
             }
@@ -206,12 +224,12 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
 
     }
 
-    private fun setDefaultUI(){
+    private fun setDefaultUI() {
         bottomSheetBehavior.state = STATE_EXPANDED
         binding.ivReportTargetMarker.visibility = View.GONE
     }
 
-    private fun setReportUI(){
+    private fun setReportUI() {
         bottomSheetBehavior.state = STATE_COLLAPSED
         binding.ivReportTargetMarker.visibility = View.VISIBLE
     }
