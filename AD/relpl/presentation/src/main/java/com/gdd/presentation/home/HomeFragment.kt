@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
@@ -77,5 +79,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         binding.tvNickname.text = resources.getString(R.string.home_welcome, mainViewModel.user.nickname)
         binding.tvPoint.text = mainViewModel.user.totalCoin.pointFormat()
         binding.tvDistance.text = resources.getString(R.string.home_total_distance, mainViewModel.user.totalDistance.distanceFormat())
+
+        if (mainViewModel.user.imageUri != null){
+            Glide.with(this)
+                .load(mainViewModel.user.imageUri)
+                .fitCenter()
+                .apply(RequestOptions().circleCrop())
+                .into(binding.ivProfile)
+        }
     }
 }

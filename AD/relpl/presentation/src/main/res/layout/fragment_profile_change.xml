@@ -34,8 +34,8 @@
             android:id="@+id/iv_profile_photo"
             android:layout_width="@dimen/prodile_photo_size"
             android:layout_height="@dimen/prodile_photo_size"
-            android:layout_marginTop="70dp"
-            android:src="@drawable/bg_profile_default_photo"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/bg_profile_default_photo_deep"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +46,7 @@
             android:id="@+id/iv_profile_photo_overlay"
             android:layout_width="@dimen/prodile_photo_size"
             android:layout_height="@dimen/prodile_photo_size"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="40dp"
             android:src="@drawable/bg_change_profile_add_photo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/profile_nickname"
-                android:textAppearance="@style/Relpl.Text.TextInput.Title" />
+                style="@style/Relpl.Text.TextInput.Title" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -96,7 +96,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="15dp"
                     android:text="@string/profile_change_dup_check"
-                    android:onClick="@{(v) -> fragment.isDuplicatedNickname(v)}"
                     android:enabled="@{vm.newNickname.equals(vm.originNickname) ? false : true}"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -117,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/profile_phone"
-                android:textAppearance="@style/Relpl.Text.TextInput.Title" />
+                style="@style/Relpl.Text.TextInput.Title" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -146,7 +145,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="15dp"
                     android:text="@string/profile_change_dup_check"
-                    android:onClick="@{(v) -> fragment.isDuplicatedPhone(v)}"
                     android:enabled="@{vm.originalPhone.equals(vm.newPhone) ? false : true}"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -154,6 +152,8 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_send_code"
             style="@style/Relpl.FullButton.Signin"
+            android:textAppearance="@style/Relpl.Text.SB.16"
+            android:textColor="@color/white"
             android:backgroundTint="@color/sage_green_dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/profile_change_verification_code"
-                android:textAppearance="@style/Relpl.Text.TextInput.Title" />
+                style="@style/Relpl.Text.TextInput.Title" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"

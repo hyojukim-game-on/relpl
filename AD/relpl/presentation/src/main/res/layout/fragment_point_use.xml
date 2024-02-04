@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -8,9 +10,7 @@
             type="com.gdd.presentation.point.PointUseViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="30dp"
@@ -20,23 +20,23 @@
             android:id="@+id/tv_thanks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/font_wanted_sans_semibold"
             android:text="지구를 깨끗하게 해주셔서 감사합니다 :)"
-            android:textColor="@color/black"
-            android:textSize="20sp"
+            style="@style/Relpl.Text.SB.20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_guide"
-            style="@style/Relpl.Text"
+            style="@style/Relpl.Text.M.16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:gravity="center"
             android:text="근처 행정복지센터에 방문해서\n100포인트로 종량제 봉투를 구매할 수 있어요"
             android:textColor="@color/sage_green_text_dark"
-            app:layout_constraintStart_toStartOf="@id/tv_thanks"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_thanks" />
 
 

@@ -103,6 +103,14 @@ class ProfileChangeFragment : BaseFragment<FragmentProfileChangeBinding>(
         viewModel.originNickname = activityViewModel.user.nickname
         Log.d(TAG, "initView: ${viewModel.originNickname}")
         viewModel.setInitialValue(activityViewModel.user.nickname, activityViewModel.user.phone)
+
+        if (activityViewModel.user.imageUri != null){
+            Glide.with(this)
+                .load(activityViewModel.user.imageUri)
+                .fitCenter()
+                .apply(RequestOptions().circleCrop())
+                .into(binding.ivProfilePhoto)
+        }
     }
 
     private fun registerListener(){
@@ -138,6 +146,15 @@ class ProfileChangeFragment : BaseFragment<FragmentProfileChangeBinding>(
             else
                 galleryPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+
+        binding.btnDupCheck.setOnClickListener {
+            Log.d(TAG, "registerListener: ")
+            viewModel.isDuplicatedNickname(binding.etNickname.editText!!.text.toString().trim())
+        }
+
+        binding.btnPhonneDup.setOnClickListener {
+            viewModel.isDuplicatedPhone("010${binding.etPhone.editText!!.text.toString().trim()}")
+        }
     }
 
     private fun registerObserver(){
@@ -153,6 +170,7 @@ class ProfileChangeFragment : BaseFragment<FragmentProfileChangeBinding>(
             binding.etNickname.isEnabled = true
             if (result.isSuccess){
                 if (!result.getOrNull()!!){
+                    binding.btnDupCheck.isEnabled = false
                     showSnackBar(resources.getString(R.string.profile_change_usable_nickname))
                     usableNickname = true
                 }else{
@@ -177,6 +195,7 @@ class ProfileChangeFragment : BaseFragment<FragmentProfileChangeBinding>(
             binding.etPhone.isEnabled = true
             if (result.isSuccess){
                 if (!result.getOrNull()!!){
+                    binding.btnPhonneDup.isEnabled = false
                     showSnackBar(resources.getString(R.string.profile_change_usable_phone))
                 }else{
                     showToast(resources.getString(R.string.profile_change_dup_phone))
@@ -265,17 +284,17 @@ class ProfileChangeFragment : BaseFragment<FragmentProfileChangeBinding>(
                 }
             }
     }
-    fun isDuplicatedNickname(view: View){
-        binding.etNickname.isEnabled = false
-        binding.btnDupCheck.isEnabled = false
-        viewModel.isDuplicatedNickname(binding.etNickname.editText!!.text.toString().trim())
-    }
-
-    fun isDuplicatedPhone(view: View){
-        binding.etPhone.isEnabled = false
-        binding.btnPhonneDup.isEnabled = false
-        viewModel.isDuplicatedPhone(binding.etPhone.editText!!.text.toString().trim())
-    }
+//    fun isDuplicatedNickname(view: View){
+//        binding.etNickname.isEnabled = false
+//        binding.btnDupCheck.isEnabled = false
+//        viewModel.isDuplicatedNickname(binding.etNickname.editText!!.text.toString().trim())
+//    }
+//
+//    fun isDuplicatedPhone(view: View){
+//        binding.etPhone.isEnabled = false
+//        binding.btnPhonneDup.isEnabled = false
+//        viewModel.isDuplicatedPhone(binding.etPhone.editText!!.text.toString().trim())
+//    }
 
     companion object{
         const val REQ_GALLERY = 10001

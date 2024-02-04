@@ -19,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
@@ -27,6 +28,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentProfileBinding
 import com.gdd.presentation.point.PointRecordFragment
+import com.gdd.presentation.point.PointUseFragment
 import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.MaterialContainerTransform
@@ -64,11 +66,20 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
 
         mainActivity = _activity as MainActivity
 
+        if (mainViewModel.user.imageUri != null){
+            Glide.with(this)
+                .load(mainViewModel.user.imageUri)
+                .fitCenter()
+                .apply(RequestOptions().circleCrop())
+                .into(binding.ivProfilePhoto)
+        }
+
         initView()
         registerListener()
         registerObserver()
     }
 
+    @SuppressLint("CheckResult")
     private fun initView(){
         if(mainViewModel.user.imageUri != null){
             Glide.with(binding.ivProfilePhoto)
@@ -95,6 +106,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
         binding.llPointHistory.setOnClickListener{
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, PointRecordFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.llPoint.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, PointUseFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -127,7 +145,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
     }
 
     @SuppressLint("MissingInflatedId")
-    fun showDeleteGroupDialog(view: View){
+    fun showChangePasswordDialog(view: View){
         val builder = AlertDialog.Builder(mainActivity)
         val view = LayoutInflater.from(requireContext()).inflate(
             R.layout.dialog_change_pw, mainActivity.findViewById(R.id.cl_change_pw_dialog)

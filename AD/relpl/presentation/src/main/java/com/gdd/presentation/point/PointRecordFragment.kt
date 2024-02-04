@@ -30,6 +30,9 @@ class PointRecordFragment : BaseFragment<FragmentPointRecordBinding>(
             showToast("회원 정보 호출에 실패했습니다.")
         }
 
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.pointRecordViewModel = pointRecordViewModel
+
         registerObserve()
         pointRecordViewModel.getPointRecord()
     }

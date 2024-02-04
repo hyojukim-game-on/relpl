@@ -1,5 +1,6 @@
 package com.gdd.presentation.profile
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
+private const val TAG = "ProfileChangeViewModel_Genseong"
 @HiltViewModel
 class ProfileChangeViewModel @Inject constructor(
     private val changeProfileUseCase: ChangeProfileUseCase,
@@ -51,6 +53,7 @@ class ProfileChangeViewModel @Inject constructor(
     }
 
     fun isDuplicatedNickname(nickname: String){
+        Log.d(TAG, "isDuplicatedNickname: $nickname")
         viewModelScope.launch {
             nicknameDuplicatedCheckUseCase(nickname).let {
                 _nicknameDupResult.postValue(it)
@@ -59,6 +62,7 @@ class ProfileChangeViewModel @Inject constructor(
     }
 
     fun isDuplicatedPhone(phone: String){
+        Log.d(TAG, "isDuplicatedPhone: $phone")
         viewModelScope.launch {
             phoneDuplicatedCheckUseCase(phone).let {
                 _phoneDupResult.postValue(it)

@@ -57,11 +57,11 @@ class PointUseFragment : BaseFragment<FragmentPointUseBinding>(
     private fun createBarcode(content: String) {
         try {
             val widthPx = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 390f,
+                TypedValue.COMPLEX_UNIT_DIP, 300f,
                 resources.displayMetrics
             ).toInt()
             val heightPx = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 111f,
+                TypedValue.COMPLEX_UNIT_DIP, 80f,
                 resources.displayMetrics
             ).toInt()
             val barcodeEncoder = BarcodeEncoder()

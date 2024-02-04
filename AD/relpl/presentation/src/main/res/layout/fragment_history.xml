@@ -28,7 +28,7 @@
                 android:id="@+id/iv_profile_photo"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:src="@drawable/bg_profile_default_photo" />
+                android:src="@drawable/bg_profile_default_photo_deep" />
 
             <TextView
                 android:id="@+id/tv_user_nickname"

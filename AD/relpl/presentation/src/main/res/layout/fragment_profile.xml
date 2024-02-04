@@ -24,7 +24,7 @@
             android:layout_width="@dimen/prodile_photo_size"
             android:layout_height="@dimen/prodile_photo_size"
             android:layout_marginTop="50dp"
-            android:src="@drawable/bg_profile_default_photo"
+            android:src="@drawable/bg_profile_default_photo_deep"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:onClick="@{(v) -> fragment.showDeleteGroupDialog(v)}">
+                android:onClick="@{(v) -> fragment.showChangePasswordDialog(v)}">
 
                 <TextView
                     android:layout_width="0dp"

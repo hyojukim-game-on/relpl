@@ -7,7 +7,7 @@ data class SignInResponse(
     val userTotalDistance: Int,
     val userTotalReport: Int,
     val userPhone: String,
-    val userImage: String,
+    val userImage: String?,
     val accessToken: String,
     val refreshToken: String,
 )

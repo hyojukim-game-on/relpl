@@ -9,7 +9,7 @@ data class User(
     val totalDistance: Int,
     val totalReport: Int,
     val phone: String,
-    val imageUri: String,
+    val imageUri: String?,
     val accessToken: String,
     val refreshToken: String,
 ): Serializable
