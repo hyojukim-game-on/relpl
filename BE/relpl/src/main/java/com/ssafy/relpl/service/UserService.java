@@ -15,6 +15,7 @@ import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -153,9 +154,9 @@ public class UserService {
 
     public ResponseEntity<CommonResult> duplicateNickname(String nickname) {
         if(userRepository.findByUserNickname(nickname).isPresent()) {
-            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(true), "휴대폰번호 사용 불가능", 200));
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(true), "닉네임 사용 불가능", 200));
         }
-        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(false), "휴대폰번호 사용 가능", 200));
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(false), "닉네임 사용 가능", 200));
     }
 
     public ResponseEntity<CommonResult> duplicateUserPhone(UserDuplicatePhoneRequest request) {
