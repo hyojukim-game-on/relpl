@@ -2,6 +2,7 @@ package com.gdd.relpl.module
 
 import com.gdd.data.api.ApiClient.BASE_URL
 import com.gdd.data.api.ProjectService
+import com.gdd.data.api.ReportService
 import com.gdd.data.api.UserService
 import com.gdd.relpl.AuthAuthenticator
 import com.gdd.relpl.AuthInterceptor
@@ -102,5 +103,11 @@ object NetworkModule {
     @Singleton
     fun provideProjectService(retrofit: Retrofit): ProjectService {
         return retrofit.create(ProjectService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReportService(retrofit: Retrofit): ReportService {
+        return retrofit.create(ReportService::class.java)
     }
 }
