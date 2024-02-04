@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class SignupViewPagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity){
     private lateinit var viewPagerAdapter: SignupViewPagerAdapter
+
     private val fragments = listOf<Fragment>(
         SignupPhoneFragment(),
         SignupVerifyFragment(),

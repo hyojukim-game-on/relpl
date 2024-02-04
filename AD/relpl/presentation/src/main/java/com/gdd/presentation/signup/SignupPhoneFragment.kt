@@ -51,7 +51,7 @@ class SignupPhoneFragment : BaseFragment<FragmentSignupPhoneBinding>(
 
     private fun registerListener(){
         binding.btnSend.setOnClickListener {
-            activityViewModel.isDuplicatedPhone(binding.etPhone.editText!!.text.toString().trim())
+            activityViewModel.isDuplicatedPhone("010${binding.etPhone.editText!!.text.toString().trim()}")
             binding.etPhone.isEnabled = false
         }
 

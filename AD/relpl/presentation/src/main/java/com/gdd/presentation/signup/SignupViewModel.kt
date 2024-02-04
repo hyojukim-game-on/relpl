@@ -10,9 +10,11 @@ import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.usecase.user.IdDuplicatedCheckUseCase
 import com.gdd.domain.usecase.user.NicknameDuplicatedCheckUseCase
 import com.gdd.domain.usecase.user.PhoneDuplicatedCheckUseCase
+import com.gdd.domain.usecase.user.RegisterProfilePhotoUseCase
 import com.gdd.domain.usecase.user.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.log
@@ -24,7 +26,8 @@ class SignupViewModel @Inject constructor(
     private val idDuplicatedCheckUseCase: IdDuplicatedCheckUseCase,
     private val nickDuplicatedCheckUseCase: NicknameDuplicatedCheckUseCase,
     private val phoneDuplicatedCheckUseCase: PhoneDuplicatedCheckUseCase,
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val registerProfilePhotoUseCase: RegisterProfilePhotoUseCase
 ): ViewModel() {
     var phoneNumber = ""
     var id = ""
@@ -68,6 +71,10 @@ class SignupViewModel @Inject constructor(
     val signUpResult: LiveData<Result<SignUpResult>>
         get() = _signUpResult
 
+    private val _registerPhotoResult = MutableLiveData<Result<Boolean>>()
+    val registerPhotoResult : LiveData<Result<Boolean>>
+        get() = _registerPhotoResult
+
 
     fun isValidPhone(phone: String){
         _phoneValidateResult.value =  phone.length == 8 && phone.isDigitsOnly()
@@ -86,6 +93,7 @@ class SignupViewModel @Inject constructor(
     }
 
     fun isDuplicatedPhone(phone: String){
+//        this@SignupViewModel.phoneNumber = phone
         viewModelScope.launch {
             phoneDuplicatedCheckUseCase.invoke(phone).let {
                 if (it.isSuccess){
@@ -125,6 +133,14 @@ class SignupViewModel @Inject constructor(
             Log.d(TAG, "signUp: $id")
             signUpUseCase(phoneNumber, id, pw, nickname).let {
                 _signUpResult.postValue(it)
+            }
+        }
+    }
+
+    fun registerProfilePhoto(file: File, userId: Long){
+        viewModelScope.launch {
+            registerProfilePhotoUseCase(file, userId).let {
+                _registerPhotoResult.postValue(it)
             }
         }
     }

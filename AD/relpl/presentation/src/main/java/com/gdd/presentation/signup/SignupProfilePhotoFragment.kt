@@ -25,6 +25,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentSignupProfilePhotoBinding
+import com.gdd.retrofit_adapter.RelplException
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.util.jar.Manifest
@@ -38,6 +39,7 @@ class SignupProfilePhotoFragment : BaseFragment<FragmentSignupProfilePhotoBindin
     private lateinit var signUpActivity: SignupActivity
     private val activityViewModel: SignupViewModel by activityViewModels()
     private lateinit var profilePhotoFile: File
+    private var userId = -1L
     private val galleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result ->
         if (result.resultCode == RESULT_OK){
             val imgUri = result.data?.data
@@ -70,14 +72,8 @@ class SignupProfilePhotoFragment : BaseFragment<FragmentSignupProfilePhotoBindin
         super.onViewCreated(view, savedInstanceState)
         signUpActivity = _activity as SignupActivity
 
-        initView()
         registerListener()
         registerObserver()
-    }
-
-    private fun initView(){
-        Log.d(TAG, "initView: ${signUpActivity.nickname}")
-        binding.tvWelcome.text = resources.getString(R.string.signup_photo_welcome, signUpActivity.nickname)
     }
 
     private fun registerListener(){
@@ -89,12 +85,42 @@ class SignupProfilePhotoFragment : BaseFragment<FragmentSignupProfilePhotoBindin
         }
 
         binding.btnDone.setOnClickListener {
-            signUpActivity.finish()
+            if(profilePhotoFile.exists()){
+                Log.d(TAG, "registerListener: true")
+                activityViewModel.registerProfilePhoto(profilePhotoFile, userId)
+            }else{
+                Log.d(TAG, "registerListener: false")
+                showSnackBar(resources.getString(R.string.signup_sucess))
+                signUpActivity.finish()
+            }
         }
     }
 
     private fun registerObserver(){
+        activityViewModel.signUpResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+                    binding.tvWelcome.text = resources.getString(R.string.signup_photo_welcome, it.nickname)
+                    userId = it.id
+                }
+            }
+        }
 
+        activityViewModel.registerPhotoResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                showSnackBar(resources.getString(R.string.signup_sucess))
+                signUpActivity.finish()
+            }else{
+                result.exceptionOrNull()?.let {
+                    Log.d(TAG, "registerObserver: ${it.toString()}")
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
     }
 
     private fun getRealPathFromURI(uri: Uri): String{

@@ -57,7 +57,7 @@ interface UserService {
     ): Result<DefaultResponse<SignupResponse>>
 
     @Multipart
-    @POST("user/mypage/image")
+    @POST("user/image")
     suspend fun registerProfileImage(
         @Part file: MultipartBody.Part,
         @PartMap data: HashMap<String, RequestBody>

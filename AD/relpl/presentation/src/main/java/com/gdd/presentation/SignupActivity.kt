@@ -18,8 +18,7 @@ class SignupActivity : BaseActivity<ActivitySignupBinding>(
     ActivitySignupBinding::inflate
 ) {
     private val viewModel: SignupViewModel by viewModels()
-    //api 달기 전까지 임시로 쓸 변수
-    var nickname = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

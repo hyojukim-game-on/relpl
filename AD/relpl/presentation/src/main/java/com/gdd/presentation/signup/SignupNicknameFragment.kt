@@ -3,6 +3,7 @@ package com.gdd.presentation.signup
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.gdd.presentation.databinding.FragmentSignupNicknameBinding
 import com.gdd.retrofit_adapter.RelplException
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "SignupNicknameFragment_Genseong"
 @AndroidEntryPoint
 class SignupNicknameFragment : BaseFragment<FragmentSignupNicknameBinding>(
     FragmentSignupNicknameBinding::bind, R.layout.fragment_signup_nickname
@@ -27,6 +29,7 @@ class SignupNicknameFragment : BaseFragment<FragmentSignupNicknameBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated: ")
         signupActivity = _activity as SignupActivity
 
         initView()
