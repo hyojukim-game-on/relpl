@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,6 +43,7 @@ public class UserService {
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
+    //    private final RedisTemplate redisTemplate;
     private final AuthenticationManager authenticationManager;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -207,15 +210,15 @@ public class UserService {
 
             if (resultUrl != null) {
 
-                    log.info("프로필 사진 s3에 업로드 성공");
+                log.info("프로필 사진 s3에 업로드 성공");
 
-                    // s3에 올린 파일 주소를 db에 유저 객체로 저장하기
-                    user.setUserImage(resultUrl);
-                    userRepository.save(user);
+                // s3에 올린 파일 주소를 db에 유저 객체로 저장하기
+                user.setUserImage(resultUrl);
+                userRepository.save(user);
 
-                    log.info("저장된 프로필 사진 url:{}",user.getUserImage());
-                    log.info(resultUrl);
-                    log.info("DB에 프로필 사진 업로드 성공");
+                log.info("저장된 프로필 사진 url:{}",user.getUserImage());
+                log.info(resultUrl);
+                log.info("DB에 프로필 사진 업로드 성공");
 
                 // 업로드가 성공했을 경우 성공 응답 반환
                 return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(true, "OK", 200));
@@ -274,6 +277,19 @@ public class UserService {
     }
 
 
+    public ResponseEntity<CommonResult> getUserHistory(Long userId) {
+        try {
+
+            // userId 로 ProjectRepository 에 있는 함수로 정보 조회하기
+            // 정보 가져와서 ProjectDetail 에 넣어주기
+            // List<ProjectDetail> 구성해서 UserHistoryResponse 의 data 자리에 넣어주기
 
 
+            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "OK", 200));
+        } catch (Exception e) {
+            log.info("유저 아이디로 유저의 플로깅 히스토리 조회 실패");
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "Bad Request"));
+        }
+    }
 }
