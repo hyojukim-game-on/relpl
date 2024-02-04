@@ -137,40 +137,32 @@ class TmapService {
         }
     }
 
-    suspend fun addAdditionalRoads(startLat: BigDecimal, startLng: BigDecimal, endLat: BigDecimal, endLng: BigDecimal): TmapData {
+//    fun insertAllRoads(roads: List<TmapRoad>) {
+//        tmapRoadRepository.saveAll(roads)
+//    }
+//
+//    fun insertAllRoadHash(roadsHash: List<RoadHash>) {
+//        roadHashRepository.saveAll(roadsHash)
+//    }
+//
+//    fun insertAllPointHash(pointHashList: List<PointHash>){
+//        pointHashRepository.saveAll(pointHashList)
+//    }
+    fun insertPointHash(pointHash: PointHash) {
+        pointHashRepository.save(pointHash)
+    }
 
-        val roadSet = mutableSetOf<Long>()
-        val roadDetailList = mutableListOf<TmapRoad>()
-//        val roadHashList = mutableListOf<RoadHash>()
-        val pointHashMap = mutableMapOf<Point, Long>()
+    fun insertRoadHash(roadHash: RoadHash) {
+        roadHashRepository.save(roadHash)
+    }
 
-        var hashVal = 0L
+    fun insertTmapRoad(tmapRoad: TmapRoad) {
+        tmapRoadRepository.save(tmapRoad)
+    }
 
-        var lat = startLat
-        var count = 0
-        var holeCnt = ((startLat - endLat).div(BigDecimal(0.00005)) * ((endLng - startLng).div(BigDecimal(0.00005)))).toInt() + 2
-        var i = 0
-        var roadHashIndex = 0L
-        var apiKey = getkeys().get(i++)
-        coroutineScope {
-            launch {
-                while (lat >= endLat) {
-                    lat = lat.minus(BigDecimal(0.00005))
-                    var lng = startLng;
-                    while (lng <= endLng) {
-                        lng = lng.plus(BigDecimal(0.00005))
-                        try {
-                            ++count
-                            if (count % 20000 == 0) {
-                                count %= 20000
-                                apiKey = getkeys().get(i++)
-                            }
-                            val responseData = callTmapApi(lat.toDouble(), lng.toDouble(), apiKey)
-                            val objectMapper = ObjectMapper()
-                            val responseDTO: TmapApiResponseDTO = objectMapper.readValue(responseData, TmapApiResponseDTO::class.java)
-                            log.info("count: ${--holeCnt}")
-                            responseDTO.resultData.let {
-                                if (!roadSet.contains(responseDTO.resultData.header.linkId)) {
+    fun insertRoadInfo(roadInfo: RoadInfo) {
+        roadInfoRepository.save(roadInfo)
+    }
 
                                     roadSet.add(responseDTO.resultData.header.linkId)
                                     log.info(" lat: $lat, lng: $lng, API Call: $responseDTO\"")

@@ -18,9 +18,6 @@ spring:
       host: ENC(vewwyQ0zMOe77WvwzphNSqF0vAjbkvGP+mkABZCw8to=)
       port: ${MONGODB_PORT}
       database: ENC(QYRSKr0uZOD+6mFChXcyMg==)
-    redis:
-      host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
-      port: ${REDIS_PORT}
   jpa:
     hibernate:
       generate-ddl: true
@@ -39,14 +36,20 @@ tmap:
     key3: ENC(xhYSzaPhUAd9TujTFBcLdny2hFhPkCcjxVw3/4Z9ugtTZlXDd4/KYvt7g7j7cbqCv8QBDHkdAk0=)
     #steel
 
-    key4: ENC(2boMXoSNrZYj24EQnQXd8B4I6McsfnQ7304T3kSuTwb88Dze6hWBYghHMmh/+Daf)
+    key4: ENC(sPMeO/QfxlCeCYcpQs57OcLcZtumQAz03xIP8fa/bIlT4tHkLD1caYmI7igRfFmwJnYlILxRG+E=)
     #hyo
 
     key5: ENC(wgB7LJNXtWdMo1KXv2EGQTV2umU8zZd3Ixa2XIFoaSQS7d082hsBUUgfSZ589UT7pYJhfbsb6bw=)
     #min
 
-#    key6:
+    key6: ENC(NlBgeuShNL3O+38XF4hbMhQcKOyTGtCSCpIKa9lmouyd4f5+48Jr10/rxtEbLj0ZnExqTm54Qys=)
     #choe
+
+    key7: ENC(dQWks83Pnr42llyVbiI3tcGmgrTXOC/xnYvIRVdQewGCVYSGZ2vVF+YBjydf3jSucpGlLnkvcu8=)
+    #kimi
+
+    key8: ENC(n3zeLeJPbxmXwXR5qdwH4SGtA6UYFd7loi+9pM+67RSmhKcaZ7mn8r2rbW5cM/HpaZtK1Xkgk9c=)
+    #jee
 cloud:
   aws:
     s3:
