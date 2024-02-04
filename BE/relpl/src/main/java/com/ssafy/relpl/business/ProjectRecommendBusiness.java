@@ -1,12 +1,10 @@
 package com.ssafy.relpl.business;
 
-import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.db.mongo.entity.RecommendProject;
 import com.ssafy.relpl.db.mongo.entity.TmapRoad;
 import com.ssafy.relpl.db.postgre.entity.PointHash;
-import com.ssafy.relpl.db.postgre.entity.RoadHash;
 import com.ssafy.relpl.db.postgre.entity.RoadInfo;
-import com.ssafy.relpl.dto.response.ProjectRecommendResponseDto;
+import com.ssafy.relpl.dto.response.ProjectRecommendResponse;
 import com.ssafy.relpl.service.*;
 import com.ssafy.relpl.util.annotation.Business;
 import com.ssafy.relpl.util.common.Edge;
@@ -86,16 +84,20 @@ public class ProjectRecommendBusiness {
             log.info("recommendTmapRoad > getAllTmapRoadById 완료");
 
             // 8번
-            RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList, pathLen, -1);
-            RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList, pathLen, -2);
+            RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList, pathTotalDistance, -1);
+            int shortestTotalDistance = pathTotalDistance;
+            
+            RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList, pathTotalDistance, -2);
+            int recommendTotalDistance = pathTotalDistance;
 
             // 9번
-            ProjectRecommendResponseDto response
-                    = ProjectRecommendResponseDto.builder()
+            ProjectRecommendResponse response = ProjectRecommendResponse.builder()
                     .shortestId(shortestProject.getId())
                     .shortestPath(shortestPointList)
+                    .shortestTotalDistance(shortestTotalDistance)
                     .recommendId(recommendProject.getId())
                     .recommendPath(recommendPointList)
+                    .recommendTotalDistance(recommendTotalDistance)
                     .build();
             return ResponseEntity.ok(responseService.getSingleResult(response, "경로 추천 성공.", 200));
         } catch (Exception e) {
@@ -108,7 +110,7 @@ public class ProjectRecommendBusiness {
     // ------------------------------------------------ 경로 추천 알고리즘 관련
     ArrayList<Edge>[] edges;
     int vertexCnt = -1; // 꼭짓점 수
-    int pathLen = 0;
+    int pathTotalDistance = 0;
     List<RoadInfo> roadInfos;
 
     /**
@@ -291,8 +293,8 @@ public class ProjectRecommendBusiness {
 
         org.springframework.data.geo.Point tmapStartPoint = tmapRoadList.get(0).getGeometry().getCoordinates().get(0);
         double startDiff = Math.sqrt(Math.pow(Math.abs(start.getX() - tmapStartPoint.getX()), 2) + Math.pow(Math.abs(start.getY() - tmapStartPoint.getY()), 2));
-        pathLen = 0;
-        pathLen += (int) startDiff; // 두 점 사이의 거리
+        pathTotalDistance = 0;
+        pathTotalDistance += (int) startDiff; // 두 점 사이의 거리
 
         pointSet.add(
                 new org.springframework.data.geo.Point(
@@ -307,7 +309,7 @@ public class ProjectRecommendBusiness {
 
         org.springframework.data.geo.Point tmapcurPoint = new org.springframework.data.geo.Point(-1, -1);
         for (TmapRoad tmapRoad : tmapRoadList) {
-            pathLen += tmapRoad.getTotalDistance();
+            pathTotalDistance += tmapRoad.getTotalDistance();
             for (org.springframework.data.geo.Point point: tmapRoad.getGeometry().getCoordinates()) {
                 if (pointSet.add(new org.springframework.data.geo.Point(point.getX(), point.getY()))) {
                     tmapcurPoint = new org.springframework.data.geo.Point(point.getX(), point.getY());
@@ -324,7 +326,7 @@ public class ProjectRecommendBusiness {
                     )
             );
             double endDiff = Math.sqrt(Math.pow(Math.abs(end.getX() - tmapcurPoint.getX()), 2) + Math.pow(Math.abs(end.getY() - tmapcurPoint.getY()), 2));
-            pathLen += (int)endDiff;
+            pathTotalDistance += (int)endDiff;
         }
         Collections.reverse(pointList);
         return pointList;

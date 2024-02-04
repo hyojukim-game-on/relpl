@@ -6,6 +6,6 @@ import org.springframework.data.geo.Point;
 @Data
 public class ProjectRecommendRequest {
 
-    Point startPoint;
-    Point endPoint;
+    Point startCoordinate;
+    Point endCoordinate;
 }

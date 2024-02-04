@@ -28,6 +28,7 @@ public class ProjectService {
     private final ResponseService responseService;
     private final GeomFactoryConfig geomFactoryConfig;
 
+    @Transactional
     public ResponseEntity<?> projectExist(double x, double y, int distance) {
         try {
             List<Project> result = projectRepository.findNearProject10(x, y, distance);
@@ -42,28 +43,13 @@ public class ProjectService {
 
     }
 
+    @Transactional
     public ResponseEntity<?> createDistanceProject(ProjectCreateDistanceRequest request) {
         try {
-            Point startPoint = geomFactoryConfig.getGeometryFactory().createPoint(new Coordinate(request.getProjectStartPoint().getX(), request.getProjectStartPoint().getY()));
-            Project project = Project.builder()
-                    .userId(request.getUserId())
-                    .projectName(request.getProjectName())
-                    .projectCreateDate(request.getProjectCreateDate())
-                    .projectEndDate(request.getProjectEndDate())
-                    .projectStartCoordinate(startPoint)
-                    .projectStopCoordinate(startPoint)
-                    .projectEndCoordinate(null)
-                    .projectIsPath(false)
-                    .projectRemainingDistance(request.getProjectTotalDistance())
-                    .projectTotalDistance(request.getProjectTotalDistance())
-                    .projectIsDone(false)
-                    .projectIsPlogging(true)
-                    .projectTotalContributer(1)
-                    .build();
+            Point startPoint = geomFactoryConfig.getGeometryFactory().createPoint(new Coordinate(request.getProjectStartCoordinate().getX(), request.getProjectStartCoordinate().getY()));
+            Project project = Project.createDistanceProject(request, startPoint);
             project = projectRepository.save(project);
-            ProjectCreateDistanceResponse response = ProjectCreateDistanceResponse.builder()
-                    .projectId(project.getProjectId())
-                    .build();
+            ProjectCreateDistanceResponse response = ProjectCreateDistanceResponse.createProjectCreateDistanceResponse(project);
             return ResponseEntity.ok(responseService.getSingleResult(response, "거리 프로젝트 생성 완료", 200));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "거리 프로젝트 생성 실패"));

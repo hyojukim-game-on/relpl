@@ -7,9 +7,12 @@ import java.util.List;
 
 @Data
 @Builder
-public class ProjectRecommendResponseDto {
+public class ProjectRecommendResponse {
     String shortestId;
     List<Point> shortestPath;
+    int shortestTotalDistance;
+
     String recommendId;
     List<Point> recommendPath;
+    int recommendTotalDistance;
 }
