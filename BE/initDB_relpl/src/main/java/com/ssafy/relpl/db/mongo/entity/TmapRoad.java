@@ -55,29 +55,7 @@ public class TmapRoad {
                 .speed(responseDTO.getResultData().getHeader().getSpeed())
                 .totalDistance(responseDTO.getResultData().getHeader().getTotalDistance())
                 .lane(responseDTO.getResultData().getHeader().getLane())
-                .build();
-    }
-
-    public static TmapRoad createRoad(RoadRequest request) {
-
-        List<List<Double>> coordinates = request.getCoordinates();
-
-        // List<List<Double>>를 List<GeoJsonPoint>로 변환
-        List<Point> geoJsonPoints = coordinates.stream()
-                .map(coordinate -> new Point(coordinate.get(0), coordinate.get(1)))
-                .collect(Collectors.toList());
-
-
-        // List<GeoJsonPoint>로 GeoJsonLineString 생성
-        GeoJsonLineString geoJsonLineString = new GeoJsonLineString(geoJsonPoints);
-
-        return TmapRoad.builder()
-                .tmap_id(request.getTmap_id())
-                .geometry(geoJsonLineString)
-                .lanetype(request.getLanetype())
-                .speed(request.getSpeed())
-                .total_distance(request.getTotal_distance())
-                .lane(request.getLane())
+                .roadHash(roadHash)
                 .build();
     }
 }
