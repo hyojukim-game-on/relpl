@@ -72,13 +72,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
          * 이 이후로 위치 권한이 필요한 코드를 작성
          */
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mainActivity)
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.layout_map) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                childFragmentManager.beginTransaction().add(R.id.layout_map, it).commit()
-            }
-        mapFragment.getMapAsync(mapReadyCallback)
 
         registerListener()
     }
@@ -138,9 +132,22 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
             PermissionHelper.requestPermission_fragment(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                grantedListener = locationPermissionGrantedListener,
                 deniedListener = locationPermissionDeniedListener
             )
+        } else {
+            locationPermissionGrantedListener()
         }
+    }
+
+    private val locationPermissionGrantedListener: () -> Unit = {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mainActivity)
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.layout_map) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                childFragmentManager.beginTransaction().add(R.id.layout_map, it).commit()
+            }
+        mapFragment.getMapAsync(mapReadyCallback)
     }
 
     private val locationPermissionDeniedListener: () -> Unit = {
