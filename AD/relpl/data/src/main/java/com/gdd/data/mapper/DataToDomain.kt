@@ -10,6 +10,7 @@ import com.gdd.data.model.point.PointRecordItemResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.report.ReportRecordResponse
 import com.gdd.data.model.signin.SignInResponse
 import com.gdd.data.model.signup.SignupResponse
 import com.gdd.domain.model.Point
@@ -21,6 +22,7 @@ import com.gdd.domain.model.point.PointRecord
 import com.gdd.domain.model.point.PointRecordListItem
 import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.RelayMarker
+import com.gdd.domain.model.report.ReportRecord
 import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.model.user.User
 import java.text.SimpleDateFormat
@@ -133,6 +135,16 @@ fun MarkerResponse.toMarker(): RelayMarker{
         this.projectId,
         this.stopCoordinate.toPoint(),
         this.isPath
+    )
+}
+
+fun ReportRecordResponse.toReportRecord(): ReportRecord {
+    return ReportRecord(
+        reportDate,
+        Point(
+            reportCoordinate.x,
+            reportCoordinate.y
+        )
     )
 }
 
