@@ -46,7 +46,6 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity.startForegroundService(Intent(_activity,LocationTrackingService::class.java))
     }
 
 
