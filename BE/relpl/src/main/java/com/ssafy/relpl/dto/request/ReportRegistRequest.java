@@ -6,7 +6,7 @@ import org.springframework.data.geo.Point;
 
 @Getter
 @Setter
-public class ReportRegistRequestDto {
+public class ReportRegistRequest {
 
 
     private Long userId;

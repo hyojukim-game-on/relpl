@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReportListRequestDto {
+public class ReportListRequest {
 
     private Long userId;
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CoinScoreDataResponseDto {
+public class CoinScoreDataResponse {
     private int userTotalCoin;
-    private List<CoinScoreResponseDto> eventList;
+    private List<CoinScoreResponse> eventList;
 }

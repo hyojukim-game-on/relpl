@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Arrays;
 
 @Data
-public class TmapApiResponseDTO {
+public class TmapApiResponse {
 
     public ResultData resultData;
 

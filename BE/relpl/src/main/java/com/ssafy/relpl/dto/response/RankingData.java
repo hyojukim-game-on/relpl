@@ -1,6 +1,7 @@
 package com.ssafy.relpl.dto.response;
 
 
+import com.ssafy.relpl.util.common.RankingEntry;
 import lombok.*;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RankingDataDto {
+public class RankingData {
     private List<RankingEntry> dailyRanking;
     private List<RankingEntry> weeklyRanking;
     private List<RankingEntry> monthlyRanking;

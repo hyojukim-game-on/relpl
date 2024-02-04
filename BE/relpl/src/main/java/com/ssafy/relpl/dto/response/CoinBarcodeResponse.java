@@ -3,6 +3,6 @@ package com.ssafy.relpl.dto.response;
 import lombok.Data;
 
 @Data
-public class CoinBarcodeResponseDto {
+public class CoinBarcodeResponse {
     private int userTotalCoin;
 }
