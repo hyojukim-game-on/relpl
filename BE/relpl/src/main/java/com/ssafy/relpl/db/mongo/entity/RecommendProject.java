@@ -19,17 +19,13 @@ public class RecommendProject {
     @Id
     private String id;
     private Long projectId;
+    private Long totalDistance;
     private GeoJsonLineString recommendLineString;
-//    private GeoJsonMultiLineString
-//    private int lanetype;
-//    private int speed;
-//    private int total_distance;
-//    private int lane;
-
-    public static RecommendProject createRecommendProject(List<Point> lineString) {
+    public static RecommendProject createRecommendProject(List<Point> lineString, long totalDistance, long isShortest) {
         return RecommendProject.builder()
                 .recommendLineString(new GeoJsonLineString(lineString))
-                .projectId(-1L)
+                .projectId(isShortest)
+                .totalDistance(totalDistance)
                 .build();
     }
 }

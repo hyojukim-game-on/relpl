@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecommendProjectService {
     private final RecommendProjectRepository recommendProjectRepository;
-    public RecommendProject saveRecommendProject(List<Point> recommendPaths) {
-        return recommendProjectRepository.save(RecommendProject.createRecommendProject(recommendPaths));
+    public RecommendProject saveRecommendProject(List<Point> recommendPaths, long totalDistance, long isShortest) {
+        return recommendProjectRepository.save(RecommendProject.createRecommendProject(recommendPaths, totalDistance, isShortest));
     }
 }

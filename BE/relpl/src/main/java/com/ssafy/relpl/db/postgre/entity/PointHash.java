@@ -24,12 +24,4 @@ public class PointHash {
 
     @Column(name = "point_coordinate")
     Point pointCoordinate;
-
-    public static PointHash createPointHash(Long pointHashId, Point pointCoordinate){
-
-        return PointHash.builder()
-                .pointHashId(pointHashId)
-                .pointCoordinate(pointCoordinate)
-                .build();
-    }
 }
