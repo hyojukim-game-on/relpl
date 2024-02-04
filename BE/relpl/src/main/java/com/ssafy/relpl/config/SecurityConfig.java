@@ -47,6 +47,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/user/isExist/uid").permitAll() //유저 아이디 중복체크
                             .requestMatchers("/api/user/isExist/phone").permitAll() //유저 연락처 중복체크
                             .requestMatchers("/api/user/isExist/nickname/**").permitAll() //유저 닉네임 중복체크
+                            .requestMatchers("/api/user/image").permitAll() //프로필 사진 등록
                             .requestMatchers("/api/sample/post").permitAll()
                             .requestMatchers("/api/sample/get/**").permitAll()
                             .anyRequest().authenticated(); //인증 필요
@@ -54,7 +55,7 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .cors((c) -> c.disable())
                 .headers((headers) -> headers.disable())
-                .addFilterBefore(new JwtFilter(jwtTokenProvider, exceptionHandler).disableAuth("/api/user/signup", "/api/user/login", "/api/user/token/reissue", "/api/user/isExist/uid", "/api/user/isExist/phone", "/api/user/isExist/nickname/**"), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtTokenProvider, exceptionHandler).disableAuth("/api/user/signup", "/api/user/login", "/api/user/token/reissue", "/api/user/isExist/uid", "/api/user/isExist/phone", "/api/user/isExist/nickname/**", "/api/user/image"), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(authenticationManager -> authenticationManager
                         .authenticationEntryPoint(entryPoint) // ExceptionResponseHandler 사용
                         .accessDeniedHandler(new JwtAccessDeniedHandler()))
