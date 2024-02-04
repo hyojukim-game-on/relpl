@@ -1,6 +1,5 @@
 package com.ssafy.relpl.db.mongo.entity;
 
-import com.ssafy.relpl.dto.request.RoadRequest;
 import com.ssafy.relpl.dto.response.TmapApiResponse;
 import lombok.Builder;
 import lombok.Getter;
