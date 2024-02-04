@@ -154,9 +154,9 @@ public class UserService {
 
     public ResponseEntity<CommonResult> duplicateNickname(String nickname) {
         if(userRepository.findByUserNickname(nickname).isPresent()) {
-            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(true), "닉네임 사용 불가능", 200));
+            return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(true), "휴대폰번호 사용 불가능", 200));
         }
-        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(false), "닉네임 사용 가능", 200));
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(false), "휴대폰번호 사용 가능", 200));
     }
 
     public ResponseEntity<CommonResult> duplicateUserPhone(UserDuplicatePhoneRequest request) {
@@ -172,7 +172,7 @@ public class UserService {
             return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(true), "아이디 사용 불가능", 200));
         }
         //중복된 ID 없음
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
+        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
     }
 
 
