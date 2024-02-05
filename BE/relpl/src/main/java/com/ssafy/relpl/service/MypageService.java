@@ -104,7 +104,7 @@ public class MypageService {
                 user.setUserPhone(request.getUserPhone());
 
                 // DB에 변경사항 저장..
-                userRepository.save(user);  
+//                userRepository.save(user);
                 
                 // 바뀐 닉네임, 바뀐 핸드폰 번호..
                 log.info("바뀐 닉네임:{}",user.getUserNickname());
@@ -140,7 +140,7 @@ public class MypageService {
                         return ResponseEntity.badRequest().body(responseService.getFailResult(400, "정보 수정 실패"));
                     }
                 // 프로필 사진을 제공하지 않아서 기존 프로필 사진 유지, 그 외 정보만 변경..
-                } else if (request.getUserProfilePhoto() == null) {
+                } else  {
                     log.info("프로필 사진 제공하지 않음");
                     return ResponseEntity.ok(responseService.getSingleResult(true, "정보 수정 성공", 200));
                 }
