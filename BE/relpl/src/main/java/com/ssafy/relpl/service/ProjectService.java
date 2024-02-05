@@ -14,7 +14,6 @@ import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
-import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
 import com.ssafy.relpl.dto.response.ProjectAllResponse;
 import com.ssafy.relpl.dto.request.ProjectStopRequest;
@@ -32,7 +31,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -52,10 +50,11 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
-    private final UserRouteDetailRepository userRouteDetailRepository;
     private final UserRouteRepository userRouteRepository;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final UserRouteDetailRepository userRouteDetailRepository;
+    private final TmapService tmapService;
     private final ResponseService responseService;
+    private final RedisTemplate<String, String> redisTemplate;
     private final GeomFactoryConfig geomFactoryConfig;
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.base-url}")
@@ -165,10 +164,10 @@ public class ProjectService {
                     if(!project.isProjectIsDone() && project.isProjectIsPlogging()) {
 
                         //가장 가까운 도로 id 찾아서 map 에 넣기 (tmap api 호출) wait
-                        List<String> roadList = performAsyncTasks(request.getUserMovePath());
+                        HashMap<String, String> roadMap = performAsyncTasks(request.getUserMovePath());
 
                         //map 의 key 를 redis 에 저장 (road_{tmapid})
-                        addRoadIntoRedis(roadList);
+                        addRoadIntoRedis(roadMap);
 
                         //도로를 mongoDB 에 저장 (키 반환)
                         UserRouteDetail userRouteDetail = userRouteDetailRepository.save(UserRouteDetail.createUserRouteDetail(request));
@@ -201,52 +200,53 @@ public class ProjectService {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: s3 이미지 저장 실패"));
     }
 
-    private void addRoadIntoRedis(List<String> roadList) {
+    private void addRoadIntoRedis(HashMap<String, String> roadMap) {
+        log.info("Redis linkId 저장");
+
+        //플로깅 도로 만료시간
         Long roadExpirationTime = 1000 * 60 * 60 * 24L;
 
-        // redis에 저장
-        for(String linkId : roadList) {
-            redisTemplate.opsForValue().set(
-                    "token_" + linkId,
-                    "This road has already been plugged.",
-                    roadExpirationTime,
-                    TimeUnit.MILLISECONDS
-            );
+        // Redis에 한 번에 여러 개의 키-값 쌍 저장
+        redisTemplate.opsForValue().multiSet(roadMap);
+
+        // 만료시간 설정
+        for (String linkId : roadMap.keySet()) {
+            redisTemplate.expire(linkId, roadExpirationTime, TimeUnit.MILLISECONDS);
         }
     }
 
     @Async
     public CompletableFuture<TmapApiResponse> asyncMethod(Point point) {
         //tmap api 가까운 도로 호출
-        TmapApiResponse response = null;
+        TmapApiResponse response = tmapService.callTmapApi(point.getX(), point.getY());
 
         return CompletableFuture.completedFuture(response);
     }
 
     // 모든 비동기 작업이 완료될 때까지 기다리는 메서드
-    public void waitForAllTasks(List<Future<TmapApiResponse>> futures, HashMap<String, Integer> map) throws ExecutionException, InterruptedException {
+    public void waitForAllTasks(List<Future<TmapApiResponse>> futures, HashMap<String, String> map) throws ExecutionException, InterruptedException {
         for (Future<TmapApiResponse> future : futures) {
-            future.get(); // 각 비동기 작업의 결과를 가져와서 처리
+            Long linkId = future.get().getResultData().getHeader().getLinkId();
+            map.put("road_" + linkId, "This road has already been plugged.");
         }
     }
 
     // 비동기 작업들을 수행하고 모든 작업이 완료될 때까지 기다리는 메서드
-    public List<String> performAsyncTasks(List<Point> coordintates) throws ExecutionException, InterruptedException {
+    public HashMap<String, String> performAsyncTasks(List<Point> coordintates) throws ExecutionException, InterruptedException {
         log.info("Tmap api 호출");
 
         List<Future<TmapApiResponse>> futures = new ArrayList<>();
-        HashMap<String, Integer> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
 
-        // 비동기 메서드 호출 및 Future 객체 저장
-        for (Point point: coordintates) {
-            futures.add(asyncMethod(point).toCompletableFuture());
+        // 비동기 메서드 호출 및 Future 객체 저장 (마지막 플로깅 장소 제외)
+        for (int i=0; i<coordintates.size() - 1; i++) {
+            futures.add(asyncMethod(coordintates.get(i)).toCompletableFuture());
         }
-
         // 모든 비동기 작업이 완료될 때까지 기다림
         waitForAllTasks(futures, map);
 
         //도로 id 반환
-        return new ArrayList<>(map.keySet());
+        return map;
     }
 
     /* setUserProfilePhoto : s3에 프로젝트 중단 시 사진 업로드하기
