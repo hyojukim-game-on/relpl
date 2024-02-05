@@ -5,5 +5,5 @@ import com.gdd.data.model.PointResponse
 data class MarkerResponse(
     val projectId: Long,
     val stopCoordinate: PointResponse,
-    val isPath: Boolean
+    val path: Boolean
 )

@@ -120,9 +120,11 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
 
     private fun registerObserver(){
         viewModel.markerResult.observe(viewLifecycleOwner){ result ->
+            Log.d(TAG, "registerObserver: ${result.getOrNull()?.size}")
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     it.forEach{
+                        Log.d(TAG, "registerObserver: ${it.stopCoordinate}")
                         Marker().apply {
                             position =  it.stopCoordinate.toLatLng()
                             map = naverMap

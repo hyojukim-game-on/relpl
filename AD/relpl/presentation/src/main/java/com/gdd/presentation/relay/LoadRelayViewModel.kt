@@ -1,5 +1,6 @@
 package com.gdd.presentation.relay
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
+private const val TAG = "LoadRelayViewModel_Genseong"
 @HiltViewModel
 class LoadRelayViewModel @Inject constructor(
     private val getAllRelayMarkerUseCase: GetAllRelayMarkerUseCase,
@@ -28,15 +30,16 @@ class LoadRelayViewModel @Inject constructor(
     private val createDistanceRelayUseCase: CreateDistanceRelayUseCase
 ) : ViewModel() {
 
+    /*
+    private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
+    val markerResult: LiveData<Result<List<RelayMarker>>>
+        get() = _markerResult
+    */
+
     private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
     val markerResult: LiveData<Result<List<RelayMarker>>>
         get() = _markerResult
 
-    /*
-    private val _markerResult = MutableLiveData<List<RelayMarker>>()
-    val markerResult: LiveData<List<RelayMarker>>
-        get() = _markerResult
-     */
 
     private val _isExistDistanceResult = MutableLiveData<Result<Boolean>>()
     val isExistDistanceResult: LiveData<Result<Boolean>>
@@ -57,10 +60,11 @@ class LoadRelayViewModel @Inject constructor(
 
     fun getAllMarker(){
         viewModelScope.launch {
-            delay(300)
-            _markerResult.postValue(Result.success(tempMarkerList))
+//            delay(300)
+//            _markerResult.postValue(Result.success(tempMarkerList))
             getAllRelayMarkerUseCase().let {
-//                _markerResult.postValue(it)
+                Log.d(TAG, "getAllMarker: ${it.getOrNull()?.size}")
+                _markerResult.postValue(it)
             }
         }
     }
