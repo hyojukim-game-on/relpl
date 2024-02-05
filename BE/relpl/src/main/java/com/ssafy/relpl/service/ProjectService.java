@@ -160,10 +160,10 @@ public class ProjectService {
                     if(!project.isProjectIsDone() && project.isProjectIsPlogging()) {
 
                         //가장 가까운 도로 id 찾아서 map 에 넣기 (tmap api 호출) wait
-                        HashMap<String, Integer> map = performAsyncTasks(request.getUserMovePath());
+                        List<String> roadList = performAsyncTasks(request.getUserMovePath());
 
                         //map 의 key 를 redis 에 저장 (road_{tmapid})
-                        addRoadIntoRedis(map);
+                        addRoadIntoRedis(roadList);
 
                         //도로를 mongoDB 에 저장 (키 반환)
                         String routeKey = "";
@@ -192,14 +192,18 @@ public class ProjectService {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: s3 이미지 저장 실패"));
     }
 
-    private void addRoadIntoRedis(HashMap<String, Integer> map) {
+    private void addRoadIntoRedis(List<String> roadList) {
+        Long roadExpirationTime = 1000 * 60 * 60 * 24L;
+
         // redis에 저장
-//        redisTemplate.opsForValue().set(
-//                "token_"+userId,
-//                refreshToken,
-//                refreshExpirationTime,
-//                TimeUnit.MILLISECONDS
-//        );
+        for(String linkId : roadList) {
+            redisTemplate.opsForValue().set(
+                    "token_" + linkId,
+                    "This road has already been plugged.",
+                    roadExpirationTime,
+                    TimeUnit.MILLISECONDS
+            );
+        }
     }
 
     @Async
@@ -211,18 +215,18 @@ public class ProjectService {
     }
 
     // 모든 비동기 작업이 완료될 때까지 기다리는 메서드
-    public void waitForAllTasks(List<Future<TmapApiResponse>> futures) throws ExecutionException, InterruptedException {
+    public void waitForAllTasks(List<Future<TmapApiResponse>> futures, HashMap<String, Integer> map) throws ExecutionException, InterruptedException {
         for (Future<TmapApiResponse> future : futures) {
             future.get(); // 각 비동기 작업의 결과를 가져와서 처리
         }
     }
 
     // 비동기 작업들을 수행하고 모든 작업이 완료될 때까지 기다리는 메서드
-    public HashMap<String, Integer> performAsyncTasks(List<Point> coordintates) throws ExecutionException, InterruptedException {
+    public List<String> performAsyncTasks(List<Point> coordintates) throws ExecutionException, InterruptedException {
         log.info("Tmap api 호출");
 
         List<Future<TmapApiResponse>> futures = new ArrayList<>();
-
+        HashMap<String, Integer> map = new HashMap<>();
 
         // 비동기 메서드 호출 및 Future 객체 저장
         for (Point point: coordintates) {
@@ -230,7 +234,10 @@ public class ProjectService {
         }
 
         // 모든 비동기 작업이 완료될 때까지 기다림
-        waitForAllTasks(futures);
+        waitForAllTasks(futures, map);
+
+        //도로 id 반환
+        return new ArrayList<>(map.keySet());
     }
 
     /* setUserProfilePhoto : s3에 프로젝트 중단 시 사진 업로드하기
