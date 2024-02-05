@@ -78,7 +78,7 @@ public class Project {
                 .build();
     }
 
-    public static Project createRouteProject(ProjectCreateRouteRequest request, Point startPoint, Point endPoint,int projectTotalDistance) {
+    public static Project createRouteProject(ProjectCreateRouteRequest request, Point startPoint, Point endPoint, int projectTotalDistance) {
         return Project.builder()
                 .userId(request.getUserId())
                 .projectName(request.getProjectName())

@@ -17,6 +17,4 @@ public class TmapRoadService {
     public List<TmapRoad> getAllTmapRoadById(List<Long> roadHashIdList) {
         return tmapRoadRepository.findAllByroadHash(roadHashIdList);
     }
-
-    public TmapRoad updateProjectId(String id, )
 }
