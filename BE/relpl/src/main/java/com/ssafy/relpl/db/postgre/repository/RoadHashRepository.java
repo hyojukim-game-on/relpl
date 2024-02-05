@@ -13,4 +13,8 @@ import java.util.List;
 public interface RoadHashRepository extends JpaRepository<RoadHash, Long> {
     @Override
     <S extends RoadHash> @NotNull List<S> saveAll(@NotNull Iterable<S> entities);
+
+    @NotNull
+    @Override
+    List<RoadHash> findAll();
 }

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.data.geo.Point
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 
 @RestController
 @CrossOrigin("*")
@@ -36,18 +37,17 @@ class TmapController {
         try {
             coroutineScope {
                 launch {
-                    val tmapData = tmapService.getAllRoads(
-                            insertRoadRequestDto.startPoint.y
-                            , insertRoadRequestDto.startPoint.x
-                            , insertRoadRequestDto.endPoint.y
-                            , insertRoadRequestDto.endPoint.x)
-                    val pointHash = tmapService.insertAllRoadInfo(tmapData)
-                    log.info("insertAllRoadHash 완료")
-                    tmapService.insertAllRoads(tmapData.roads)
-                    log.info("insertAllRoads 완료")
-                    tmapService.insertAllRoadHash(tmapData.roadsHash)
-                    log.info("insertAllRoadHash 완료")
-                    tmapService.insertAllPointHash(pointHash)
+                    tmapService.getAllRoads(BigDecimal(insertRoadRequestDto.startPoint.y)
+                            , BigDecimal(insertRoadRequestDto.startPoint.x)
+                            , BigDecimal(insertRoadRequestDto.endPoint.y)
+                            , BigDecimal(insertRoadRequestDto.endPoint.x))
+//                    val pointHash = tmapService.insertAllRoadInfo(tmapData)
+//                    log.info("insertAllRoadHash 완료")
+//                    tmapService.insertAllRoads(tmapData.roads)
+//                    log.info("insertAllRoads 완료")
+//                    tmapService.insertAllRoadHash(tmapData.roadsHash)
+//                    log.info("insertAllRoadHash 완료")
+//                    tmapService.insertAllPointHash(pointHash)
                 }
             }
         } catch (e: Exception) {
@@ -61,7 +61,11 @@ class TmapController {
     fun getTimes(@RequestBody timesRoadRequestDto: TimesRoadRequestDto) : ResponseEntity<Any?> {
         log.info("start: {}", timesRoadRequestDto.startPoint)
         log.info("start: {}", timesRoadRequestDto.endPoint)
-        val count = ((timesRoadRequestDto.startPoint.y - timesRoadRequestDto.endPoint.y) / 0.00005 * ((timesRoadRequestDto.endPoint.x - timesRoadRequestDto.startPoint.x) / 0.00005)).toInt()
-        return ResponseEntity.ok().body(CommonResponse.OK("총 횟수 : $count", true))
+        val startLat = BigDecimal(timesRoadRequestDto.startPoint.y)
+        val startLng = BigDecimal(timesRoadRequestDto.startPoint.x)
+        val endLat = BigDecimal(timesRoadRequestDto.endPoint.y)
+        val endLng = BigDecimal(timesRoadRequestDto.endPoint.x)
+        var holeCnt = ((startLat - endLat).div(BigDecimal(0.00005)) * ((endLng - startLng).div(BigDecimal(0.00005)))).toInt() + 2
+        return ResponseEntity.ok().body(CommonResponse.OK("총 횟수 : $holeCnt", true))
     }
 }

@@ -1,24 +1,24 @@
 package com.ssafy.relpl.service;
 
 
-
-import com.ssafy.relpl.dto.response.RankingDataDto;
-import com.ssafy.relpl.dto.response.RankingEntry;
+import com.ssafy.relpl.dto.response.RankingData;
 import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.SingleResult;
+import com.ssafy.relpl.util.common.RankingEntry;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -27,9 +27,10 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RankingService {
 
-    private final RedisTemplate<String, String> redisTemplate;
+
+    private final RedisTemplate<String, String> redisTemplate; // RedisTemplate 주입
     private final ResponseService responseService;
-    private ZSetOperations<String, String> zSetOperations;
+    private ZSetOperations<String, String> zSetOperations; // Sorted Set 을 다루기 위한 인터페이스
 
 
     @PostConstruct
@@ -64,10 +65,10 @@ public class RankingService {
             log.info("monthlyRanking 업데이트 완료");
 
             // 결과 반환
-            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSuccessResult("랭킹 업데이트 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(true, "랭킹 업데이트 성공", 200));
         } catch (Exception e){
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "랭킹 업데이트 실패"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getSingleResult(true, "랭킹 업데이트 실패", 400));
         }
     }
 
@@ -81,12 +82,12 @@ public class RankingService {
         return Optional.ofNullable(zSetOperations.score(key, nickname));
     }
 
-    /* addOrUpdateMember : [REDIS] 일간/주간/월간랭킹에 유저 닉네임, 유저의 총 이동 거리 INSERT
-     * @param : 일간/주간/월간랭킹, 닉네임, 유저의 총 이동 거리
-     * @return : 없음
-     * */
+
+    // redis 에 rankingKey key , nickname member , moveDistance score 로 추가된 값 insert
+
     public void addOrUpdateMember(String key, String nickname, double moveDistance) {
         Boolean isAdded = zSetOperations.add(key, nickname, moveDistance);
+        log.info("addOrUpdate_isAdded:{}",isAdded);
     }
 
     /* updateRankingFor : 유저 랭킹 업데이트 실행
@@ -117,13 +118,9 @@ public class RankingService {
             Set<ZSetOperations.TypedTuple<String>> dailyRankingRedis = zSetOperations.reverseRangeWithScores("dailyRanking", 0, 20);
             log.info("dailyRankingRedis:{}", dailyRankingRedis);
 
-            // [REDIS] 주간랭킹 키에 저장된 [유저 닉네임, 플로깅 누적 거리] 1~20위 반환
-            // ORDER BY 플로깅 누적 거리 내림차순
             Set<ZSetOperations.TypedTuple<String>> weeklyRankingRedis = zSetOperations.reverseRangeWithScores("weeklyRanking", 0, 20);
             log.info("weeklyRankingRedis:{}", weeklyRankingRedis);
 
-            // [REDIS] 월간랭킹 키에 저장된 [유저 닉네임, 플로깅 누적 거리] 1~20위 반환
-            // ORDER BY 플로깅 누적 거리 내림차순
             Set<ZSetOperations.TypedTuple<String>> monthlyRankingRedis = zSetOperations.reverseRangeWithScores("monthlyRanking", 0, 20);
             log.info("monthlyRankingRedis:{}", monthlyRankingRedis);
 
@@ -134,27 +131,35 @@ public class RankingService {
 
             // List<RankingEntry> 형태로 LinkedHashSet 변환 (순회하면서 할당해주기)
             // Value = nickname , Score = moveDistance (유저 플로깅 누적 거리)
+            assert dailyRankingRedis != null;
             for (ZSetOperations.TypedTuple<String> person : dailyRankingRedis) {
-                dailyRankingList.add(new RankingEntry(person.getValue(), person.getScore()));
+                if (!person.getValue().isEmpty()) { // 닉네임이 빈 문자열이 아닌 경우만 리스트에 추가
+                    dailyRankingList.add(new RankingEntry(person.getValue(), person.getScore()));
+                }
             }
 
+            assert weeklyRankingRedis != null;
             for (ZSetOperations.TypedTuple<String> person : weeklyRankingRedis) {
-                weeklyRankingList.add(new RankingEntry(person.getValue(), person.getScore()));
+                if (!person.getValue().isEmpty()) { // 닉네임이 빈 문자열이 아닌 경우만 리스트에 추가
+                    weeklyRankingList.add(new RankingEntry(person.getValue(), person.getScore()));
+                }
             }
 
+            assert monthlyRankingRedis != null;
             for (ZSetOperations.TypedTuple<String> person : monthlyRankingRedis) {
-                monthlyRankingList.add(new RankingEntry(person.getValue(), person.getScore()));
+                if (!person.getValue().isEmpty()) { // 닉네임이 빈 문자열이 아닌 경우만 리스트에 추가
+                    monthlyRankingList.add(new RankingEntry(person.getValue(), person.getScore()));
+                }
             }
-
 
             // 빌더 패턴을 사용하여 RankingDataDto 객체를 생성
-            RankingDataDto rankingDataDto = RankingDataDto.builder()
+            RankingData rankingData = RankingData.builder()
                     .dailyRanking(dailyRankingList)
                     .weeklyRanking(weeklyRankingList)
                     .monthlyRanking(monthlyRankingList)
                     .build();
 
-            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(rankingDataDto, "랭킹 조회 성공했습니다.", 200));
+            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(rankingData, "랭킹 조회 성공했습니다.", 200));
 
         } catch (RedisConnectionFailureException e) {
             log.error("Redis 연결 실패: {}", e.getMessage());
@@ -164,41 +169,51 @@ public class RankingService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "랭킹 조회 중 오류 발생"));
         }
     }
-
-    // TimeToLive (TTL) - 랭킹 갱신 주기마다 기존 키 값 만료되도록 하기
-
+    
+    // 갱신 주기마다 TTL 이 24시/7일/한달로 설정된 daily/weekly/monthlyRanking 이 redis 에 추가되도록 하기
     public void resetRankingTest() {
-        // TTL 설정 로직
-        // 5초뒤에 dailyRanking 키에 할당된 것들이 사라짐
-        redisTemplate.expire("dailyRanking", 5, TimeUnit.SECONDS);
+        log.info("resetRankingTest");
+        // 테스트 용으로 Redis 에 testRanking 을 넣어주기
+        Boolean isAdded = zSetOperations.add("testRanking","테스트",15);
+        log.info("daily_isAdded:{}",isAdded);
+        // testRanking 키가 5초 후에 만료되도록 하기
+        redisTemplate.expire("testRanking", 5, TimeUnit.SECONDS);
     }
 
-    /* resetDailyRankingTTL : 24시간(1일) 후에 일간랭킹의 정보 만료
-    * @Scheduled(cron = "0 0 0 * * *") : 매일 자정마다 실행되도록 설정
-    * */
+    // 매일 자정에 dailyRanking (TTL(유효기간)=24시간) 으로 다시 만들어주기
     @Scheduled(cron = "0 0 0 * * *")
     public void resetDailyRankingTTL() {
-        // TTL 설정 로직
+        // Redis 에 dailyRanking 을 넣어주기
+        Boolean isAdded = zSetOperations.add("dailyRanking","",0);
+        log.info("daily_isAdded:{}",isAdded);
+        // dailyRanking 키가 24시간 후에 만료되도록 하기
         redisTemplate.expire("dailyRanking", 24, TimeUnit.HOURS);
     }
 
-    /* resetWeeklyRankingTTL : 168시간(7일) 후에 주간랭킹의 정보 만료
-     * @Scheduled(cron = "0 0 0 * * SUN") : 일요일 자정마다 실행되도록 설정
-     * */
+    // 매일 일요일 자정에 weeklyRanking (TTL(유효기간)=7일) 으로 다시 만들어주기
     @Scheduled(cron = "0 0 0 * * SUN")
     public void resetWeeklyRankingTTL() {
-        // TTL 설정 로직
+        // Redis 에 weeklyRanking 을 넣어주기
+        Boolean isAdded = zSetOperations.add("weeklyRanking","",0);
+        log.info("weekly_isAdded:{}",isAdded);
+        // weeklyRanking 키가 7일 후에 만료되도록 하기
         redisTemplate.expire("weeklyRanking", 168, TimeUnit.HOURS);
     }
 
-    /* resetMonthlyRankingTTL : 672시간(28일) 후에 월간랭킹의 정보 만료
-     * @Scheduled(cron = "0 0 0 1 * *") : 매월 1일마다 실행되도록 설정
-     * */
+    // 매월 1일 자정에 Monthly Ranking의 TTL 설정
     @Scheduled(cron = "0 0 0 1 * *")
     public void resetMonthlyRankingTTL() {
         // TTL 설정 로직
-        // 일단 28일 후에 만료되도록 설정해둠 (하드코딩)
-        redisTemplate.expire("monthlyRanking", 672, TimeUnit.HOURS);
+        // 매 달 1일부터 매 달 말일까지 남은 기간을 시간 단위 ttlInHours 로 계산
+        LocalDate today = LocalDate.now();
+        LocalDate lastDayOfMonth = today.with(TemporalAdjusters.lastDayOfMonth());
+        long daysUntilEndOfMonth = today.until(lastDayOfMonth).getDays() + 1;
+        long ttlInHours = daysUntilEndOfMonth * 24;
+        // Redis 에 monthlyRanking 을 넣어주기
+        Boolean isAdded = zSetOperations.add("monthlyRanking","",0);
+        log.info("monthly_isAdded:{}",isAdded);
+        // monthlyRanking 키가 ttlInHours 의 시간 단위 후에 expire 되도록 하기
+        redisTemplate.expire("monthlyRanking", ttlInHours, TimeUnit.HOURS);
     }
 
 }

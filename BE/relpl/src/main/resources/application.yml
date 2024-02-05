@@ -3,6 +3,10 @@ server:
 
 spring:
   #postgres
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
   datasource:
     url: ENC(wuq/JNEohnF+fO3cbBiEvAzV1vDBthdTywA1Em/NZQnSd4Ia4P+Si6qi7uel+oMyGtzORun6UfYtAxXnMez7NA==)
     username: ENC(FXOIlq05aKyie1Eaei6MYiM/30DGWlU1)
@@ -17,10 +21,13 @@ spring:
     redis:
       host: ENC(lqIzI0VbWenMVmGDjODMtfaIxoiK08DbDKPHc8bXRlA=)
       port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 tmap:
+  road-expiration-time: 86400000  # 24시간
   api:
     key: ENC(j3VH+078nbLoa1HuTYtNVreeXtj/cODQErEpIUC/NcckXD3SYyhfraK8uCDhTdc3ZCQdbSbDSKYq2/kZPpWQuUpDODD9mggw)
+
 
 jwt:
   token:
@@ -41,3 +48,4 @@ cloud:
       auto: false
     stack:
       auto: false
+

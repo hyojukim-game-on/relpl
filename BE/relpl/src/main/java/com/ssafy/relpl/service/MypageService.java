@@ -40,8 +40,7 @@ public class MypageService {
     @Value("${cloud.aws.s3.base-url}")
     private String baseUrl;
 
-    @Qualifier("redisTemplate")
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;

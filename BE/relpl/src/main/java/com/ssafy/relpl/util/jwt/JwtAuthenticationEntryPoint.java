@@ -15,6 +15,7 @@ import java.io.IOException;
 /**
  * 유저 정보 없이 접근한 경우 : SC_UNAUTHORIZED (401) 응답
  */
+@Slf4j
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final HandlerExceptionResolver resolver;
@@ -24,9 +25,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     }
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        // JwtAuthenticationFilter에서 request에 담아서 보내준 예외를 처리
-//        resolver.resolveException(request, response, null, (Exception) request.getAttribute("exception"));
-        resolver.resolveException(request, response, null, authException);
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        // 인증 실패 시 401 Unauthorized 응답을 반환합니다.
+        log.info("JWT EntryPoint : 인증 실패 (401 error)");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }
