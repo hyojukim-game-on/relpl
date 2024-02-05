@@ -1,6 +1,7 @@
 package com.ssafy.relpl.service;
 
 import com.ssafy.relpl.db.postgre.entity.Report;
+import com.ssafy.relpl.db.postgre.entity.RoadInfo;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.repository.ReportRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
@@ -9,6 +10,7 @@ import com.ssafy.relpl.dto.response.ReportListResponse;
 import com.ssafy.relpl.dto.response.TmapApiResponse;
 import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.ListResult;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -17,6 +19,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +34,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final ResponseService responseService;
+    private final RoadInfoService roadInfoService;
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
     // 추가
@@ -51,6 +55,7 @@ public class ReportService {
     }
 
     // 제보 등록 메서드
+    @Transactional
     public ResponseEntity<?> registerReport(ReportRegistRequest reportRegistRequest) {
         try {
             log.info("여기는 서비스단이다. 제보 등록 여부를 확인한다.");
@@ -72,14 +77,23 @@ public class ReportService {
                 double longitude = dummyReport.getReportCoordinate().getX();
                 double latitude = dummyReport.getReportCoordinate().getY();
                 TmapApiResponse tmapApiResponse = tmapService.callTmapApi(longitude, latitude);
-
                 if (tmapApiResponse != null && tmapApiResponse.getResultData() != null) {
                     TmapApiResponse.Header header = tmapApiResponse.getResultData().getHeader();
-
                     if (header != null) {
                         // TmapApiResponse의 linkId를 tmapId로 저장
+
                         dummyReport.setTmapId(header.getLinkId());
                         dummyReport = reportRepository.save(dummyReport);
+
+                        Optional<RoadInfo> queryResult = roadInfoService.findByRoadHashId(header.getLinkId());
+                        if (queryResult.isPresent()) {
+                            RoadInfo roadInfo = queryResult.get();
+                            roadInfo.setRoadInfoReport(roadInfo.getRoadInfoReport() + 1);
+                            roadInfo.setRoadInfoTotalReport(roadInfo.getRoadInfoTotalReport() + 1);
+//                            roadInfoService.updateRoadInfo(roadInfo);
+                        } else {
+                            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보 등록 실패, 근처 도로 존재하지 않음"));
+                        }
 
                         if (dummyReport.getUser() != null) {
                             return ResponseEntity.ok(responseService.getSingleResult(true, "제보 등록 성공", 200));
@@ -102,7 +116,6 @@ public class ReportService {
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보 등록 실패"));
         }
     }
-
     // 제보 내역 조회 메서드
     public ResponseEntity<?> getReportList(Long userId) {
         log.info("여기는 서비스단이다. 제보 내역을 조회한다.");
