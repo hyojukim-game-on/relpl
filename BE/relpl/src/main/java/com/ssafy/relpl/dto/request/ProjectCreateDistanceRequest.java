@@ -10,5 +10,5 @@ public class ProjectCreateDistanceRequest {
     String projectCreateDate;
     String projectEndDate;
     int projectTotalDistance;
-    Point projectStartPoint;
+    Point projectStartCoordinate;
 }
