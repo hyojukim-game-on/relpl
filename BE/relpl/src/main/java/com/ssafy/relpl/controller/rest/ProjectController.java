@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ProjectController {
-
     private final ProjectRecommendBusiness projectRecommendBusiness;
     private final GeomFactoryConfig geomFactoryConfig;
     private final ProjectService projectService;

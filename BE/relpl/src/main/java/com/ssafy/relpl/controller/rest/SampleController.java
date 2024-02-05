@@ -19,15 +19,6 @@ public class SampleController {
 
     private final ResponseService responseService;
     private final TmapService tmapService;
-//    @GetMapping(value = "/save")
-//    public User saveUser(@RequestParam String name, @RequestParam int age) {
-//        return userService.save(name, age);
-//    }
-
-    // 나중에 이미지 관련 용도로 쓸듯 MultipartFile
-//    @PostMapping("/upload/{userId}/{genre}")
-//    public ResponseEntity<String> addMusic(@PathVariable String userId, @PathVariable String genre, @RequestPart("file") MultipartFile multipartFile) {
-
     @GetMapping("/get/{path1}/{path2}")
     public ResponseEntity<?> getSample(@PathVariable String path1, @PathVariable String path2) {
 
