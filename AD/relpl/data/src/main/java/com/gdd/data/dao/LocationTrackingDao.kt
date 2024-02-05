@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.gdd.data.model.tracking.LocationTrackingEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocationTrackingDao {
@@ -12,7 +13,7 @@ interface LocationTrackingDao {
     suspend fun insertLocationTrackingData(locationTrackingEntity: LocationTrackingEntity)
 
     @Query("SELECT * FROM location_tracking_table")
-    suspend fun getAllLocationTrackingData(): List<LocationTrackingEntity>
+    fun getAllLocationTrackingData(): Flow<List<LocationTrackingEntity>>
 
     @Query("DELETE FROM location_tracking_table")
     suspend fun deleteAllLocationTrackingData()

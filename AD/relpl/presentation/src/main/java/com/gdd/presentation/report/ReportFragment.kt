@@ -16,11 +16,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.base.location.LocationProviderController
-import com.gdd.presentation.base.location.LocationTrackingService
 import com.gdd.presentation.databinding.FragmentReportBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
@@ -50,7 +46,6 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity.startForegroundService(Intent(_activity,LocationTrackingService::class.java))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

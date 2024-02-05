@@ -18,6 +18,7 @@ import com.gdd.presentation.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 import javax.inject.Inject
 
 private const val TAG = "LocationTrackingService_Genseong"
@@ -38,6 +39,7 @@ class LocationTrackingService : Service(), LifecycleOwner {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "onCreate: ")
         locationProviderController = LocationProviderController(baseContext, this)
         makeNoticeChannel()
     }
@@ -45,12 +47,12 @@ class LocationTrackingService : Service(), LifecycleOwner {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        Log.d(TAG, "onStartCommand: ")
         val notificationBuilder =
             NotificationCompat
                 .Builder(this, LOCATION_TRANCKING_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_location)
-                .setContentTitle("플로깅 경로를 기록중입니다.")
-                .setContentText("")
+                .setContentTitle("릴플이 당신과 함께하는 중이에요")
                 .setOnlyAlertOnce(true)
                 .setAutoCancel(false)
                 .setOngoing(true)
@@ -64,7 +66,7 @@ class LocationTrackingService : Service(), LifecycleOwner {
         }
 
 
-        locationProviderController.startTrackingLocation(0) { location, locationTrackingException ->
+        locationProviderController.startTrackingLocation(10) { location, locationTrackingException ->
             if (location != null) {
                 Log.d(TAG, "onStartCommand: ${location.longitude}${location.latitude}")
                 synchronized(notificationManager) {
@@ -98,7 +100,7 @@ class LocationTrackingService : Service(), LifecycleOwner {
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        locationProviderController.stopTracking()
     }
 
     private fun makeNoticeChannel() {

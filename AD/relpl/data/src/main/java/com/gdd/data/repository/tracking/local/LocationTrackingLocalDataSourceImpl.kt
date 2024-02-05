@@ -2,6 +2,7 @@ package com.gdd.data.repository.tracking.local
 
 import com.gdd.data.dao.LocationTrackingDao
 import com.gdd.data.model.tracking.LocationTrackingEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocationTrackingLocalDataSourceImpl @Inject constructor(
@@ -18,5 +19,13 @@ class LocationTrackingLocalDataSourceImpl @Inject constructor(
                 milliTime, latitude, longitude, count
             )
         )
+    }
+
+    override fun getAllLocationTrackingData(): Flow<List<LocationTrackingEntity>> {
+        return locationTrackingDao.getAllLocationTrackingData()
+    }
+
+    override suspend fun deleteAllLocationTrackingData(){
+        locationTrackingDao.deleteAllLocationTrackingData()
     }
 }

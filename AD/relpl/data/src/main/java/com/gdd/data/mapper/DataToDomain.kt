@@ -15,7 +15,9 @@ import com.gdd.data.model.rank.RankResponseItem
 import com.gdd.data.model.report.ReportRecordResponse
 import com.gdd.data.model.signin.SignInResponse
 import com.gdd.data.model.signup.SignupResponse
+import com.gdd.data.model.tracking.LocationTrackingEntity
 import com.gdd.domain.model.Point
+import com.gdd.domain.model.TrackingData
 import com.gdd.domain.model.history.History
 import com.gdd.domain.model.history.HistoryDetail
 import com.gdd.domain.model.history.HistoryDetailInfo
@@ -162,6 +164,10 @@ fun RankResponse.toRank():Rank {
 
 fun RankResponseItem.toRankItem(): RankItem{
     return RankItem(nickname, distance.toInt())
+}
+
+fun LocationTrackingEntity.toTrackData(): TrackingData {
+    return TrackingData(milliTime, longitude, latitude)
 }
 
 
