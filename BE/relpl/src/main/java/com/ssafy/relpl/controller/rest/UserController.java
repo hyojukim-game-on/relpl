@@ -64,4 +64,9 @@ public class UserController {
     public ResponseEntity<CommonResult> setProfilePic(@ModelAttribute UserProfileRequest request) throws IOException {
         return userService.setProfilePic(request);
     }
+
+    @PostMapping("/info")
+    public ResponseEntity<?> getUserInfo(@RequestBody UserInfoRequest request) {
+        return userService.getUserInfo(request);
+    }
 }
