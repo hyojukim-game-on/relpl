@@ -1,8 +1,6 @@
 package com.ssafy.relpl.business;
 
 import com.ssafy.relpl.config.GeomFactoryConfig;
-import com.ssafy.relpl.db.mongo.entity.RecommendProject;
-import com.ssafy.relpl.db.mongo.entity.TmapRoad;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
 import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
@@ -29,7 +27,6 @@ public class ProjectCreateRouteBusiness {
     private final GeomFactoryConfig geomFactoryConfig;
     private final ResponseService responseService;
 
-    @Transactional
     public ResponseEntity<?> createRouteProjectBusiness(ProjectCreateRouteRequest request) {
         try {
             Point startPoint = geomFactoryConfig.getGeometryFactory().createPoint(new Coordinate(request.getProjectStartCoordinate().getX(), request.getProjectStartCoordinate().getY()));
@@ -40,6 +37,7 @@ public class ProjectCreateRouteBusiness {
             if (mongoResult.isPresent()) {
                 RecommendProject recommendProject = mongoResult.get();
                 recommendProject.setProjectId(project.getProjectId());
+                recommendProjectService.updateRecommendProject(recommendProject); // 동일한 id값이 있을 경우 mongoDB는 update
                 return ResponseEntity.ok(responseService.getSingleResult(ProjectCreateRouteResponse.createProjectCreateRouteResponse(project)));
             } else {
                 return ResponseEntity.badRequest().body(responseService.getFailResult(400, "경로 프로젝트가 존재하지 않음"));

@@ -22,4 +22,8 @@ public class RecommendProjectService {
     public Optional<RecommendProject> getRecommendProjectById(String id) {
         return recommendProjectRepository.findById(id);
     }
+
+    public RecommendProject updateRecommendProject(RecommendProject project) {
+        return recommendProjectRepository.save(project); // 동일한 id값이 있을 경우 mongoDB는 update
+    }
 }

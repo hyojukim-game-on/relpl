@@ -12,7 +12,6 @@ public class ProjectCreateRouteRequest {
     String projectName;
     String projectCreateDate;
     String projectEndDate;
-
     Point projectStartCoordinate;
     Point projectEndCoordinate;
 }

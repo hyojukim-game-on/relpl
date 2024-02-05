@@ -1,10 +1,8 @@
 package com.ssafy.relpl.controller.rest;
 
-import com.ssafy.relpl.business.ProjectCreateRouteBusiness;
 import com.ssafy.relpl.business.ProjectRecommendBusiness;
 import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
-import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
 import com.ssafy.relpl.dto.request.ProjectRecommendRequest;
 import com.ssafy.relpl.service.ProjectService;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ProjectController {
+
     private final ProjectRecommendBusiness projectRecommendBusiness;
     private final GeomFactoryConfig geomFactoryConfig;
     private final ProjectService projectService;
@@ -58,10 +57,6 @@ public class ProjectController {
     public ResponseEntity<?> join(@RequestBody ProjectJoinRequest request) {
         return projectService.join(request);
     }
-//    @PostMapping("/project/create/route")
-//    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {
-//
-//    }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllProjectList() {
