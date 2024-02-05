@@ -15,6 +15,7 @@ import com.gdd.presentation.base.distanceFormat
 import com.gdd.presentation.base.pointFormat
 import com.gdd.presentation.databinding.FragmentHomeBinding
 import com.gdd.presentation.profile.ProfileFragment
+import com.gdd.presentation.rank.RankFragment
 import com.gdd.presentation.report.ReportFragment
 import com.gdd.presentation.relay.LoadRelayFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -71,6 +72,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, LoadRelayFragment())
                 .addToBackStack("start_plogging")
+                .commit()
+        }
+
+        binding.rankCard.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, RankFragment())
+                .addToBackStack(null)
                 .commit()
         }
     }

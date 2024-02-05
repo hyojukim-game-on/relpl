@@ -161,7 +161,7 @@ fun RankResponse.toRank():Rank {
 }
 
 fun RankResponseItem.toRankItem(): RankItem{
-    return RankItem(nickname, distance)
+    return RankItem(nickname, distance.toInt())
 }
 
 
