@@ -127,6 +127,10 @@
     <string name="rank_daily">daily</string>
     <string name="rank_weekly">weekly</string>
     <string name="rank_monthly">monthly</string>
+    
+    <string name="create_path_relay_set_destination">해당 위치를 목적지로 설정합니다</string>
+    <string name="create_path_relay_move_screen">화면을 움직여 목적지를 선택해 주세요</string>
+    <string name="create_path_relay_set">설정</string>
 
 
 </resources>
