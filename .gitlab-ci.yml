@@ -95,7 +95,7 @@ deploy-was:
     - docker rm ksh-backend || true
     - docker rmi $IMAGE_NAME || true
     - docker pull $IMAGE_NAME:latest
-    - docker run -d --restart always -e TZ=Asia/Seoul -e REDIS_PASSWORD=$REDIS_PASSWORD -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONBODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_PORT:$SERVER_SPRING_PORT/tcp --name ksh-backend $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -e REDIS_PASSWORD=$REDIS_PASSWORD -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONGODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_PORT:$SERVER_SPRING_PORT/tcp --name ksh-backend $IMAGE_NAME:latest
   after_script:
     - docker logout
   when: on_success
@@ -115,7 +115,7 @@ deploy-sub:
     - docker rm ksh-backend-sub || true
     - docker rmi $IMAGE_NAME || true
     - docker pull $IMAGE_NAME:latest
-    - docker run -d --restart always -e TZ=Asia/Seoul -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONBODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_SUB_PORT:$SPRING_SUB_PORT/tcp --name ksh-backend-sub $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONGODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_SUB_PORT:$SPRING_SUB_PORT/tcp --name ksh-backend-sub $IMAGE_NAME:latest
   after_script:
     - docker logout
   when: on_success
