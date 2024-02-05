@@ -7,6 +7,7 @@ import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
 import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
 import com.ssafy.relpl.dto.request.ProjectRecommendRequest;
+import com.ssafy.relpl.dto.request.ProjectStopRequest;
 import com.ssafy.relpl.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,11 @@ public class ProjectController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody ProjectJoinRequest request) {
         return projectService.join(request);
+    }
+
+    @PostMapping("/stop")
+    public ResponseEntity<?> stop(@RequestBody ProjectStopRequest request) {
+        return projectService.stop(request);
     }
 //    @PostMapping("/project/create/route")
 //    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {

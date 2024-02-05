@@ -7,6 +7,7 @@ import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
 import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
 import com.ssafy.relpl.dto.response.ProjectAllResponse;
+import com.ssafy.relpl.dto.request.ProjectStopRequest;
 import com.ssafy.relpl.dto.response.ProjectCreateDistanceResponse;
 import com.ssafy.relpl.dto.response.ProjectExistResponse;
 import jakarta.transaction.Transactional;
@@ -102,6 +103,14 @@ public class ProjectService {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 전체 조회 실패 실패"));
         }
+    }
+
+    @Transactional
+    public ResponseEntity<?> stop(ProjectStopRequest request) {
+        log.info("project stop");
+
+        //
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패"));
     }
 }
 
