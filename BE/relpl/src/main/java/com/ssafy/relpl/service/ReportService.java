@@ -6,13 +6,14 @@ import com.ssafy.relpl.db.postgre.repository.ReportRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.ReportRegistRequest;
 import com.ssafy.relpl.dto.response.ReportListResponse;
+import com.ssafy.relpl.dto.response.TmapApiResponse;
 import com.ssafy.relpl.service.result.CommonResult;
 import com.ssafy.relpl.service.result.ListResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
-import org.springframework.data.geo.Point;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,10 +39,10 @@ public class ReportService {
         dummyReport.setUser(user);
         dummyReport.setReportDate(requestDto.getReportDate());
 
-        Point dummyPoint = requestDto.getReportCoordinate();
+        org.springframework.data.geo.Point dummyPoint = requestDto.getReportCoordinate();
         dummyReport.setReportCoordinate(geometryFactory.createPoint(new Coordinate(dummyPoint.getX(), dummyPoint.getY())));
 
-        dummyReport.setTmapId(requestDto.getTmapId());
+//        dummyReport.setTmapId(requestDto.getTmapId());
 
         return dummyReport;
     }
@@ -63,6 +64,7 @@ public class ReportService {
             if (existingUser != null) {
                 // 등록되어 존재하는 유저인 경우
                 Report dummyReport = createDummyReport(existingUser, reportRegistRequest);
+                dummyReport.setTmapId((long) getDummyTmapData()); // tmapId에 1301 저장
                 dummyReport = reportRepository.save(dummyReport);
 
                 if (dummyReport.getUser() != null) {
@@ -87,7 +89,7 @@ public class ReportService {
         log.info("여기는 서비스단이다. 제보 내역을 조회한다.");
 
         try {
-// userId 체크
+            // userId 체크
             if (userId == null) {
                 return ResponseEntity.badRequest().body(responseService.getFailResult(400, "유저 정보가 없습니다.", Collections.emptyList()));
             }
@@ -111,7 +113,7 @@ public class ReportService {
                     return ResponseEntity.ok().body(responseService.getListResult(responseList, "제보내역 조회에 성공하였습니다."));
                 } else {
                     // 제보내역이 없는 경우
-                    return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보내역이 없는 유저입니다.", Collections.emptyList()));
+                    return ResponseEntity.ok().body(responseService.getSingleResult(Collections.emptyList(), "제보내역 조회에 성공하였습니다. user의 제보 내역이 없습니다.", 200));
                 }
 
             } else {
@@ -124,5 +126,10 @@ public class ReportService {
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보 내역 조회 실패"));
         }
 
+    }
+
+    public int getDummyTmapData() {
+        return 1301;
+//        return new TmapApiResponse().getResultData().header.linkId;
     }
 }

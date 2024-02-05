@@ -1,11 +1,15 @@
-package com.ssafy.relpl.service;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-@Service
-@RequiredArgsConstructor
-public class TmapService {
-
+//package com.ssafy.relpl.service;
+//import com.ssafy.relpl.db.postgre.entity.RoadHash;
+//import com.ssafy.relpl.db.postgre.repository.RoadHashRepository;
+//import lombok.RequiredArgsConstructor;
+//import lombok.Value;
+//import org.springframework.stereotype.Service;
+//import org.springframework.web.client.RestTemplate;
+//
+//@Service
+//@RequiredArgsConstructor
+//public class TmapService {
+//
 //    private final RoadRepository roadRepository;
 //    private final RoadHashRepository roadHashRepository;
 //
@@ -43,4 +47,4 @@ public class TmapService {
 //
 //        return null;
 //    }
-}
+//}
