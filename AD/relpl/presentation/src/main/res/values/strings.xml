@@ -137,5 +137,8 @@
     <string name="dialog_exit_content">정말로 탈퇴하시겠습니까?\n되돌리실 수 없습니다</string>
     <string name="dialog_exit_exit">탈퇴</string>
 
+    <string name="dialog_create_path_set_path">경로가 설정 되었어요</string>
+    <string name="dialog_create_path_re_set">재설정</string>
+
 
 </resources>

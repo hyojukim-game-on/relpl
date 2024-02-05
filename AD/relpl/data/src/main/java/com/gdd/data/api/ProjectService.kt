@@ -4,6 +4,7 @@ import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.project.CreateDistanceRelayRequest
+import com.gdd.data.model.project.CreatePathRelayRequest
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
@@ -45,4 +46,9 @@ interface ProjectService {
     suspend fun recommendPath(
         @Body recommendPathRequest: RecommendPathRequest
     ): Result<DefaultResponse<RecommendPathResponse>>
+
+    @POST("project/create/route")
+    suspend fun createPathRelay(
+        @Body createPathRelayRequest: CreatePathRelayRequest
+    ): Result<DefaultResponse<ProjectIdRequest>>
 }

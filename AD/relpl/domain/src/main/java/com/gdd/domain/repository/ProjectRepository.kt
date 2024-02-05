@@ -18,4 +18,14 @@ interface ProjectRepository {
     suspend fun createDistanceRelay(userId: Long, projectName: String, projectCreateDate: String, projectEndDate: String, projectTotalDistance: Int, projectStartCoordinate: Point): Result<Long>
 
     suspend fun recommendPath(startCoordinate: Point, endCoordinate: Point): Result<RecommendedPath>
+
+    suspend fun createPathRelay(userId: Long,
+                                projectSelectedId : String,
+                                projectSelectedTotalDistance: Int,
+                                projectName: String,
+                                projectCreateDate: String,
+                                projectEndDate: String,
+                                projectStartPoint: Point,
+                                projectEndPoint: Point
+    ): Result<Long>
 }
