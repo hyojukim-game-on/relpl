@@ -90,14 +90,13 @@ public class ProjectRecommendBusiness {
 
             // 7번
             List<org.springframework.data.geo.Point> shortestPointList = getListFromTmapRoad(start, end, shortestTmapRoad);
+            int shortestTotalDistance = pathTotalDistance;
             List<org.springframework.data.geo.Point> recommendPointList = getListFromTmapRoad(start, end, recommendTmapRoad);
+            int recommendTotalDistance = pathTotalDistance;
             log.info("recommendTmapRoad > getAllTmapRoadById 완료");
 
             // 8번
-            int shortestTotalDistance = pathTotalDistance;
             RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList, pathTotalDistance, -1);
-
-            int recommendTotalDistance = pathTotalDistance;
             RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList, pathTotalDistance, -2);
 
             // 9번
@@ -303,7 +302,7 @@ public class ProjectRecommendBusiness {
         List<org.springframework.data.geo.Point> pointList = new ArrayList<>();
 
         org.springframework.data.geo.Point tmapStartPoint = tmapRoadList.get(0).getGeometry().getCoordinates().get(0);
-        double startDiff = Math.sqrt(Math.pow(Math.abs(start.getX() - tmapStartPoint.getX()), 2) + Math.pow(Math.abs(start.getY() - tmapStartPoint.getY()), 2));
+        double startDiff = Math.sqrt(Math.pow(Math.abs(end.getX() - tmapStartPoint.getX()), 2) + Math.pow(Math.abs(end.getY() - tmapStartPoint.getY()), 2));
         pathTotalDistance = 0;
         pathTotalDistance += (int) startDiff; // 두 점 사이의 거리
 
@@ -330,13 +329,13 @@ public class ProjectRecommendBusiness {
         }
 
         if (pointSet.contains(new org.springframework.data.geo.Point(
-                end.getCoordinate().getX(), end.getCoordinate().getY()))) {
+                start.getCoordinate().getX(), start.getCoordinate().getY()))) {
             pointList.add(
                     new org.springframework.data.geo
-                            .Point(end.getCoordinate().getX(), end.getCoordinate().getY()
+                            .Point(start.getCoordinate().getX(), start.getCoordinate().getY()
                     )
             );
-            double endDiff = Math.sqrt(Math.pow(Math.abs(end.getX() - tmapcurPoint.getX()), 2) + Math.pow(Math.abs(end.getY() - tmapcurPoint.getY()), 2));
+            double endDiff = Math.sqrt(Math.pow(Math.abs(start.getX() - tmapcurPoint.getX()), 2) + Math.pow(Math.abs(start.getY() - tmapcurPoint.getY()), 2));
             pathTotalDistance += (int)endDiff;
         }
         Collections.reverse(pointList);
