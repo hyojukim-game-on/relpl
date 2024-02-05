@@ -1,12 +1,10 @@
 package com.ssafy.relpl.business;
 
-import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.db.mongo.entity.RecommendProject;
 import com.ssafy.relpl.db.mongo.entity.TmapRoad;
 import com.ssafy.relpl.db.postgre.entity.PointHash;
-import com.ssafy.relpl.db.postgre.entity.RoadHash;
 import com.ssafy.relpl.db.postgre.entity.RoadInfo;
-import com.ssafy.relpl.dto.response.ProjectRecommendResponseDto;
+import com.ssafy.relpl.dto.response.ProjectRecommendResponse;
 import com.ssafy.relpl.service.*;
 import com.ssafy.relpl.util.annotation.Business;
 import com.ssafy.relpl.util.common.Edge;
@@ -36,9 +34,9 @@ public class ProjectRecommendBusiness {
 
     /**
      * 경로 추천 방법
-     * 1. PointHash DB에서 도로에 사용하는 모든 정점의 개수 가져오기 select count(*) from pointhash
-     * 2. RoadInfo DB에서 정점(도로의 시작점 & 끝점)과 길이(최단경로) 가져오고, 가중치(추천경로)도 계산
-     * 3. 입력된 시작점, 끝 점으로 부터 가장 가까운 시작점과 끝 점을 RoadHash DB에서 검색
+     * 1. 입력된 시작점, 끝 점으로 부터 가장 가까운 시작점과 끝 점을 RoadHash DB에서 검색
+     * 2. PointHash DB에서 도로에 사용하는 모든 정점의 개수 가져오기 select count(*) from pointhash
+     * 3. RoadInfo DB에서 정점(도로의 시작점 & 끝점)과 길이(최단경로) 가져오고, 가중치(추천경로)도 계산
      * 4. 해당 점을 가지고 다익스트라 알고리즘 진행 => 결과값은 시작 점으로부터 모든 점 까지의 최단거리
      * 5. 다익스트라로 나온 최단 거리를 바탕으로 역방향 BFS를 진행해서 최단 경로를 계산
      * 5-1. 3번의 결과값으로 나온 도로의 결과는 tamp이 관리하는 도로 번호
@@ -46,7 +44,7 @@ public class ProjectRecommendBusiness {
      * 7. 가져온 도로들의 List를 Point<List>로 변환하고, 앞 뒤에 시작점 끝점을 붙여줌
      * 8. 7번의 결과값을 최단/추천 경로 DB(recommendproject)에 insert
      * 8-1. DB에 저장된 경로은 프로젝트 생성시 해당 프로젝트 id를 넣어는 작업 필요
-     * 9. 7번의 결과값을 return
+     * 9. 8번의 결과값을 return
      * @param start 시작점
      * @param end 끝 점
      * @return ProjectRecommendResponseDto
@@ -54,15 +52,25 @@ public class ProjectRecommendBusiness {
     @Transactional
     public ResponseEntity<?> recommendProject(Point start, Point end) {
         try {
+
             // 1번
-            vertexCnt = countAllPointHash();
-
-            // 2번
-            initRoadInfoList();
-
-            // 3번
             PointHash realStartHash = pointHashService.getNearPoint(start.getX(), start.getY());
             PointHash realEndHash = pointHashService.getNearPoint(end.getX(), end.getY());
+
+            if (((start.getX() == end.getX())
+                    && (start.getY() == end.getY())
+                ) || (
+                (realStartHash.getPointCoordinate().getX() == realEndHash.getPointCoordinate().getX())
+                        && (realStartHash.getPointCoordinate().getY() == realEndHash.getPointCoordinate().getY()))) {
+                return ResponseEntity.badRequest().body("두 점이 너무 가깝습니다");
+            }
+
+            // 2번
+            vertexCnt = countAllPointHash();
+
+            // 3번
+            initRoadInfoList();
+
             log.info("realStartHash: {}, realEndHash: {}", realStartHash.toString(), realEndHash.toString());
 
             // 4번
@@ -86,20 +94,25 @@ public class ProjectRecommendBusiness {
             log.info("recommendTmapRoad > getAllTmapRoadById 완료");
 
             // 8번
-            RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList, pathLen, -1);
-            RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList, pathLen, -2);
+            int shortestTotalDistance = pathTotalDistance;
+            RecommendProject shortestProject = recommendProjectService.saveRecommendProject(shortestPointList, pathTotalDistance, -1);
+
+            int recommendTotalDistance = pathTotalDistance;
+            RecommendProject recommendProject = recommendProjectService.saveRecommendProject(recommendPointList, pathTotalDistance, -2);
 
             // 9번
-            ProjectRecommendResponseDto response
-                    = ProjectRecommendResponseDto.builder()
+            ProjectRecommendResponse response = ProjectRecommendResponse.builder()
                     .shortestId(shortestProject.getId())
                     .shortestPath(shortestPointList)
+                    .shortestTotalDistance(shortestTotalDistance)
                     .recommendId(recommendProject.getId())
                     .recommendPath(recommendPointList)
+                    .recommendTotalDistance(recommendTotalDistance)
                     .build();
             return ResponseEntity.ok(responseService.getSingleResult(response, "경로 추천 성공.", 200));
         } catch (Exception e) {
-            return ResponseEntity.ok(responseService.getFailResult(400, "경로 추천 실패"));
+            log.error("경로 추천 오류", e);
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "경로 추천 실패"));
         }
 
     }
@@ -108,7 +121,7 @@ public class ProjectRecommendBusiness {
     // ------------------------------------------------ 경로 추천 알고리즘 관련
     ArrayList<Edge>[] edges;
     int vertexCnt = -1; // 꼭짓점 수
-    int pathLen = 0;
+    int pathTotalDistance = 0;
     List<RoadInfo> roadInfos;
 
     /**
@@ -291,8 +304,8 @@ public class ProjectRecommendBusiness {
 
         org.springframework.data.geo.Point tmapStartPoint = tmapRoadList.get(0).getGeometry().getCoordinates().get(0);
         double startDiff = Math.sqrt(Math.pow(Math.abs(start.getX() - tmapStartPoint.getX()), 2) + Math.pow(Math.abs(start.getY() - tmapStartPoint.getY()), 2));
-        pathLen = 0;
-        pathLen += (int) startDiff; // 두 점 사이의 거리
+        pathTotalDistance = 0;
+        pathTotalDistance += (int) startDiff; // 두 점 사이의 거리
 
         pointSet.add(
                 new org.springframework.data.geo.Point(
@@ -307,7 +320,7 @@ public class ProjectRecommendBusiness {
 
         org.springframework.data.geo.Point tmapcurPoint = new org.springframework.data.geo.Point(-1, -1);
         for (TmapRoad tmapRoad : tmapRoadList) {
-            pathLen += tmapRoad.getTotalDistance();
+            pathTotalDistance += tmapRoad.getTotalDistance();
             for (org.springframework.data.geo.Point point: tmapRoad.getGeometry().getCoordinates()) {
                 if (pointSet.add(new org.springframework.data.geo.Point(point.getX(), point.getY()))) {
                     tmapcurPoint = new org.springframework.data.geo.Point(point.getX(), point.getY());
@@ -324,7 +337,7 @@ public class ProjectRecommendBusiness {
                     )
             );
             double endDiff = Math.sqrt(Math.pow(Math.abs(end.getX() - tmapcurPoint.getX()), 2) + Math.pow(Math.abs(end.getY() - tmapcurPoint.getY()), 2));
-            pathLen += (int)endDiff;
+            pathTotalDistance += (int)endDiff;
         }
         Collections.reverse(pointList);
         return pointList;

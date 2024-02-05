@@ -181,7 +181,23 @@ public class UserService {
         return ResponseEntity.ok("Success");
     }
 
+    public ResponseEntity<?> getUserInfo(UserInfoRequest request) {
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
 
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            //totalCoin 조회 필요
+            //totalDistance 조회 필요
+            //totalReport 조회 필요
+
+            //유저가 존재하고, 회원탈퇴를 하지 않은 경우
+            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user, "accessToken", "refreshToken"), "로그인 성공", 200));
+        }
+        // 기존 유저가 없음
+        log.info("유저 조회 실패");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "유저 정보 조회 실패"));
+    }
 
     /* setProfilePic : 유저가 제공한 사진 파일로 유저 프로필 사진 설정
     @param : 유저가 제공한 사진 파일
