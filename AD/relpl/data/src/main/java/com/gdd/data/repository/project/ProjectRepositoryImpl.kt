@@ -3,9 +3,11 @@ package com.gdd.data.repository.project
 import com.gdd.data.mapper.toDistanceRelayInfo
 import com.gdd.data.mapper.toMarker
 import com.gdd.data.mapper.toPointResponse
+import com.gdd.data.mapper.toRecommendedPath
 import com.gdd.data.repository.project.remote.ProjectRemoteDataSource
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
+import com.gdd.domain.model.relay.RecommendedPath
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.repository.ProjectRepository
 import javax.inject.Inject
@@ -51,5 +53,17 @@ class ProjectRepositoryImpl @Inject constructor(
             projectTotalDistance,
             projectStartCoordinate.toPointResponse()
         )
+    }
+
+    override suspend fun recommendPath(
+        startCoordinate: Point,
+        endCoordinate: Point
+    ): Result<RecommendedPath> {
+        return projectRemoteDataSource.recommendPath(
+            startCoordinate.toPointResponse(),
+            endCoordinate.toPointResponse()
+        ).map {
+            it.toRecommendedPath()
+        }
     }
 }

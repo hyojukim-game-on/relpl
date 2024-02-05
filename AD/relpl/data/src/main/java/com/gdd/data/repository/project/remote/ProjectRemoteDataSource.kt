@@ -5,6 +5,7 @@ import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.PointResponse
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.RecommendPathResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -18,4 +19,6 @@ interface ProjectRemoteDataSource {
     suspend fun joinProject(projectId: Long): Result<Boolean>
 
     suspend fun createDistanceRelay(userId: Long, projectName: String, projectCreateDate: String, projectEndDate: String, projectTotalDistance: Int, projectStartCoordinate: PointResponse): Result<Long>
+
+    suspend fun recommendPath(startCoordinate: PointResponse, endCoordinate: PointResponse): Result<RecommendPathResponse>
 }

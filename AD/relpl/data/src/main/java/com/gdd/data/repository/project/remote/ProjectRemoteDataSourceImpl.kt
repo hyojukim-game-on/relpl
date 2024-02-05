@@ -7,6 +7,8 @@ import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.project.CreateDistanceRelayRequest
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.RecommendPathRequest
+import com.gdd.data.model.project.RecommendPathResponse
 import com.gdd.data.toNonDefault
 import javax.inject.Inject
 
@@ -53,5 +55,12 @@ class ProjectRemoteDataSourceImpl @Inject constructor(
         ).toNonDefault().map {
             it.projectId
         }
+    }
+
+    override suspend fun recommendPath(
+        startCoordinate: PointResponse,
+        endCoordinate: PointResponse
+    ): Result<RecommendPathResponse> {
+        return projectService.recommendPath(RecommendPathRequest(startCoordinate, endCoordinate)).toNonDefault()
     }
 }

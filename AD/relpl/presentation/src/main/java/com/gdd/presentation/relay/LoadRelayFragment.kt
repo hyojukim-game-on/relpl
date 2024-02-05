@@ -243,7 +243,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             DateFormatter.curMsToShorFormat(),
             DateFormatter.koreanToShortFormat(endDate),
             distance,
-            Point(cur.latitude, cur.longitude)
+            Point(cur.longitude, cur.latitude)
         )
     }
 
@@ -302,7 +302,10 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         binding.fabCreateRelay.setOnActionSelectedListener { item ->
             when (item.id) {
                 R.id.fab_create_path -> {
-                    showSnackBar("path!")
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.layout_main_fragment, CreatePathRelayFragment())
+                        .addToBackStack(null)
+                        .commit()
                 }
                 R.id.fab_create_distance -> {
                     val current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!

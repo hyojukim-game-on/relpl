@@ -10,6 +10,7 @@ import com.gdd.data.model.point.PointRecordItemResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.RecommendPathResponse
 import com.gdd.data.model.rank.RankResponse
 import com.gdd.data.model.rank.RankResponseItem
 import com.gdd.data.model.report.ReportRecordResponse
@@ -25,6 +26,7 @@ import com.gdd.domain.model.point.PointRecordListItem
 import com.gdd.domain.model.rank.Rank
 import com.gdd.domain.model.rank.RankItem
 import com.gdd.domain.model.relay.DistanceRelayInfo
+import com.gdd.domain.model.relay.RecommendedPath
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.model.report.ReportRecord
 import com.gdd.domain.model.user.SignUpResult
@@ -162,6 +164,21 @@ fun RankResponse.toRank():Rank {
 
 fun RankResponseItem.toRankItem(): RankItem{
     return RankItem(nickname, distance.toInt())
+}
+
+fun RecommendPathResponse.toRecommendedPath(): RecommendedPath{
+    return RecommendedPath(
+        this.shortestId,
+        this.shortestTotalDistance,
+        this.shortestPath.map {
+            it.toPoint()
+        },
+        this.recommendId,
+        this.recommendTotalDistance,
+        this.recommendPath.map {
+            it.toPoint()
+        }
+    )
 }
 
 

@@ -6,6 +6,8 @@ import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.project.CreateDistanceRelayRequest
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.RecommendPathRequest
+import com.gdd.data.model.project.RecommendPathResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -40,6 +42,6 @@ interface ProjectService {
 
     @POST("project/recommend")
     suspend fun recommendPath(
-
-    )
+        @Body recommendPathRequest: RecommendPathRequest
+    ): Result<DefaultResponse<RecommendPathResponse>>
 }
