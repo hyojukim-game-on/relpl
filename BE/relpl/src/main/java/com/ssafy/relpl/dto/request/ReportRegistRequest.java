@@ -1,5 +1,7 @@
 package com.ssafy.relpl.dto.request;
 
+import com.ssafy.relpl.db.postgre.entity.Report;
+import com.ssafy.relpl.db.postgre.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.geo.Point;
@@ -8,10 +10,7 @@ import org.springframework.data.geo.Point;
 @Setter
 public class ReportRegistRequest {
 
-
     private Long userId;
     private String reportDate;
     private Point reportCoordinate;
-    private Long tmapId; // tmapId 변수를 추가
-
 }
