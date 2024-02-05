@@ -33,5 +33,5 @@ fun Int.distanceFormat(): String{
 }
 
 fun Point.toLatLng(): LatLng{
-    return LatLng(this.x, this.y)
+    return LatLng(this.y, this.x)
 }

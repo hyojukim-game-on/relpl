@@ -134,7 +134,7 @@ fun MarkerResponse.toMarker(): RelayMarker{
     return RelayMarker(
         this.projectId,
         this.stopCoordinate.toPoint(),
-        this.isPath
+        this.path
     )
 }
 
