@@ -4,9 +4,13 @@ import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
+import com.ssafy.relpl.dto.request.ProjectDistanceLookupRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
+import com.ssafy.relpl.dto.request.ProjectRouteLookupRequest;
 import com.ssafy.relpl.dto.response.ProjectCreateDistanceResponse;
+import com.ssafy.relpl.dto.response.ProjectDistanceLookupResponse;
 import com.ssafy.relpl.dto.response.ProjectExistResponse;
+import com.ssafy.relpl.dto.response.ProjectRouteLookupResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -89,4 +93,86 @@ public class ProjectService {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 참여 실패"));
     }
+
+    // 거리기반 릴레이 상세 정보 조회 로직
+    public ResponseEntity<?> lookupDistance(ProjectDistanceLookupRequest request) {
+        try {
+            // 프로젝트 조회
+            Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
+
+            if (projectOptional.isPresent()) {
+                Project project = projectOptional.get();
+
+                // 프로젝트 정보를 ProjectDistanceLookupResponse로 매핑
+                ProjectDistanceLookupResponse response = ProjectDistanceLookupResponse.builder()
+                        .projectId(project.getProjectId())
+                        .projectName(project.getProjectName())
+                        .projectTotalContributer(project.getProjectTotalContributer())
+                        .projectTotalDistance(project.getProjectTotalDistance())
+                        .projectRemainingDistance(project.getProjectRemainingDistance())
+                        .projectCreateDate(project.getProjectCreateDate())
+                        .projectEndDate(project.getProjectEndDate())
+                        .projectIsPath(project.isProjectIsPath())
+                        .projectStopCoordinate(project.getProjectStopCoordinate())
+                        .build();
+
+                // 여기서 진행률 계산 로직 추가
+                // response.setProgress(계산한_진행률);
+
+                // userRoute entity에서 userMoveMemo 및 userMoveImage 정보를 가져와서 설정하는 로직 추가
+                // response.setUserMoveMemo(가져온_userMoveMemo);
+                // response.setUserMoveImage(가져온_userMoveImage);
+
+                return ResponseEntity.ok(responseService.getSingleResult(response, "거리기반 릴레이 상세 정보 조회 성공", 200));
+            } else {
+                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "프로젝트가 존재하지 않습니다."));
+            }
+        } catch (Exception e) {
+            log.error("거리기반 릴레이 상세 정보 조회 에러", e);
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "거리기반 릴레이 상세 정보 조회 실패"));
+        }
+    }
+
+    // 경로 기반 릴레이 상세 정보 조호 로직
+    public ResponseEntity<?> lookupRoute(ProjectRouteLookupRequest request) {
+        try {
+            // 프로젝트 조회
+            Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
+
+            if (projectOptional.isPresent()) {
+                Project project = projectOptional.get();
+
+                // 프로젝트 정보를 ProjectRouteLookupResponse로 매핑
+                ProjectRouteLookupResponse response = ProjectRouteLookupResponse.builder()
+                        .projectId(project.getProjectId())
+                        .projectName(project.getProjectName())
+                        .projectTotalContributer(project.getProjectTotalContributer())
+                        .projectTotalDistance(project.getProjectTotalDistance())
+                        .projectRemainingDistance(project.getProjectRemainingDistance())
+                        .projectCreateDate(project.getProjectCreateDate())
+                        .projectEndDate(project.getProjectEndDate())
+                        .projectIsPath(project.isProjectIsPath())
+                        .projectStopCoordinate(project.getProjectStopCoordinate())
+                        .build();
+
+                // 여기서 진행률 계산 로직 추가
+                // response.setProgress(계산한_진행률);
+
+                // userRoute entity에서 userMoveMemo 및 userMoveImage 정보를 가져와서 설정하는 로직 추가
+                // response.setUserMoveMemo(가져온_userMoveMemo);
+                // response.setUserMoveImage(가져온_userMoveImage);
+
+                // mongodb recommendProject에서 recommendLineString 정보를 가져와서 설정하는 로직 추가
+                // response.setRecommendLineString(가져온_recommendLineString);
+
+                return ResponseEntity.ok(responseService.getSingleResult(response, "경로기반 릴레이 상세 정보 조회 성공", 200));
+            } else {
+                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "프로젝트가 존재하지 않습니다."));
+            }
+        } catch (Exception e) {
+            log.error("경로기반 릴레이 상세 정보 조회 에러", e);
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "경로기반 릴레이 상세 정보 조회 실패"));
+        }
+    }
 }
+

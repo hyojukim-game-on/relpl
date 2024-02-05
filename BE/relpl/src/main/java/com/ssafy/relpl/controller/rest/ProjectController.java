@@ -2,9 +2,7 @@ package com.ssafy.relpl.controller.rest;
 
 import com.ssafy.relpl.business.ProjectRecommendBusiness;
 import com.ssafy.relpl.config.GeomFactoryConfig;
-import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
-import com.ssafy.relpl.dto.request.ProjectJoinRequest;
-import com.ssafy.relpl.dto.request.ProjectRecommendRequest;
+import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,4 +53,24 @@ public class ProjectController {
 //    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {
 //
 //    }
+
+    // 거리기반 릴레이 상세 정보 조회 컨트롤러
+    @GetMapping("/distance/{projectId}") // Project entity 에 존재하는 projectId
+    public ResponseEntity<?> lookupDistance(@RequestBody ProjectDistanceLookupRequest request) {
+        log.info("여기는 컨트롤러다. 거리기반 릴레이 상세정보 조회 요청받음.");
+        // return
+        return projectService.lookupDistance(request);
+
+    }
+
+
+
+    // 경로기반 릴레이 상세 정보 조회 컨트롤러
+    @GetMapping("/route/{projectId}") // Project entity 에 존재하는 projectId
+    public ResponseEntity<?> lookupRoute(@RequestBody ProjectRouteLookupRequest request) {
+        log.info("여기는 컨트롤러다. 경로기반 릴레이 상세정보 조회 요청받음.");
+        // return
+        return projectService.lookupRoute(request);
+    }
+
 }
