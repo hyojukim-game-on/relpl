@@ -16,6 +16,8 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutionException;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/api/project")
@@ -62,7 +64,7 @@ public class ProjectController {
     }
 
     @PostMapping(value = "/stop", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> stop(@RequestBody ProjectStopRequest request) {
+    public ResponseEntity<?> stop(@RequestBody ProjectStopRequest request) throws ExecutionException, InterruptedException {
         return projectService.stop(request);
     }
 //    @PostMapping("/project/create/route")

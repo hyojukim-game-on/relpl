@@ -5,11 +5,14 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.relpl.config.GeomFactoryConfig;
+import com.ssafy.relpl.db.mongo.entity.UserRouteDetail;
+import com.ssafy.relpl.db.mongo.repository.UserRouteDetailRepository;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.entity.UserRoute;
 import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
+import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
 import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
@@ -49,6 +52,8 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final UserRouteDetailRepository userRouteDetailRepository;
+    private final UserRouteRepository userRouteRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final ResponseService responseService;
     private final GeomFactoryConfig geomFactoryConfig;
@@ -166,9 +171,9 @@ public class ProjectService {
                         addRoadIntoRedis(roadList);
 
                         //도로를 mongoDB 에 저장 (키 반환)
-                        String routeKey = "";
+                        UserRouteDetail userRouteDetail = userRouteDetailRepository.save(UserRouteDetail.createUserRouteDetail(request));
 
-                        // UserRoute 객체 생성 및 저장
+                        // UserRoute 객체 생성
                         UserRoute userRoute = UserRoute.builder()
                                 .userId(request.getUserId())
                                 .projectId(request.getProjectId())
@@ -178,10 +183,14 @@ public class ProjectService {
                                 .userMoveEnd(request.getMoveEnd())
                                 .userMoveDistance(request.getMoveDistance())
                                 .userMoveTime(request.getMoveTime())
-                                .userMovePath(routeKey)
+                                .userMovePath(userRouteDetail.getId())
                                 .userMoveMemo(request.getMoveMemo())
                                 .userMoveImage(resultUrl)
                                 .build();
+
+                        // UserRoute 객체 저장
+                        userRouteRepository.save(userRoute);
+                        return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 중단 성공", 200));
                     }
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 이미 종료되거나, 플로깅 중이지 않음"));
                 }
