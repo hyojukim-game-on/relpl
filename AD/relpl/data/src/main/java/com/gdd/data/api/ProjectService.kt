@@ -5,6 +5,7 @@ import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.project.CreateDistanceRelayRequest
 import com.gdd.data.model.project.DistanceProjectResponse
+import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
 import com.gdd.data.model.project.RecommendPathRequest
 import com.gdd.data.model.project.RecommendPathResponse
@@ -20,7 +21,7 @@ interface ProjectService {
     suspend fun isExistProject(
         @Path(value = "lat") lat: Double,
         @Path(value = "lng") lng: Double
-    ): Result<DefaultResponse<ExistBooleanData>>
+    ): Result<DefaultResponse<IsExistDistanceResponse>>
 
     @GET("project/all")
     suspend fun getAllAvailableProject(): Result<DefaultResponse<List<MarkerResponse>>>

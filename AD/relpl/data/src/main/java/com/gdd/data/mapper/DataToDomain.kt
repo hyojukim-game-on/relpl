@@ -9,6 +9,7 @@ import com.gdd.data.model.history.HistorySummeryResponse
 import com.gdd.data.model.point.PointRecordItemResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.project.DistanceProjectResponse
+import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
 import com.gdd.data.model.project.RecommendPathResponse
 import com.gdd.data.model.rank.RankResponse
@@ -26,6 +27,7 @@ import com.gdd.domain.model.point.PointRecordListItem
 import com.gdd.domain.model.rank.Rank
 import com.gdd.domain.model.rank.RankItem
 import com.gdd.domain.model.relay.DistanceRelayInfo
+import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.RecommendedPath
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.model.report.ReportRecord
@@ -181,7 +183,13 @@ fun RecommendPathResponse.toRecommendedPath(): RecommendedPath{
     )
 }
 
-
+fun IsExistDistanceResponse.toIsExistDistanceRelay(): IsExistDistanceRelay{
+    return IsExistDistanceRelay(
+        this.exist,
+        this.projectId,
+        this.startCoordinate.toPoint()
+    )
+}
 // 여기부터 dto -> dto가 아닌 형식 변환의 mapper들 입니다
 @SuppressLint("SimpleDateFormat")
 fun String.toHistoryDetailStartDate(): String{

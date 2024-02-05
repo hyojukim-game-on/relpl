@@ -37,6 +37,7 @@ import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
+import com.gdd.presentation.base.location.LocationProviderController
 import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentLoadRelayBinding
 import com.gdd.presentation.mapper.DateFormatter
@@ -50,6 +51,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
@@ -75,7 +77,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
     private lateinit var bottomSheetDialog: BottomSheetDialog
-    private lateinit var locationManager: LocationManager
+    private lateinit var locationProviderController: LocationProviderController
 
     @Inject
     lateinit var prefManager: PrefManager
@@ -88,34 +90,83 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         bottomSheetDialog = BottomSheetDialog(mainActivity)
         bottomSheetDialog.setContentView(bottomSheetView)
 
-        locationManager = mainActivity.getSystemService(LOCATION_SERVICE) as LocationManager
+        //위치권한 확인
+        checkLocationPermission()
 
-        if(!PermissionHelper.checkPermission(mainActivity,Manifest.permission.ACCESS_FINE_LOCATION)){
-            PermissionHelper.requestPermission_fragment(
-                this ,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                deniedListener = locationPermissionDeniedListener
-            )
-        }
+//        locationManager = mainActivity.getSystemService(LOCATION_SERVICE) as LocationManager
 
-        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.layout_map) as MapFragment?
-            ?: MapFragment.newInstance().also {
-                childFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
-            }
+        registerListener()
         registerObserver()
-        mapFragment.getMapAsync(onMapReadyCallBack)
         setFabSpeedDialUi()
     }
 
+    private fun checkLocationPermission() {
+        if (!PermissionHelper.checkPermission(
+                mainActivity,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        ) {
+            PermissionHelper.requestPermission_fragment(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                grantedListener = locationPermissionGrantedListener,
+                deniedListener = locationPermissionDeniedListener
+            )
+        } else {
+            locationPermissionGrantedListener()
+        }
+    }
+
+    private val locationPermissionGrantedListener: () -> Unit = {
+        locationProviderController = LocationProviderController(mainActivity, viewLifecycleOwner)
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                childFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
+            }
+        mapFragment.getMapAsync(mapReadyCallback)
+    }
+
     @SuppressLint("MissingPermission")
-    val onMapReadyCallBack = OnMapReadyCallback { map ->
+    val mapReadyCallback = OnMapReadyCallback { map ->
         naverMap = map
-        naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
-        naverMap.uiSettings.isLocationButtonEnabled = true
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+        naverMap.uiSettings.apply {
+            isTiltGesturesEnabled = false
+            isRotateGesturesEnabled = false
+        }
+        binding.fabCurLocation.performClick()
 
         viewModel.getAllMarker()
+    }
+
+    private fun registerListener(){
+        binding.fabCurLocation.setOnClickListener {
+            binding.fabCurLocation.isEnabled = false
+            locationProviderController.getCurrnetLocation {task ->
+                if (!task.isCanceled){
+                    if (task.isSuccessful) {
+                        task.result.also {
+                            val latLng = LatLng(it)
+                            naverMap.moveCamera(
+                                CameraUpdate.scrollTo(latLng).animate(CameraAnimation.Easing)
+                                    .finishCallback {
+                                        naverMap.moveCamera(
+                                            CameraUpdate.zoomTo(16.0)
+                                                .animate(CameraAnimation.Easing)
+                                        )
+                                    }
+                            )
+                            naverMap.locationOverlay.isVisible = true
+                            naverMap.locationOverlay.position = latLng
+                        }
+                    } else {
+                        showSnackBar("위치정보 호출에 실패했습니다.")
+                    }
+                    binding.fabCurLocation.isEnabled = true
+                }
+            }
+        }
     }
 
     private fun registerObserver(){
@@ -156,7 +207,19 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     //존재하므로 생성 막아야함
-                    if (it){
+                    if (it.isExit){
+                        val latLng = it.projectCoordinate.toLatLng()
+                        naverMap.moveCamera(
+                            CameraUpdate.scrollTo(latLng).animate(CameraAnimation.Easing)
+                                .finishCallback {
+                                    naverMap.moveCamera(
+                                        CameraUpdate.zoomTo(16.0)
+                                            .animate(CameraAnimation.Easing)
+                                    )
+                                }
+                        )
+                        naverMap.locationOverlay.isVisible = true
+                        naverMap.locationOverlay.position = latLng
                         showCannotCreateDistanceProjectDialog()
                     }else{
                         // 거리 릴레이 생성 다이얼로그
@@ -236,15 +299,27 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
 
     @SuppressLint("MissingPermission")
     override fun onCreateButtonClick(name: String, distance: Int, endDate: String) {
-        val cur = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-        viewModel.createDistanceRelay(
-            prefManager.getUserId(),
-            name,
-            DateFormatter.curMsToShorFormat(),
-            DateFormatter.koreanToShortFormat(endDate),
-            distance,
-            Point(cur.longitude, cur.latitude)
-        )
+        locationProviderController.getCurrnetLocation {task ->
+            if (!task.isCanceled){
+                if (task.isSuccessful) {
+                    task.result.also {
+                        val latLng = LatLng(it)
+                        viewModel.createDistanceRelay(
+                            prefManager.getUserId(),
+                            name,
+                            DateFormatter.curMsToShorFormat(),
+                            DateFormatter.koreanToShortFormat(endDate),
+                            distance,
+                            Point(it.longitude, it.latitude)
+                        )
+                        naverMap.locationOverlay.isVisible = true
+                        naverMap.locationOverlay.position = latLng
+                    }
+                } else {
+                    showSnackBar("위치정보 호출에 실패했습니다.")
+                }
+            }
+        }
     }
 
     // region 권한 및 fab
@@ -308,8 +383,20 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                         .commit()
                 }
                 R.id.fab_create_distance -> {
-                    val current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-                    viewModel.isExistDistanceRelay(current.latitude, current.longitude)
+                    locationProviderController.getCurrnetLocation {task ->
+                        if (!task.isCanceled){
+                            if (task.isSuccessful) {
+                                task.result.also {
+                                    val latLng = LatLng(it)
+                                    viewModel.isExistDistanceRelay(it.latitude, it.longitude)
+                                    naverMap.locationOverlay.isVisible = true
+                                    naverMap.locationOverlay.position = latLng
+                                }
+                            } else {
+                                showSnackBar("위치정보 호출에 실패했습니다.")
+                            }
+                        }
+                    }
                 }
             }
             binding.fabCreateRelay.close()

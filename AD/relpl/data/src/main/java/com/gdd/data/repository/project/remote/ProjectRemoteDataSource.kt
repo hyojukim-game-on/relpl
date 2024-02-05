@@ -4,13 +4,14 @@ import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.PointResponse
 import com.gdd.data.model.project.DistanceProjectResponse
+import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
 import com.gdd.data.model.project.RecommendPathResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ProjectRemoteDataSource {
-    suspend fun isExistProject(lat: Double, lng: Double): Result<Boolean>
+    suspend fun isExistProject(lat: Double, lng: Double): Result<IsExistDistanceResponse>
 
     suspend fun getAllAvailableProject(): Result<List<MarkerResponse>>
 

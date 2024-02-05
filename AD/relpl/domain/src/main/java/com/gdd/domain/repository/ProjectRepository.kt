@@ -2,11 +2,12 @@ package com.gdd.domain.repository
 
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
+import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.RecommendedPath
 import com.gdd.domain.model.relay.RelayMarker
 
 interface ProjectRepository {
-    suspend fun isExistDistanceRelay(lat: Double, lng: Double): Result<Boolean>
+    suspend fun isExistDistanceRelay(lat: Double, lng: Double): Result<IsExistDistanceRelay>
 
     suspend fun getAllRelayMarker(): Result<List<RelayMarker>>
 

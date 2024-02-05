@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
+import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.usecase.relay.CreateDistanceRelayUseCase
 import com.gdd.domain.usecase.relay.GetAllRelayMarkerUseCase
@@ -30,19 +31,13 @@ class LoadRelayViewModel @Inject constructor(
     private val createDistanceRelayUseCase: CreateDistanceRelayUseCase
 ) : ViewModel() {
 
-    /*
-    private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
-    val markerResult: LiveData<Result<List<RelayMarker>>>
-        get() = _markerResult
-    */
-
     private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
     val markerResult: LiveData<Result<List<RelayMarker>>>
         get() = _markerResult
 
 
-    private val _isExistDistanceResult = MutableLiveData<Result<Boolean>>()
-    val isExistDistanceResult: LiveData<Result<Boolean>>
+    private val _isExistDistanceResult = MutableLiveData<Result<IsExistDistanceRelay>>()
+    val isExistDistanceResult: LiveData<Result<IsExistDistanceRelay>>
         get() = _isExistDistanceResult
 
     private val _distanceRelayInfoResult = MutableLiveData<Result<DistanceRelayInfo>>()
@@ -60,8 +55,6 @@ class LoadRelayViewModel @Inject constructor(
 
     fun getAllMarker(){
         viewModelScope.launch {
-//            delay(300)
-//            _markerResult.postValue(Result.success(tempMarkerList))
             getAllRelayMarkerUseCase().let {
                 Log.d(TAG, "getAllMarker: ${it.getOrNull()?.size}")
                 _markerResult.postValue(it)
@@ -71,10 +64,9 @@ class LoadRelayViewModel @Inject constructor(
 
     fun isExistDistanceRelay(lat: Double, lng: Double){
         viewModelScope.launch {
-            _isExistDistanceResult.postValue(Result.success(System.currentTimeMillis()%5 == 0L))
-//            isExistDistanceRelayUseCase(lat, lng).let {
-//                _isExistDistanceResult.postValue(it)
-//            }
+            isExistDistanceRelayUseCase(lat, lng).let {
+                _isExistDistanceResult.postValue(it)
+            }
         }
     }
 
