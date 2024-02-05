@@ -37,8 +37,8 @@ public class UserRoute {
     @Column(name = "user_move_distance")
     private int userMoveDistance;
 
-    @Column(name = "user_move_time", nullable = false, length = 30)
-    private String userMoveTime;
+    @Column(name = "user_move_time", nullable = false)
+    private int userMoveTime;
 
     @Column(name = "user_move_path", nullable = false, length = 100)
     private String userMovePath;

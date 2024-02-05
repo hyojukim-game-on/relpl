@@ -61,7 +61,7 @@ public class ProjectController {
         return projectService.join(request);
     }
 
-    @PostMapping("/stop")
+    @PostMapping(value = "/stop", consumes = {"multipart/form-data"})
     public ResponseEntity<?> stop(@RequestBody ProjectStopRequest request) {
         return projectService.stop(request);
     }
