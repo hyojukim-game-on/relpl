@@ -18,13 +18,13 @@ import com.google.android.gms.tasks.Task
 private const val TAG = "LocationProviderControl_Genseong"
 @SuppressLint("MissingPermission")
 class LocationProviderController(
-    context: Context,
+    private val context: Context,
     private val lifecycleOwner: LifecycleOwner
 ) : DefaultLifecycleObserver {
 
     private val fusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
-    private val cancellationToken = CancellationTokenSource()
+    private var cancellationToken = CancellationTokenSource()
 
     private var distanceFlag = -1
     private var distancePointFlag = 0.0
@@ -90,6 +90,9 @@ class LocationProviderController(
         }
     }
 
+    override fun onStart(owner: LifecycleOwner) {
+        cancellationToken = CancellationTokenSource()
+    }
 
     override fun onStop(owner: LifecycleOwner) {
         Log.d(TAG, "onStop: ")
