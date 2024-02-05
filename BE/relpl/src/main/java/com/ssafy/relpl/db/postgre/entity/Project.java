@@ -77,8 +77,22 @@ public class Project {
                 .projectTotalContributer(1)
                 .build();
     }
-//
-//    public static Project createRouteProject(ProjectCreateRouteRequest request) {
-//
-//    }
+
+    public static Project createRouteProject(ProjectCreateRouteRequest request, Point startPoint, Point endPoint,int projectTotalDistance) {
+        return Project.builder()
+                .userId(request.getUserId())
+                .projectName(request.getProjectName())
+                .projectCreateDate(request.getProjectCreateDate())
+                .projectEndDate(request.getProjectEndDate())
+                .projectStartCoordinate(startPoint)
+                .projectStopCoordinate(startPoint)
+                .projectEndCoordinate(endPoint)
+                .projectIsPath(true)
+                .projectRemainingDistance(projectTotalDistance)
+                .projectTotalDistance(projectTotalDistance)
+                .projectIsDone(false)
+                .projectIsPlogging(true)
+                .projectTotalContributer(1)
+                .build();
+    }
 }

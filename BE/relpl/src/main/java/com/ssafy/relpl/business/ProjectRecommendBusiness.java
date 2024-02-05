@@ -101,7 +101,7 @@ public class ProjectRecommendBusiness {
                     .build();
             return ResponseEntity.ok(responseService.getSingleResult(response, "경로 추천 성공.", 200));
         } catch (Exception e) {
-            return ResponseEntity.ok(responseService.getFailResult(400, "경로 추천 실패"));
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "경로 추천 실패"));
         }
 
     }
