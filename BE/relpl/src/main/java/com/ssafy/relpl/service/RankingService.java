@@ -45,7 +45,6 @@ public class RankingService {
         try {
             updateRankingFor(dailyRanking, nickname, moveDistance);
             log.info("dailyRanking 업데이트 완료");
-//        resetRankingTest();
 
             updateRankingFor(weeklyRanking, nickname, moveDistance);
             log.info("weeklyRanking 업데이트 완료");
@@ -70,7 +69,6 @@ public class RankingService {
 
 
     // redis 에 rankingKey key , nickname member , moveDistance score 로 추가된 값 insert
-
     public void addOrUpdateMember(String key, String nickname, double moveDistance) {
         Boolean isAdded = zSetOperations.add(key, nickname, moveDistance);
         log.info("addOrUpdate_isAdded:{}",isAdded);
@@ -161,33 +159,34 @@ public class RankingService {
         }
     }
     
-    // TimeToLive (TTL) - 랭킹 갱신 주기마다 기존 키 값 만료되도록 하기
+    // 갱신 주기마다 TTL 이 24시/7일/한달로 설정된 daily/weekly/monthlyRanking 이 redis 에 추가되도록 하기
     public void resetRankingTest() {
-        // TTL 설정 로직
-        // 5초뒤에 dailyRanking 키에 할당된 것들이 사라짐
-        redisTemplate.expire("dailyRanking", 5, TimeUnit.SECONDS);
-        Boolean isAdded = zSetOperations.add("dailyRanking","",0);
+        log.info("resetRankingTest");
+        // 테스트 용으로 Redis 에 testRanking 을 넣어주기
+        Boolean isAdded = zSetOperations.add("testRanking","테스트",15);
         log.info("daily_isAdded:{}",isAdded);
+        // testRanking 키가 5초 후에 만료되도록 하기
+        redisTemplate.expire("testRanking", 5, TimeUnit.SECONDS);
     }
 
-    // 매일 자정에 Daily Ranking 의 TTL 설정
+    // 매일 자정에 dailyRanking (TTL(유효기간)=24시간) 으로 다시 만들어주기
     @Scheduled(cron = "0 0 0 * * *")
     public void resetDailyRankingTTL() {
-        // TTL 설정 로직
-        redisTemplate.expire("dailyRanking", 24, TimeUnit.HOURS);
-        // 만료된 후에 dailyRanking 키 재설정
+        // Redis 에 dailyRanking 을 넣어주기
         Boolean isAdded = zSetOperations.add("dailyRanking","",0);
         log.info("daily_isAdded:{}",isAdded);
+        // dailyRanking 키가 24시간 후에 만료되도록 하기
+        redisTemplate.expire("dailyRanking", 24, TimeUnit.HOURS);
     }
 
-    // 매주 일요일 자정에 Weekly Ranking의 TTL 설정
+    // 매일 일요일 자정에 weeklyRanking (TTL(유효기간)=7일) 으로 다시 만들어주기
     @Scheduled(cron = "0 0 0 * * SUN")
     public void resetWeeklyRankingTTL() {
-        // TTL 설정 로직
-        redisTemplate.expire("weeklyRanking", 168, TimeUnit.HOURS);
-        // 만료된 후에 weeklyRanking 키 재설정
+        // Redis 에 weeklyRanking 을 넣어주기
         Boolean isAdded = zSetOperations.add("weeklyRanking","",0);
         log.info("weekly_isAdded:{}",isAdded);
+        // weeklyRanking 키가 7일 후에 만료되도록 하기
+        redisTemplate.expire("weeklyRanking", 168, TimeUnit.HOURS);
     }
 
     // 매월 1일 자정에 Monthly Ranking의 TTL 설정
@@ -199,12 +198,11 @@ public class RankingService {
         LocalDate lastDayOfMonth = today.with(TemporalAdjusters.lastDayOfMonth());
         long daysUntilEndOfMonth = today.until(lastDayOfMonth).getDays() + 1;
         long ttlInHours = daysUntilEndOfMonth * 24;
-
-        // ttlInHours 의 시간 단위 후에 expire 되도록 하기
-        redisTemplate.expire("monthlyRanking", ttlInHours, TimeUnit.HOURS);
-        // 만료된 후에 monthlyRanking 키 재설정
+        // Redis 에 monthlyRanking 을 넣어주기
         Boolean isAdded = zSetOperations.add("monthlyRanking","",0);
         log.info("monthly_isAdded:{}",isAdded);
+        // monthlyRanking 키가 ttlInHours 의 시간 단위 후에 expire 되도록 하기
+        redisTemplate.expire("monthlyRanking", ttlInHours, TimeUnit.HOURS);
     }
 
 }

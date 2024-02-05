@@ -31,4 +31,12 @@ public class RankingController {
         log.info("새로운 유저를 랭킹에 추가하기");
         return rankingService.addOrUpDateRanking(nickname, distance);
     }
+
+    // 테스트용
+    @GetMapping("/test")
+    public void testRanking() {
+        log.info("테스트랭킹");
+        rankingService.resetRankingTest();
+    }
+
 }
