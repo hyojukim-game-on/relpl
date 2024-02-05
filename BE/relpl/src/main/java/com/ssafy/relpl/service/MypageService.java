@@ -111,7 +111,7 @@ public class MypageService {
                 log.info("바뀐 핸드폰 번호:{}",user.getUserPhone());
                 
                 // 유저가 프로필 사진을 제공한 경우..
-                if (!request.getUserProfilePhoto().isEmpty()) {
+                if (request.getUserProfilePhoto() != null) {
 
                     log.info("유저가 프로필 사진을 제공함");
                     log.info(request.getUserProfilePhoto().getClass().getName());
@@ -139,7 +139,7 @@ public class MypageService {
                         return ResponseEntity.badRequest().body(responseService.getFailResult(400, "정보 수정 실패"));
                     }
                 // 프로필 사진을 제공하지 않아서 기존 프로필 사진 유지, 그 외 정보만 변경..
-                } else if (request.getUserProfilePhoto().isEmpty()) {
+                } else {
                     log.info("프로필 사진 제공하지 않음");
                     return ResponseEntity.ok(responseService.getSingleResult(true, "정보 수정 성공", 200));
                 }

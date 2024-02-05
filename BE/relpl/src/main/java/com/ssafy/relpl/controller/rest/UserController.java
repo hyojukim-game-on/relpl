@@ -64,4 +64,10 @@ public class UserController {
     public ResponseEntity<CommonResult> setProfilePic(@ModelAttribute UserProfileRequest request) throws IOException {
         return userService.setProfilePic(request);
     }
+
+    @PostMapping(value = "/history")
+    public ResponseEntity<CommonResult> getUserHistory(@RequestBody UserHistoryRequest request) throws IOException {
+        log.info("getUserHistory 내부로 들어옴");
+        return userService.getUserHistory(request);
+    }
 }
