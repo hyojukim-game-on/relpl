@@ -1,6 +1,7 @@
 package com.gdd.presentation.relay
 
 import android.annotation.SuppressLint
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.fragment.app.viewModels
 import com.gdd.domain.model.Point
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
+import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.location.LocationProviderController
@@ -27,14 +29,16 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 private const val TAG = "CreatePathRelayFragment_Genseong"
 @AndroidEntryPoint
 class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
     FragmentCreatePathRelayBinding::bind, R.layout.fragment_create_path_relay
-) {
+), CreatePathDialogClickInterface {
     private val viewModel : CreatePathRelayViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
     private lateinit var mainActivity: MainActivity
@@ -47,6 +51,9 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
     private lateinit var shortPath : PathOverlay
     private lateinit var recommendPath: PathOverlay
 
+    @Inject
+    lateinit var prefManager: PrefManager
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
@@ -57,12 +64,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (binding.layoutBottomSelectPath.visibility == View.VISIBLE) {
-                        binding.layoutBottomSelectPath.visibility = View.GONE
-                        binding.layoutBottomSetDestination.visibility = View.VISIBLE
-                        binding.ivMarker.visibility = View.VISIBLE
-                        binding.tvMoveScreen.visibility = View.VISIBLE
-                        shortPath.map = null
-                        recommendPath.map = null
+                        setDefaultUi()
                     } else {
                         parentFragmentManager.popBackStack()
                     }
@@ -111,7 +113,11 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                 if (!task.isCanceled){
                     if (task.isSuccessful) {
                         task.result.also {
-                            viewModel.recommendPath(Point(it.longitude, it.latitude), Point(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude))
+                            viewModel.recommendPath(
+                                Point(it.longitude, it.latitude),
+                                Point(naverMap.cameraPosition.target.longitude,
+                                    naverMap.cameraPosition.target.latitude)
+                            )
                         }
                     } else {
                         showSnackBar("위치정보 호출에 실패했습니다.")
@@ -122,11 +128,28 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
 
         binding.recommendPathOverlay.setOnClickListener {
             drawPathRecommendSelected()
-
         }
 
         binding.shortestPathOverlay.setOnClickListener {
             drawPathShortSelected()
+        }
+
+        binding.btnReSetDestination.setOnClickListener {
+            setDefaultUi()
+        }
+
+        binding.btnSetPath.setOnClickListener {
+            if (binding.recommendPathOverlay.visibility == View.GONE){
+                viewModel.isRecommendedPathSelected = true
+                val dialog = CreatePathRelayDialog(this, viewModel.recommendedPathResult.value!!.getOrNull()!!.recommendTotalDistance)
+                dialog.isCancelable = false
+                dialog.show(this.childFragmentManager, "")
+            }else{
+                viewModel.isRecommendedPathSelected = false
+                val dialog = CreatePathRelayDialog(this, viewModel.recommendedPathResult.value!!.getOrNull()!!.shortestTotalDistance)
+                dialog.isCancelable = false
+                dialog.show(this.childFragmentManager, "")
+            }
         }
     }
 
@@ -138,12 +161,20 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             map = null
             coords = shortPathList
             color = resources.getColor(R.color.text_gray)
+            patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
+            patternInterval = 30
+            width = 30
+            outlineWidth = 0
             map = naverMap
         }
         recommendPath.apply {
             map = null
             coords = recommendPathList
             color = resources.getColor(R.color.sage_green)
+            patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
+            patternInterval = 30
+            width = 30
+            outlineWidth = 0
             map = naverMap
         }
 
@@ -157,6 +188,10 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             map = null
             coords = recommendPathList
             color = resources.getColor(R.color.text_gray)
+            patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
+            patternInterval = 30
+            width = 30
+            outlineWidth = 0
             map = naverMap
         }
 
@@ -164,6 +199,10 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             map = null
             coords = shortPathList
             color = resources.getColor(R.color.sage_green)
+            patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
+            patternInterval = 30
+            width = 30
+            outlineWidth = 0
             map = naverMap
         }
     }
@@ -202,6 +241,26 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                 }
             }
         }
+
+        viewModel.createPathRelayResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+                  viewModel.joinRelay(it)
+                }
+            }else {
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
+
+        viewModel.joinRelayResult.observe(viewLifecycleOwner){ result ->
+            //화면 전환
+        }
     }
     @SuppressLint("MissingPermission")
     private val mapReadyCallback = OnMapReadyCallback { map ->
@@ -212,5 +271,29 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             isRotateGesturesEnabled = false
         }
         binding.fabCurLocation.performClick()
+    }
+
+    private fun setDefaultUi(){
+        binding.layoutBottomSelectPath.visibility = View.GONE
+        binding.layoutBottomSetDestination.visibility = View.VISIBLE
+        binding.ivMarker.visibility = View.VISIBLE
+        binding.tvMoveScreen.visibility = View.VISIBLE
+        shortPath.map = null
+        recommendPath.map = null
+    }
+
+    override fun onCreateButtonClick(name: String, endDate: String) {
+        viewModel.createPathRelay(
+            prefManager.getUserId(),
+
+        )
+    }
+
+    override fun onReSetButtonClick() {
+        setDefaultUi()
+    }
+
+    override fun onCancelButtonClick() {
+        setDefaultUi()
     }
 }

@@ -22,4 +22,14 @@ interface ProjectRemoteDataSource {
     suspend fun createDistanceRelay(userId: Long, projectName: String, projectCreateDate: String, projectEndDate: String, projectTotalDistance: Int, projectStartCoordinate: PointResponse): Result<Long>
 
     suspend fun recommendPath(startCoordinate: PointResponse, endCoordinate: PointResponse): Result<RecommendPathResponse>
+
+    suspend fun createPathRelay(userId: Long,
+                                projectSelectedId : String,
+                                projectSelectedTotalDistance: Int,
+                                projectName: String,
+                                projectCreateDate: String,
+                                projectEndDate: String,
+                                projectStartPoint: PointResponse,
+                                projectEndPoint: PointResponse
+    ): Result<Long>
 }

@@ -6,6 +6,7 @@ import com.gdd.data.model.ExistBooleanData
 import com.gdd.data.model.PointResponse
 import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.project.CreateDistanceRelayRequest
+import com.gdd.data.model.project.CreatePathRelayRequest
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
@@ -62,5 +63,32 @@ class ProjectRemoteDataSourceImpl @Inject constructor(
         endCoordinate: PointResponse
     ): Result<RecommendPathResponse> {
         return projectService.recommendPath(RecommendPathRequest(startCoordinate, endCoordinate)).toNonDefault()
+    }
+
+    override suspend fun createPathRelay(
+        userId: Long,
+        projectSelectedId: String,
+        projectSelectedTotalDistance: Int,
+        projectName: String,
+        projectCreateDate: String,
+        projectEndDate: String,
+        projectStartPoint: PointResponse,
+        projectEndPoint: PointResponse
+    ): Result<Long> {
+        return projectService.createPathRelay(
+            CreatePathRelayRequest(
+                userId,
+                projectSelectedId,
+                projectSelectedTotalDistance,
+                projectName,
+                projectCreateDate,
+                projectEndDate,
+                projectStartPoint,
+                projectEndPoint
+            )
+        ).toNonDefault()
+            .map {
+                it.projectId
+            }
     }
 }
