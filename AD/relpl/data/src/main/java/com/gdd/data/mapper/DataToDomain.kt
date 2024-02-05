@@ -10,6 +10,8 @@ import com.gdd.data.model.point.PointRecordItemResponse
 import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.rank.RankResponse
+import com.gdd.data.model.rank.RankResponseItem
 import com.gdd.data.model.report.ReportRecordResponse
 import com.gdd.data.model.signin.SignInResponse
 import com.gdd.data.model.signup.SignupResponse
@@ -20,6 +22,8 @@ import com.gdd.domain.model.history.HistoryDetailInfo
 import com.gdd.domain.model.history.HistoryInfo
 import com.gdd.domain.model.point.PointRecord
 import com.gdd.domain.model.point.PointRecordListItem
+import com.gdd.domain.model.rank.Rank
+import com.gdd.domain.model.rank.RankItem
 import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.model.report.ReportRecord
@@ -146,6 +150,18 @@ fun ReportRecordResponse.toReportRecord(): ReportRecord {
             reportCoordinate.y
         )
     )
+}
+
+fun RankResponse.toRank():Rank {
+    return Rank(
+        dailyRanking.map { it.toRankItem() },
+        weeklyRanking.map { it.toRankItem() },
+        monthlyRanking.map { it.toRankItem() }
+    )
+}
+
+fun RankResponseItem.toRankItem(): RankItem{
+    return RankItem(nickname, distance)
 }
 
 

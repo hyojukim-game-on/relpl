@@ -1,9 +1,11 @@
 package com.gdd.relpl.module
 
 import com.gdd.data.repository.project.ProjectRepositoryImpl
+import com.gdd.data.repository.rank.RankRepositoryImpl
 import com.gdd.data.repository.report.ReportRepositoryImpl
 import com.gdd.data.repository.user.UserRepositoryImpl
 import com.gdd.domain.repository.ProjectRepository
+import com.gdd.domain.repository.RankRepository
 import com.gdd.domain.repository.ReportRepository
 import com.gdd.domain.repository.UserRepository
 import dagger.Binds
@@ -26,4 +28,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindReportRepository(reportRepositoryImpl: ReportRepositoryImpl): ReportRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindRankRepository(rankRepositoryImpl: RankRepositoryImpl): RankRepository
 }

@@ -2,6 +2,7 @@ package com.gdd.relpl.module
 
 import com.gdd.data.api.ApiClient.BASE_URL
 import com.gdd.data.api.ProjectService
+import com.gdd.data.api.RankService
 import com.gdd.data.api.ReportService
 import com.gdd.data.api.UserService
 import com.gdd.relpl.AuthAuthenticator
@@ -109,5 +110,11 @@ object NetworkModule {
     @Singleton
     fun provideReportService(retrofit: Retrofit): ReportService {
         return retrofit.create(ReportService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRankService(retrofit: Retrofit): RankService {
+        return retrofit.create(RankService::class.java)
     }
 }
