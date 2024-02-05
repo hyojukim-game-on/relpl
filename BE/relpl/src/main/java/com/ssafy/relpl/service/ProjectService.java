@@ -6,6 +6,7 @@ import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
 import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
+import com.ssafy.relpl.dto.response.ProjectAllResponse;
 import com.ssafy.relpl.dto.response.ProjectCreateDistanceResponse;
 import com.ssafy.relpl.dto.response.ProjectExistResponse;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,4 +87,20 @@ public class ProjectService {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 참여 실패"));
     }
+
+
+    public ResponseEntity<?> getAllProjectList() {
+
+        try {
+            List<Project> projectList = projectRepository.findAll();
+            List<ProjectAllResponse> response = new ArrayList<>();
+            for (Project project : projectList) {
+                response.add(ProjectAllResponse.createProjectAllResponse(project));
+            }
+            return ResponseEntity.ok(responseService.getSingleResult(response, "프로젝트 전체 조회 성공", 200));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 전체 조회 실패 실패"));
+        }
+    }
 }
+

@@ -64,4 +64,9 @@ public class ProjectController {
 //
 //    }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllProjectList() {
+        return projectService.getAllProjectList();
+    }
+
 }
