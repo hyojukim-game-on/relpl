@@ -81,6 +81,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
                 .addToBackStack(null)
                 .commit()
         }
+
+        binding.rankCard.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, RankFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun initView(){
