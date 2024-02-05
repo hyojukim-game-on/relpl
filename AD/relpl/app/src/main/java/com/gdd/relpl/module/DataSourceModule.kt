@@ -6,6 +6,8 @@ import com.gdd.data.repository.rank.remote.RankRemoteDataSource
 import com.gdd.data.repository.rank.remote.RankRemoteDataSourceImpl
 import com.gdd.data.repository.report.remote.ReportRemoteDataSource
 import com.gdd.data.repository.report.remote.ReportRemoteDataSourceImpl
+import com.gdd.data.repository.tracking.local.LocationTrackingLocalDataSource
+import com.gdd.data.repository.tracking.local.LocationTrackingLocalDataSourceImpl
 import com.gdd.data.repository.user.UserRepositoryImpl
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
 import com.gdd.data.repository.user.remote.UserRemoteDataSourceImpl
@@ -33,4 +35,8 @@ abstract class DataSourceModule {
     @Singleton
     @Binds
     abstract fun bindRankRemoteDataSource(rankRemoteDataSourceImpl: RankRemoteDataSourceImpl): RankRemoteDataSource
+
+    @Singleton
+    @Binds
+    abstract fun bindLocationTrackingLocalDataSource(locationTrackingLocalDataSourceImpl: LocationTrackingLocalDataSourceImpl): LocationTrackingLocalDataSource
 }

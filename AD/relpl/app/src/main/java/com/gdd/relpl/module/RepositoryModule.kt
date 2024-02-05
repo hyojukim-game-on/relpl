@@ -3,7 +3,9 @@ package com.gdd.relpl.module
 import com.gdd.data.repository.project.ProjectRepositoryImpl
 import com.gdd.data.repository.rank.RankRepositoryImpl
 import com.gdd.data.repository.report.ReportRepositoryImpl
+import com.gdd.data.repository.tracking.local.LocationTrackingRepositoryImpl
 import com.gdd.data.repository.user.UserRepositoryImpl
+import com.gdd.domain.repository.LocationTrackingRepository
 import com.gdd.domain.repository.ProjectRepository
 import com.gdd.domain.repository.RankRepository
 import com.gdd.domain.repository.ReportRepository
@@ -32,4 +34,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindRankRepository(rankRepositoryImpl: RankRepositoryImpl): RankRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindLocationTrackingRepository(locationTrackingRepositoryImpl: LocationTrackingRepositoryImpl): LocationTrackingRepository
 }

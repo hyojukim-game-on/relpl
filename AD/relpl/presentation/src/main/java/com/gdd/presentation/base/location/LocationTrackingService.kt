@@ -12,18 +12,29 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.lifecycleScope
+import com.gdd.domain.repository.LocationTrackingRepository
 import com.gdd.presentation.R
-import okhttp3.internal.notify
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val TAG = "LocationTrackingService_Genseong"
 
+@AndroidEntryPoint
 class LocationTrackingService : Service(), LifecycleOwner {
+
+    @Inject
+    lateinit var locationTrackingRepository: LocationTrackingRepository
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var locationProviderController: LocationProviderController
     private val lifecycleRegistry = LifecycleRegistry(this)
     override val lifecycle: Lifecycle
         get() = lifecycleRegistry
+
+    private var firstTime: Long? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -57,10 +68,23 @@ class LocationTrackingService : Service(), LifecycleOwner {
             if (location != null) {
                 Log.d(TAG, "onStartCommand: ${location.longitude}${location.latitude}")
                 synchronized(notificationManager) {
-                    notificationBuilder.setContentText("${location.longitude} ${location.latitude}")
                     notificationManager.notify(LOCATION_TRACKING_SERVICE_ID,notificationBuilder.build())
                 }
 
+                lifecycleScope.launch {
+                    val time = System.currentTimeMillis()
+                    locationTrackingRepository.saveLocationTrackingData(
+                        time,
+                        location.latitude,
+                        location.longitude,
+                        if (firstTime == null){
+                            firstTime = time
+                            0
+                        } else {
+                            ((time - firstTime!!)/1000).toInt()
+                        }
+                    )
+                }
             }
         }
 
