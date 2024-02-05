@@ -75,8 +75,8 @@
                     android:id="@+id/tv_km"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:text='@{String.valueOf(dialog.createDistanceRelayDist / 1000) + " km"}'
                     android:textAppearance="@style/Relpl.Text.SB.16" />
@@ -102,8 +102,8 @@
                     android:id="@+id/tv_meter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:text='@{String.valueOf(dialog.createDistanceRelayDist % 1000) + " m"}'
                     android:textAppearance="@style/Relpl.Text.SB.16" />
 

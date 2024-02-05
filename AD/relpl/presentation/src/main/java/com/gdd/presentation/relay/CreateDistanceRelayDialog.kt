@@ -3,6 +3,7 @@ package com.gdd.presentation.relay
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,10 @@ import androidx.lifecycle.MutableLiveData
 import com.gdd.presentation.R
 import com.gdd.presentation.databinding.DialogCreateDistanceRelayBinding
 import dagger.BindsInstance
+import java.text.SimpleDateFormat
+import java.util.Calendar
+
+private const val TAG = "CreateDistanceRelayDial_Genseong"
 
 class CreateDistanceRelayDialog(
     dialogClickInterface: DialogClickInterface
@@ -26,9 +31,12 @@ class CreateDistanceRelayDialog(
 
     private var confirmDialogInterface: DialogClickInterface? = null
 
+    val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일")
+
+    private lateinit var calendar: Calendar
 
     init {
-        this.confirmDialogInterface = confirmDialogInterface
+        this.confirmDialogInterface = dialogClickInterface
     }
 
     override fun onCreateView(
@@ -41,6 +49,14 @@ class CreateDistanceRelayDialog(
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        binding.dialog = this@CreateDistanceRelayDialog
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, 1)
+
+        binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
+
         // 취소 버튼 클릭
         binding.tvCancel.setOnClickListener {
             dismiss()
@@ -48,7 +64,11 @@ class CreateDistanceRelayDialog(
 
         // 확인 버튼 클릭
         binding.tvCreate.setOnClickListener {
-            this.confirmDialogInterface?.onCreateButtonClick(binding.etRelayName.editText!!.text.toString())
+            this.confirmDialogInterface?.onCreateButtonClick(
+                binding.etRelayName.editText!!.text.toString(),
+                this.createDistanceRelayDist.value!!,
+                binding.tvEndDate.text.toString()
+            )
             dismiss()
         }
 
@@ -68,27 +88,38 @@ class CreateDistanceRelayDialog(
             minusMeterDist()
         }
 
-
-
         return binding.root
     }
 
-    fun plusMeterDist(){
-        _createDistanceRelayDist.value!!.plus(100)
+    private fun plusMeterDist(){
+        _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.plus(100)
+        Log.d(TAG, "plusMeterDist: ${createDistanceRelayDist.value}")
+        if (_createDistanceRelayDist.value!! %1000 == 0){
+            calendar.add(Calendar.DATE, 1)
+            binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
+        }
     }
 
-    fun minusMeterDist(){
+    private fun minusMeterDist(){
+        if (_createDistanceRelayDist.value!! %1000 == 0){
+            calendar.add(Calendar.DATE, -1)
+            binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
+        }
         if (_createDistanceRelayDist.value!! > 1000)
-            _createDistanceRelayDist.value!!.minus(100)
+            _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.minus(100)
     }
 
-    fun plusKmDist(){
-        _createDistanceRelayDist.value!!.plus(1000)
+    private fun plusKmDist(){
+        _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.plus(1000)
+        calendar.add(Calendar.DATE, 1)
+        binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
     }
 
-    fun minusKmDist(){
+    private fun minusKmDist(){
         if (_createDistanceRelayDist.value!! > 2000)
-            _createDistanceRelayDist.value!!.minus(1000)
+            _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.minus(1000)
+        calendar.add(Calendar.DATE, -1)
+        binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
     }
     override fun onDestroyView() {
         super.onDestroyView()
@@ -97,5 +128,5 @@ class CreateDistanceRelayDialog(
 }
 
 interface DialogClickInterface {
-    fun onCreateButtonClick(name: String)
+    fun onCreateButtonClick(name: String, distance: Int, endDate: String)
 }

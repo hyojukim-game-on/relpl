@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.RelayMarker
+import com.gdd.domain.usecase.relay.CreateDistanceRelayUseCase
 import com.gdd.domain.usecase.relay.GetAllRelayMarkerUseCase
 import com.gdd.domain.usecase.relay.GetDistanceRelayInfoUseCase
 import com.gdd.domain.usecase.relay.IsExistDistanceRelayUseCase
+import com.gdd.domain.usecase.relay.JoinRelayUseCase
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -21,7 +23,9 @@ import kotlin.random.Random
 class LoadRelayViewModel @Inject constructor(
     private val getAllRelayMarkerUseCase: GetAllRelayMarkerUseCase,
     private val getDistanceRelayInfoUseCase: GetDistanceRelayInfoUseCase,
-    private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase
+    private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase,
+    private val joinRelayUseCase: JoinRelayUseCase,
+    private val createDistanceRelayUseCase: CreateDistanceRelayUseCase
 ) : ViewModel() {
 
     private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
@@ -41,6 +45,15 @@ class LoadRelayViewModel @Inject constructor(
     private val _distanceRelayInfoResult = MutableLiveData<Result<DistanceRelayInfo>>()
     val distanceRelayInfoResult: LiveData<Result<DistanceRelayInfo>>
         get() = _distanceRelayInfoResult
+
+    private val _joinRelayResult = MutableLiveData<Result<Boolean>>()
+    val joinRelayResult : LiveData<Result<Boolean>>
+        get() = _joinRelayResult
+
+
+    private val _createDistanceRelayResult = MutableLiveData<Result<Long>>()
+    val createDistanceRelayResult: LiveData<Result<Long>>
+        get() = _createDistanceRelayResult
 
     fun getAllMarker(){
         viewModelScope.launch {
@@ -68,6 +81,40 @@ class LoadRelayViewModel @Inject constructor(
 //            getDistanceRelayInfoUseCase(projectId).let {
 //                _distanceRelayInfoResult.postValue(it)
 //            }
+        }
+    }
+
+    fun getPathRelayInfo(projectId: Long){
+
+    }
+
+    fun joinRelay(projectId: Long){
+        viewModelScope.launch {
+            joinRelayUseCase(projectId)?.let {
+                _joinRelayResult.postValue(it)
+            }
+        }
+    }
+
+    fun createDistanceRelay(
+        userId: Long,
+        projectName: String,
+        projectCreateDate: String,
+        projectEndDate: String,
+        projectTotalDistance: Int,
+        projectStartCoordinate: Point
+    ){
+        viewModelScope.launch {
+            createDistanceRelayUseCase(
+                userId,
+                projectName,
+                projectCreateDate,
+                projectEndDate,
+                projectTotalDistance,
+                projectStartCoordinate
+            ).let {
+                _createDistanceRelayResult.postValue(it)
+            }
         }
     }
 
