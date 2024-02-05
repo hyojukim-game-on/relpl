@@ -2,7 +2,6 @@ package com.ssafy.relpl.util.common;
 
 import lombok.*;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
