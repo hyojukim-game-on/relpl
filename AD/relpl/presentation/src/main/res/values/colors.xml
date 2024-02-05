@@ -27,4 +27,8 @@
     <color name="sage_orange">#FE804C</color>
     <color name="sage_blue">#00AAFF</color>
     <color name="sage_red">#FF6473</color>
+
+    <color name="gold">#FFD700</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="copper">#B87333</color>
 </resources>
