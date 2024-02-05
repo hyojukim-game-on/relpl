@@ -1,5 +1,6 @@
 package com.gdd.data.repository.user.remote
 
+import android.util.Log
 import com.gdd.data.api.UserService
 import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.ProjectIdRequest
@@ -26,6 +27,7 @@ import retrofit2.Response
 import java.io.File
 import javax.inject.Inject
 
+private const val TAG = "UserRemoteDataSourceImp_Genseong"
 class UserRemoteDataSourceImpl @Inject constructor(
     private val userService: UserService
 ) : UserRemoteDataSource {
@@ -116,12 +118,15 @@ class UserRemoteDataSourceImpl @Inject constructor(
         map["userPhone"] = phone
 
         return if (userProfilePhoto != null) {
+            Log.d(TAG, "updateProfile: 1")
             val image = userProfilePhoto.asRequestBody("image/jpg".toMediaTypeOrNull())
             val multipartBody =
-                MultipartBody.Part.createFormData("file", userProfilePhoto.name, image)
+                MultipartBody.Part.createFormData("userProfilePhoto", userProfilePhoto.name, image)
 
+            Log.d(TAG, "updateProfile: ${multipartBody.body.toString()}")
             userService.updateProfile(multipartBody, map).toNonDefault()
         }else{
+            Log.d(TAG, "updateProfile: 2")
             userService.updateProfile(null, map).toNonDefault()
         }
     }

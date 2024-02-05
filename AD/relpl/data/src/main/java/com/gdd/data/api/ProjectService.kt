@@ -37,4 +37,9 @@ interface ProjectService {
     suspend fun createDistanceRelay(
         @Body createDistanceRelayRequest: CreateDistanceRelayRequest
     ): Result<DefaultResponse<ProjectIdRequest>>
+
+    @POST("project/recommend")
+    suspend fun recommendPath(
+
+    )
 }
