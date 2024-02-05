@@ -1,6 +1,5 @@
 package com.ssafy.relpl.dto.response;
 
-
 import lombok.*;
 
 import java.util.List;

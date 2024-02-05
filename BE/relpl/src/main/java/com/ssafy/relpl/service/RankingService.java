@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,12 +31,12 @@ public class RankingService {
     private final ResponseService responseService;
     private ZSetOperations<String, String> zSetOperations;
 
-    // RedisTemplate 주입
-    // Sorted Set 을 다루기 위한 인터페이스 zSetOperations 초기화
+
     @PostConstruct
     private void init() {
         zSetOperations = redisTemplate.opsForZSet(); 
         log.info("zSetOperations 초기화 완료");
+        // zSetOperations 초기화
     }
 
     /* 유저가 플로깅 중단할 때마다 addOrUpdateRanking 호출
@@ -49,6 +50,7 @@ public class RankingService {
         String weeklyRanking = "weeklyRanking";
         String monthlyRanking = "monthlyRanking";
 
+        
         try {
             updateRankingFor(dailyRanking, nickname, moveDistance);
             log.info("dailyRanking 업데이트 완료");
@@ -144,6 +146,7 @@ public class RankingService {
                 monthlyRankingList.add(new RankingEntry(person.getValue(), person.getScore()));
             }
 
+
             // 빌더 패턴을 사용하여 RankingDataDto 객체를 생성
             RankingDataDto rankingDataDto = RankingDataDto.builder()
                     .dailyRanking(dailyRankingList)
@@ -163,6 +166,7 @@ public class RankingService {
     }
 
     // TimeToLive (TTL) - 랭킹 갱신 주기마다 기존 키 값 만료되도록 하기
+
     public void resetRankingTest() {
         // TTL 설정 로직
         // 5초뒤에 dailyRanking 키에 할당된 것들이 사라짐
