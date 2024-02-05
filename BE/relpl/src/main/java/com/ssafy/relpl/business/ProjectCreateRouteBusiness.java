@@ -1,6 +1,7 @@
 package com.ssafy.relpl.business;
 
 import com.ssafy.relpl.config.GeomFactoryConfig;
+import com.ssafy.relpl.db.mongo.entity.RecommendProject;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
 import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
