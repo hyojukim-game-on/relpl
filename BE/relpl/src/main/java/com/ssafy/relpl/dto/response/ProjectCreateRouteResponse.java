@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ProjectCreateDistanceResponse {
+public class ProjectCreateRouteResponse {
     long projectId;
 
-    public static ProjectCreateDistanceResponse createProjectCreateDistanceResponse(Project project) {
-        return ProjectCreateDistanceResponse.builder()
+    public static ProjectCreateRouteResponse createProjectCreateRouteResponse(Project project) {
+        return ProjectCreateRouteResponse.builder()
                 .projectId(project.getProjectId())
                 .build();
     }

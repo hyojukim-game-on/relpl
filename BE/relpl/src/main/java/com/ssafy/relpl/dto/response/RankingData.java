@@ -1,12 +1,9 @@
 package com.ssafy.relpl.dto.response;
 
-
 import com.ssafy.relpl.util.common.RankingEntry;
 import lombok.*;
 
 import java.util.List;
-
-
 
 @Getter
 @Setter

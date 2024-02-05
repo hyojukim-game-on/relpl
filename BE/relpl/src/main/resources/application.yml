@@ -26,7 +26,7 @@ spring:
 tmap:
   road-expiration-time: 86400000  # 24시간
   api:
-    key: ENC(j3VH+078nbLoa1HuTYtNVreeXtj/cODQErEpIUC/NcckXD3SYyhfraK8uCDhTdc3ZCQdbSbDSKYq2/kZPpWQuUpDODD9mggw)
+    key: ENC(NlBgeuShNL3O+38XF4hbMhQcKOyTGtCSCpIKa9lmouyd4f5+48Jr10/rxtEbLj0ZnExqTm54Qys=)
 
 
 jwt:
@@ -48,3 +48,4 @@ cloud:
       auto: false
     stack:
       auto: false
+

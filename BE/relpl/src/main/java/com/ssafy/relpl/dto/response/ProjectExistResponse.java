@@ -10,13 +10,13 @@ import org.springframework.data.geo.Point;
 public class ProjectExistResponse {
     boolean isExist;
     Long projectId;
-    Point startPoint;
+    Point startCoordinate;
 
     public static ProjectExistResponse createProjectExistDto(Project project) {
         return ProjectExistResponse.builder()
                 .projectId(project.getProjectId())
                 .isExist(true)
-                .startPoint(new Point(project.getProjectStopCoordinate().getX(), project.getProjectStopCoordinate().getY()))
+                .startCoordinate(new Point(project.getProjectStopCoordinate().getX(), project.getProjectStopCoordinate().getY()))
                 .build();
     }
 
@@ -24,7 +24,7 @@ public class ProjectExistResponse {
         return ProjectExistResponse.builder()
                 .projectId(-1L)
                 .isExist(false)
-                .startPoint(new Point(-1, -1))
+                .startCoordinate(new Point(-1, -1))
                 .build();
     }
 }
