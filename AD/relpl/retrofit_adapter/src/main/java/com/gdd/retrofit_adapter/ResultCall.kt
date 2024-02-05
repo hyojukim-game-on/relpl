@@ -3,6 +3,7 @@ package com.gdd.retrofit_adapter
 import okhttp3.Request
 import okio.IOException
 import okio.Timeout
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,9 +33,15 @@ class ResultCall<T>(
                         )
                     }
                 } else {
+                    val errorBodyString = response.errorBody()?.string()
+                    val message = if (!errorBodyString.isNullOrBlank()){
+                        JSONObject(errorBodyString).getString("message")
+                    } else {
+                        ""
+                    }
                     callback.onResponse(
                         this@ResultCall,
-                        Response.success(Result.failure(RelplException(response.code(),response.message())))
+                        Response.success(Result.failure(RelplException(response.code(),message)))
                     )
                 }
             }
