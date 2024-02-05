@@ -132,5 +132,9 @@
     <string name="create_path_relay_move_screen">화면을 움직여 목적지를 선택해 주세요</string>
     <string name="create_path_relay_set">설정</string>
 
+    <string name="dialog_exit_title">회원 탈퇴</string>
+    <string name="dialog_exit_content">정말로 탈퇴하시겠습니까?\n되돌리실 수 없습니다</string>
+    <string name="dialog_exit_exit">탈퇴</string>
+
 
 </resources>

@@ -2,6 +2,7 @@ package com.gdd.presentation.profile
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -42,7 +43,7 @@ private const val TAG = "ProfileFragment_Genseong"
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(
     FragmentProfileBinding::bind, R.layout.fragment_profile
-) {
+), DialogClickInterface {
     private lateinit var mainActivity: MainActivity
     private val viewModel: ProfileViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
@@ -124,6 +125,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
                 .addToBackStack(null)
                 .commit()
         }
+
+        binding.tvExit.setOnClickListener {
+
+        }
     }
 
     private fun registerObserver(){
@@ -131,6 +136,24 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
             if (result.isSuccess){
                 showSnackBar(resources.getString(R.string.change_pw_success))
                 pwChangeDialog.dismiss()
+            }else {
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
+
+        viewModel.exitResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                showToast(resources.getString(R.string.change_pw_success))
+                prefManager.deleteAll()
+                startActivity(Intent(_activity,LoginActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                })
             }else {
                 result.exceptionOrNull()?.let {
                     if (it is RelplException){
@@ -216,5 +239,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
                 showSnackBar(resources.getString(R.string.all_input_everything))
             }
         }
+    }
+
+    override fun onExitButtonClick(password: String) {
+        viewModel.exit(prefManager.getUserId(), password)
     }
 }

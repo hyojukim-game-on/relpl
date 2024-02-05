@@ -5,6 +5,7 @@ import com.gdd.data.api.UserService
 import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.exit.ExitRequest
 import com.gdd.data.model.history.HistoryDetailSummeryResponse
 import com.gdd.data.model.history.HistoryResponse
 import com.gdd.data.model.history.HistorySummeryResponse
@@ -163,5 +164,10 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun autoLogin(userId: Long): Result<SignInResponse> {
         return userService.autoLogin(UserIdRequest(userId)).toNonDefault()
+    }
+
+    override suspend fun exit(userId: Long, userPassword: String): Result<Boolean> {
+        return userService.exit(ExitRequest(userId, userPassword)).toNonDefault()
+            .map { it }
     }
 }

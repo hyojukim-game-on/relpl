@@ -34,4 +34,6 @@ interface UserRepository {
     suspend fun getHistoryDetail(projectId: Long): Result<HistoryDetailInfo>
 
     suspend fun autoLogin(userId: Long): Result<User>
+
+    suspend fun exit(userId: Long, userPassword: String): Result<Boolean>
 }

@@ -5,6 +5,7 @@ import com.gdd.data.model.DefaultResponse
 import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.point.TotalPointResponse
 import com.gdd.data.model.UserIdRequest
+import com.gdd.data.model.exit.ExitRequest
 import com.gdd.data.model.history.HistoryDetailSummeryResponse
 import com.gdd.data.model.history.HistoryResponse
 import com.gdd.data.model.history.HistorySummeryResponse
@@ -104,5 +105,10 @@ interface UserService {
     suspend fun autoLogin(
         @Body userIdRequest: UserIdRequest
     ): Result<DefaultResponse<SignInResponse>>
+
+    @PUT("user/mypage/exit")
+    suspend fun exit(
+        @Body exitRequest: ExitRequest
+    ): Result<DefaultResponse<Boolean>>
 
 }

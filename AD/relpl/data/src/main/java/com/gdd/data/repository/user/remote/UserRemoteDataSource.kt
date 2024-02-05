@@ -45,4 +45,6 @@ interface UserRemoteDataSource {
     suspend fun reissueToken(userId: Long, accessToken: String, refreshToken: String): Result<DefaultResponse<ReissueResponse>>
 
     suspend fun autoLogin(userId: Long): Result<SignInResponse>
+
+    suspend fun exit(userId: Long, userPassword: String): Result<Boolean>
 }
