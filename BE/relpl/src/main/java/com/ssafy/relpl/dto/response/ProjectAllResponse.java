@@ -10,13 +10,13 @@ import org.springframework.data.geo.Point;
 public class ProjectAllResponse {
     Long projectId;
     Point stopCoordinate;
-    boolean isPath;
+    boolean path;
 
     public static ProjectAllResponse createProjectAllResponse(Project project) {
         return ProjectAllResponse.builder()
                 .projectId(project.getProjectId())
                 .stopCoordinate(new Point (project.getProjectStopCoordinate().getX(), project.getProjectStopCoordinate().getY()))
-                .isPath(project.isProjectIsPath())
+                .path(project.isProjectIsPath())
                 .build();
     }
 }
