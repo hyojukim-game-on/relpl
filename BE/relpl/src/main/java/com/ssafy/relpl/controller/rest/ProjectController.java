@@ -1,8 +1,10 @@
 package com.ssafy.relpl.controller.rest;
 
+import com.ssafy.relpl.business.ProjectCreateRouteBusiness;
 import com.ssafy.relpl.business.ProjectRecommendBusiness;
 import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
+import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
 import com.ssafy.relpl.dto.request.ProjectRecommendRequest;
 import com.ssafy.relpl.service.ProjectService;
@@ -21,17 +23,18 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectController {
 
     private final ProjectRecommendBusiness projectRecommendBusiness;
+    private final ProjectCreateRouteBusiness projectCreateRouteBusiness;
     private final GeomFactoryConfig geomFactoryConfig;
     private final ProjectService projectService;
 
     @PostMapping("/recommend")
     public ResponseEntity<?> recommendProject(@RequestBody ProjectRecommendRequest request) {
         Point startPoint = geomFactoryConfig.getGeometryFactory().createPoint(
-                new Coordinate(request.getStartPoint().getX(), request.getStartPoint().getY()
+                new Coordinate(request.getStartCoordinate().getX(), request.getStartCoordinate().getY()
                 )
         );
         Point endPoint = geomFactoryConfig.getGeometryFactory().createPoint(
-                new Coordinate(request.getEndPoint().getX(), request.getEndPoint().getY()
+                new Coordinate(request.getEndCoordinate().getX(), request.getEndCoordinate().getY()
                 )
         );
         return projectRecommendBusiness.recommendProject(startPoint, endPoint);
@@ -47,12 +50,14 @@ public class ProjectController {
         return projectService.createDistanceProject(request);
     }
 
+    @PostMapping("/project/create/route")
+    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {
+        return projectCreateRouteBusiness.createRouteProjectBusiness(request);
+    }
+
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody ProjectJoinRequest request) {
         return projectService.join(request);
     }
-//    @PostMapping("/project/create/route")
-//    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {
-//
-//    }
+
 }

@@ -4,16 +4,21 @@ import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
+import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
+import com.ssafy.relpl.dto.request.ProjectJoinRequest;
 import com.ssafy.relpl.dto.response.ProjectCreateDistanceResponse;
 import com.ssafy.relpl.dto.response.ProjectExistResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -49,6 +54,16 @@ public class ProjectService {
             return ResponseEntity.ok(responseService.getSingleResult(response, "거리 프로젝트 생성 완료", 200));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "거리 프로젝트 생성 실패"));
+        }
+    }
+
+    @Transactional
+    public Project createRouteProject(Project project) throws Exception {
+        try {
+            return projectRepository.save(project);
+        } catch (Exception e) {
+            log.error("createRouteProject Error", e);
+            throw new Exception(e);
         }
     }
 
