@@ -129,7 +129,7 @@ fun DistanceProjectResponse.toDistanceRelayInfo(): DistanceRelayInfo{
         this.endDate.toKoreanDateFormat(),
         this.isPath,
         this.stopCoordinate.toPoint(),
-        this.progress.toKoreanProgress(),
+        this.progress,
         this.memo ?: "메모가 없습니다"
     )
 }

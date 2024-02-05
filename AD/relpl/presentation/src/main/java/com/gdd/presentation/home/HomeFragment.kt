@@ -70,7 +70,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         binding.cvStartRelay.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, LoadRelayFragment())
-                .addToBackStack(null)
+                .addToBackStack("start_plogging")
                 .commit()
         }
     }

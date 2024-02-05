@@ -4,9 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 object DateFormatter {
-    private val recordResponseDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
-    private val recoedUiDateFormat = SimpleDateFormat("yyyy년MM월dd일", Locale.KOREA)
-    private val reportDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+    private val longDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
+    private val koreanDateFormat = SimpleDateFormat("yyyy년MM월dd일", Locale.KOREA)
+    private val shortDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
 
     /**
      * @param dateString "yyyy-MM-dd HH:mm"
@@ -14,13 +14,30 @@ object DateFormatter {
      */
     fun recordResponseFormatToUi(dateString: String): String{
         return try {
-            recoedUiDateFormat.format(recordResponseDateFormat.parse(dateString)!!)
+            koreanDateFormat.format(longDateFormat.parse(dateString)!!)
         } catch (t: Throwable){
             ""
         }
     }
 
     fun getReportDateFormatString(curMillis: Long): String{
-        return reportDateFormat.format(curMillis)
+        return shortDateFormat.format(curMillis)
     }
+
+    fun msToShotFormat(){
+
+    }
+
+    fun koreanToShortFormat(korean: String): String{
+        return try {
+            shortDateFormat.format(koreanDateFormat.parse(korean)!!)
+        }catch (t: Throwable){
+            ""
+        }
+    }
+
+    fun curMsToShorFormat(): String{
+        return shortDateFormat.format(System.currentTimeMillis())
+    }
+
 }

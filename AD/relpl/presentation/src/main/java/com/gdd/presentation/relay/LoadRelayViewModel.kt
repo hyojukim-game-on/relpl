@@ -7,25 +7,26 @@ import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.RelayMarker
+import com.gdd.domain.usecase.relay.CreateDistanceRelayUseCase
 import com.gdd.domain.usecase.relay.GetAllRelayMarkerUseCase
 import com.gdd.domain.usecase.relay.GetDistanceRelayInfoUseCase
 import com.gdd.domain.usecase.relay.IsExistDistanceRelayUseCase
+import com.gdd.domain.usecase.relay.JoinRelayUseCase
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class LoadRelayViewModel @Inject constructor(
     private val getAllRelayMarkerUseCase: GetAllRelayMarkerUseCase,
     private val getDistanceRelayInfoUseCase: GetDistanceRelayInfoUseCase,
-    private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase
+    private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase,
+    private val joinRelayUseCase: JoinRelayUseCase,
+    private val createDistanceRelayUseCase: CreateDistanceRelayUseCase
 ) : ViewModel() {
-
-    private val _createDistanceRelayDist = MutableLiveData<Int>()
-    val createDistanceRelayDist : LiveData<Int>
-        get() = _createDistanceRelayDist
 
     private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
     val markerResult: LiveData<Result<List<RelayMarker>>>
@@ -44,6 +45,15 @@ class LoadRelayViewModel @Inject constructor(
     private val _distanceRelayInfoResult = MutableLiveData<Result<DistanceRelayInfo>>()
     val distanceRelayInfoResult: LiveData<Result<DistanceRelayInfo>>
         get() = _distanceRelayInfoResult
+
+    private val _joinRelayResult = MutableLiveData<Result<Boolean>>()
+    val joinRelayResult : LiveData<Result<Boolean>>
+        get() = _joinRelayResult
+
+
+    private val _createDistanceRelayResult = MutableLiveData<Result<Long>>()
+    val createDistanceRelayResult: LiveData<Result<Long>>
+        get() = _createDistanceRelayResult
 
     fun getAllMarker(){
         viewModelScope.launch {
@@ -74,27 +84,41 @@ class LoadRelayViewModel @Inject constructor(
         }
     }
 
-    fun setInitialDist(){
-        _createDistanceRelayDist.value = 1000
+    fun getPathRelayInfo(projectId: Long){
+
     }
 
-    fun plusMeterDist(){
-        _createDistanceRelayDist.value!!.plus(100)
+    fun joinRelay(projectId: Long){
+        viewModelScope.launch {
+            joinRelayUseCase(projectId)?.let {
+                _joinRelayResult.postValue(it)
+            }
+        }
     }
 
-    fun minusMeterDist(){
-        if (_createDistanceRelayDist.value!! > 1000)
-            _createDistanceRelayDist.value!!.minus(100)
+    fun createDistanceRelay(
+        userId: Long,
+        projectName: String,
+        projectCreateDate: String,
+        projectEndDate: String,
+        projectTotalDistance: Int,
+        projectStartCoordinate: Point
+    ){
+        viewModelScope.launch {
+            createDistanceRelayUseCase(
+                userId,
+                projectName,
+                projectCreateDate,
+                projectEndDate,
+                projectTotalDistance,
+                projectStartCoordinate
+            ).let {
+                _createDistanceRelayResult.postValue(it)
+            }
+        }
     }
 
-    fun plusKmDist(){
-        _createDistanceRelayDist.value!!.plus(1000)
-    }
 
-    fun minusKmDist(){
-        if (_createDistanceRelayDist.value!! > 2000)
-            _createDistanceRelayDist.value!!.minus(1000)
-    }
 
 
     companion object{
@@ -122,7 +146,7 @@ class LoadRelayViewModel @Inject constructor(
             "2024년 2월 5일",
             false,
             Point(36.108540, 128.420353),
-            "47%",
+            47,
             "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세"
         )
     }
