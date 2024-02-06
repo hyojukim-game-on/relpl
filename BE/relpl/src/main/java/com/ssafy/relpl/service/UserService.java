@@ -5,7 +5,9 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.relpl.config.AWSS3Config;
+import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.User;
+import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.dto.response.*;
@@ -36,6 +38,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
@@ -43,6 +46,7 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
 //    private final RedisTemplate redisTemplate;
     private final AuthenticationManager authenticationManager;
+
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -291,6 +295,25 @@ public class UserService {
     }
 
 
+
+    public ResponseEntity<CommonResult> getUserHistoryDetail(UserHistoryDetailRequest request) {
+
+        log.info("getUserHistoryDetail 내부로 들어옴");
+
+        // 릴레이 아이디로 릴레이 있는지 조회
+        Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
+
+        // 존재하는 프로젝트일 경우
+        if (projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            UserHistoryDetailResponse response = UserHistoryDetailResponse.builder().build();
+            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(data, "프로젝트 상세내역 조회에 성공하였습니다.", 200));
+        } else { // 존재하지 않는 프로젝트일 경우
+            log.error("projectId 가 없음");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 상세내역 조회에 실패하였습니다."));
+        }
+
+    }
 
 
 }
