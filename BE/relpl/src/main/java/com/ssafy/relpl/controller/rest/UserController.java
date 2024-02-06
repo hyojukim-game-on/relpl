@@ -69,4 +69,11 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@RequestBody UserInfoRequest request) {
         return userService.getUserInfo(request);
     }
+
+    // 내 기록 보기
+    @PostMapping(value = "/history")
+    public ResponseEntity<CommonResult> getUserHistory(@RequestBody UserHistoryRequest request) throws IOException {
+        log.info("getUserHistory 내부로 들어옴");
+        return userService.getUserHistory(request);
+    }
 }

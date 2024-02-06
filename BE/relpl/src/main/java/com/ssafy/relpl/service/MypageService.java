@@ -104,7 +104,7 @@ public class MypageService {
                 user.setUserPhone(request.getUserPhone());
 
                 // DB에 변경사항 저장..
-//                userRepository.save(user);
+                userRepository.save(user);  
                 
                 // 바뀐 닉네임, 바뀐 핸드폰 번호..
                 log.info("바뀐 닉네임:{}",user.getUserNickname());

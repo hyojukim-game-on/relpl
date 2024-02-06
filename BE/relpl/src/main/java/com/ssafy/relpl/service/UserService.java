@@ -5,8 +5,11 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.relpl.config.AWSS3Config;
+import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.User;
+import com.ssafy.relpl.db.postgre.repository.UserHistoryRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
+import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.dto.response.*;
 import com.ssafy.relpl.service.result.CommonResult;
@@ -43,6 +46,8 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
 //    private final RedisTemplate redisTemplate;
     private final AuthenticationManager authenticationManager;
+    private final UserHistoryRepository userHistoryRepository;
+    private final UserRouteRepository userRouteRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -172,7 +177,7 @@ public class UserService {
             return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(true), "아이디 사용 불가능", 200));
         }
         //중복된 ID 없음
-        return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(false), "아이디 사용 가능", 200));
     }
 
 
@@ -224,15 +229,15 @@ public class UserService {
 
             if (resultUrl != null) {
 
-                    log.info("프로필 사진 s3에 업로드 성공");
+                log.info("프로필 사진 s3에 업로드 성공");
 
-                    // s3에 올린 파일 주소를 db에 유저 객체로 저장하기
-                    user.setUserImage(resultUrl);
-                    userRepository.save(user);
+                // s3에 올린 파일 주소를 db에 유저 객체로 저장하기
+                user.setUserImage(resultUrl);
+                userRepository.save(user);
 
-                    log.info("저장된 프로필 사진 url:{}",user.getUserImage());
-                    log.info(resultUrl);
-                    log.info("DB에 프로필 사진 업로드 성공");
+                log.info("저장된 프로필 사진 url:{}",user.getUserImage());
+                log.info(resultUrl);
+                log.info("DB에 프로필 사진 업로드 성공");
 
                 // 업로드가 성공했을 경우 성공 응답 반환
                 return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(true, "OK", 200));
@@ -291,6 +296,92 @@ public class UserService {
     }
 
 
+    /* getUserHistory : 내 기록 조회 (유저가 참여한 릴레이 조회)
+    * @param : UserHistoryRequest (= userId)
+    * @return : UserHistoryResponse (= 참여 릴레이 수, 누적 거리, 누적 시간, 릴레이 별 상세 정보 리스트)
+    * */
+
+    public ResponseEntity<CommonResult> getUserHistory(UserHistoryRequest request) {
+
+        log.info("getUserHistory in UserService 내부로 들어옴");
+
+        // 참여한 릴레이가 없을 때 0 0 0 빈 리스트로 초기화
+        int totalProject = 0;
+        int userTotalDistance = 0;
+        int userTotalTime = 0;
+
+        // 참여한 릴레이 수 , 플로깅한 총 거리 (m), 플로깅한 총 누적 시간 (분), 릴레이 별 상세 정보
+        ArrayList<Map<String, Object>> detailList = new ArrayList<>();
+
+        // 로그 찍어보기
+        log.info("totalProject:{}",totalProject);
+        log.info("userTotalDistance:{}",userTotalDistance);
+        log.info("userTotalTime:{}",userTotalTime);
+        log.info("detailList:{}",detailList);
+
+        try {
+
+            // DB 의 Project 테이블에서 userId 있는 record 모두 불러오기
+            List<Project> projectList = userHistoryRepository.findProjectByUserId(request.getUserId());
+            log.info("projectList:{}",projectList);
+            log.info(projectList.getClass().getName());
+
+            // 해당 유저가 참여한 릴레이 수 더해주기
+            totalProject = projectList.size();
 
 
+            // 릴레이 참여했을 경우 누적 거리, 시간, 각 릴레이 정보 넣어주기
+            if (totalProject != 0) {
+
+                // 해당 유저가 플로깅 한 총 누적 거리 (DB 의 userRoute 에서 집계해서 더해주기)
+                userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
+
+                // 해당 유저가 플로깅 한 총 누적 시간 (DB 의 userRoute 에서 집계해서 더해주기)
+                userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
+
+                // 유저가 참여한 모든 릴레이에 대해 각 릴레이의 상세 정보를 HashMap 형태로
+                // 넣어서 detailList 완성하기
+                for (Project project : projectList) {
+
+                    Map<String, Object> projectDetails = new HashMap<>();
+
+                    projectDetails.put("projectId", project.getProjectId());
+                    projectDetails.put("projectName", project.getProjectName());
+                    projectDetails.put("projectIsDone", project.isProjectIsDone());
+                    projectDetails.put("createDate", project.getProjectCreateDate());
+                    projectDetails.put("endDate", project.getProjectEndDate());
+                    projectDetails.put("totalDistance", project.getProjectTotalDistance());
+                    projectDetails.put("totalContributor", project.getProjectTotalContributer());
+
+                    // 릴레이에 대한 상세 정보 detailList 에 추가
+                    detailList.add(projectDetails);
+                    }
+
+                    // 응답 데이터 생성
+                    UserHistoryResponse response = UserHistoryResponse.builder()
+                            .totalProject(totalProject)
+                            .userTotalDistance(userTotalDistance)
+                            .userTotalTime(userTotalTime)
+                            .detailList(detailList)
+                            .build();
+
+                    return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "OK", 200));
+            // 릴레이 참여 안 했을 경우 0 0 0 빈 리스트 리턴
+            } else {
+                // 응답 데이터 생성
+                UserHistoryResponse response = UserHistoryResponse.builder()
+                        .totalProject(totalProject)
+                        .userTotalDistance(userTotalDistance)
+                        .userTotalTime(userTotalTime)
+                        .detailList(detailList)
+                        .build();
+
+                return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "OK", 200));
+            }
+        } catch (Exception e) {
+            log.info("유저 아이디로 유저의 플로깅 히스토리 조회 실패");
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "Bad Request"));
+        }
+    }
 }
