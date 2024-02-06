@@ -32,7 +32,7 @@ public class ProjectCreateRouteBusiness {
         try {
             Point startPoint = geomFactoryConfig.getGeometryFactory().createPoint(new Coordinate(request.getProjectStartCoordinate().getX(), request.getProjectStartCoordinate().getY()));
             Point endPoint = geomFactoryConfig.getGeometryFactory().createPoint(new Coordinate(request.getProjectEndCoordinate().getX(), request.getProjectEndCoordinate().getY()));
-            Project project = Project.createRouteProject(request, startPoint, endPoint, 10);
+            Project project = Project.createRouteProject(request, startPoint, endPoint);
             project = projectService.createRouteProject(project);
             Optional<RecommendProject> mongoResult = recommendProjectService.getRecommendProjectById(request.getProjectSelectedId());
             if (mongoResult.isPresent()) {

@@ -89,7 +89,7 @@ public class Project {
 
     }
 
-    public static Project createRouteProject(ProjectCreateRouteRequest request, Point startPoint, Point endPoint, int projectTotalDistance) {
+    public static Project createRouteProject(ProjectCreateRouteRequest request, Point startPoint, Point endPoint) {
         return Project.builder()
                 .userId(request.getUserId())
                 .projectName(request.getProjectName())
@@ -99,8 +99,9 @@ public class Project {
                 .projectStopCoordinate(startPoint)
                 .projectEndCoordinate(endPoint)
                 .projectIsPath(true)
-                .projectRemainingDistance(projectTotalDistance)
-                .projectTotalDistance(projectTotalDistance)
+                .projectRemainingDistance(request.getProjectSelectedTotalDistance())
+                .projectTotalDistance(request.getProjectSelectedTotalDistance())
+                .projectCoordinateTotalSize(request.getProjectSelectedCoordinateTotalSize())
                 .projectIsDone(false)
                 .projectIsPlogging(true)
                 .projectTotalContributer(1)
