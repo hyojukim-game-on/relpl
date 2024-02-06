@@ -176,9 +176,9 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             coords = shortPathList
             color = resources.getColor(R.color.text_gray)
             patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
-            patternInterval = 30
-            width = 30
-            outlineWidth = 0
+            patternInterval = 60
+            width = 25
+            outlineWidth = 1
             map = naverMap
         }
         recommendPath.apply {
@@ -186,9 +186,9 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             coords = recommendPathList
             color = resources.getColor(R.color.sage_green)
             patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
-            patternInterval = 30
-            width = 30
-            outlineWidth = 0
+            patternInterval = 60
+            width = 25
+            outlineWidth = 1
             map = naverMap
         }
 
@@ -203,9 +203,9 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             coords = recommendPathList
             color = resources.getColor(R.color.text_gray)
             patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
-            patternInterval = 30
-            width = 30
-            outlineWidth = 0
+            patternInterval = 60
+            width = 25
+            outlineWidth = 1
             map = naverMap
         }
 
@@ -214,9 +214,9 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             coords = shortPathList
             color = resources.getColor(R.color.sage_green)
             patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
-            patternInterval = 30
-            width = 30
-            outlineWidth = 0
+            patternInterval = 60
+            width = 25
+            outlineWidth = 1
             map = naverMap
         }
     }
@@ -237,28 +237,26 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                     recommendPathList = it.recommendPath.map {  p ->
                         p.toLatLng()
                     }
-                    recommendPathList.forEachIndexed { index, latLng ->
-                        Marker().apply {
-                            position =  latLng
-                            map = naverMap
-                            icon = OverlayImage.fromResource(R.drawable.ic_marker)
-                            iconTintColor =  resources.getColor(R.color.sage_blue)
-                            captionText = (index+1).toString()
-                        }
 
+                    Marker().apply {
+                        position =  recommendPathList[0]
+                        map = naverMap
+                        icon = OverlayImage.fromResource(R.drawable.ic_marker)
+                        iconTintColor =  resources.getColor(R.color.sage_blue)
+                        captionText = "출발점"
                     }
+                    Marker().apply {
+                        position =  recommendPathList.last()
+                        map = naverMap
+                        icon = OverlayImage.fromResource(R.drawable.ic_marker)
+                        iconTintColor =  resources.getColor(R.color.sage_orange)
+                        captionText = "도착점"
+                    }
+
                     shortPathList = it.shortestPath.map { p ->
                         p.toLatLng()
                     }
-                    shortPathList.forEachIndexed { index, latLng ->
-                        Marker().apply {
-                            position =  latLng
-                            map = naverMap
-                            icon = OverlayImage.fromResource(R.drawable.ic_marker)
-                            iconTintColor =  resources.getColor(R.color.sage_orange)
-                            captionText = (index+1).toString()
-                        }
-                    }
+
                     recommendPath = PathOverlay()
                     shortPath = PathOverlay()
 
