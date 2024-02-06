@@ -13,4 +13,5 @@ public interface RecommendProjectRepository extends MongoRepository<RecommendPro
     @Query("{'_id':?0}")
     Optional<RecommendProject> findById(String _id);
 
+    Optional<RecommendProject> findByProjectId(Long projectId);
 }

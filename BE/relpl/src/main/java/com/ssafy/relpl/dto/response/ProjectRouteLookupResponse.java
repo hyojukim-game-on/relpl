@@ -3,6 +3,9 @@ package com.ssafy.relpl.dto.response;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.geo.Point;
+
+import java.util.List;
+
 @Data
 @Builder
 public class ProjectRouteLookupResponse {
@@ -18,10 +21,10 @@ public class ProjectRouteLookupResponse {
     private Point projectStopCoordinate; // 해당 projectId에 UserRoute에서 가장 마지막 늦은 시간에 기록된 userMoveEnd에 해당하는 projectStopCoordinate 좌표
 
 
-    private int progress; // 해당 projectId의 진행률 % (% 단위는 생략)
+    private int projectProgress; // 해당 projectId의 진행률 % (% 단위는 생략)
     private String userMoveMemo; //해당 projectId의 마지막에 기록된 userId의 userMoveMemo
     private String userMoveImage; // 해당 projectId의 마지막에 기록된 userId의 userMoveImage
-//    private GeoJsonLineString recommendLineString; // 해당 projectId에 참여한 모든 userId들이 기록한 userMoveEnd의  projectStopCoordinate
+    private List<Point> projectRoute ; // 해당 projectId를 가진 경로
 
 
     public void addUserMoveMemo(String userMoveMemo) {

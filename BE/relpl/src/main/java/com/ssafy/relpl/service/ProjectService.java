@@ -1,6 +1,8 @@
 package com.ssafy.relpl.service;
 
 import com.ssafy.relpl.config.GeomFactoryConfig;
+import com.ssafy.relpl.db.mongo.entity.RecommendProject;
+import com.ssafy.relpl.db.mongo.repository.RecommendProjectRepository;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.UserRoute;
 import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
@@ -20,9 +22,11 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +42,8 @@ public class ProjectService {
     private final ResponseService responseService;
     private final GeomFactoryConfig geomFactoryConfig;
 
-    private final UserRouteRepository   userRouteRepository;
-
+    private final UserRouteRepository userRouteRepository;
+    private final RecommendProjectRepository recommendProjectRepository;
     @Transactional
     public ResponseEntity<?> projectExist(double x, double y, int distance) {
         try {
@@ -132,7 +136,6 @@ public class ProjectService {
                         .projectCreateDate(project.getProjectCreateDate())
                         .projectEndDate(project.getProjectEndDate())
                         .projectIsPath(project.isProjectIsPath())
-//                        .projectStopCoordinate(project.getProjectStopCoordinate())
                         .projectStopCoordinate(convertPoint)
                         .progress(project.calculateProgress())  // 여기서 calculateProgress 메서드 호출
                         .build();
@@ -201,6 +204,17 @@ public class ProjectService {
 
             if (projectOptional.isPresent()) {
                 Project project = projectOptional.get();
+
+                Optional<RecommendProject> recommendProject = recommendProjectRepository.findByProjectId(project.getProjectId());
+                List<org.springframework.data.geo.Point> convertCurrentProjectPointList = new ArrayList<>();
+                if (recommendProject.isPresent()) {
+                    RecommendProject currentProject = recommendProject.get();
+                    convertCurrentProjectPointList = currentProject.getRecommendLineString().getCoordinates();
+                } else {
+                    log.error("프로젝트 전체 경로 조회 실패");
+                    throw new Exception();
+                }
+
                 org.springframework.data.geo.Point convertPoint = new org.springframework.data.geo.Point(project.getProjectStopCoordinate().getX(), project.getProjectStopCoordinate().getY());
                 // 프로젝트 정보를 ProjectRouteLookupResponse로 매핑
                 ProjectRouteLookupResponse response = ProjectRouteLookupResponse.builder()
@@ -213,11 +227,12 @@ public class ProjectService {
                         .projectEndDate(project.getProjectEndDate())
                         .projectIsPath(project.isProjectIsPath())
                         .projectStopCoordinate(convertPoint)
-                        .progress(project.calculateProgress())  // 여기서 calculateProgress 메서드 호출
+                        .projectProgress(project.calculateProgress())  // 여기서 calculateProgress 메서드 호출
+                        .projectRoute(convertCurrentProjectPointList)
                         .build();
-
                 //추가된 로직 호출
-                setRouteProjectDetails(project, response);
+                setRouteUserMoveDetails(project, response);
+
                 log.info("추가된 로직 호출 완료");
                 return ResponseEntity.ok(responseService.getSingleResult(response, "경로기반 릴레이 상세 정보 조회 성공", 200));
             } else {
@@ -230,13 +245,13 @@ public class ProjectService {
     }
 
     //setRouteProjectDetails 메서드 정의
-    private void setRouteProjectDetails(Project project, ProjectRouteLookupResponse response) {
-        // progress 계산 (이미 project class에서 calculateProgress 메서드로 계산 끝)
-
-        // userMoveMemo 및 userMoveImage 설정
-        setRouteUserMoveDetails(project, response);
-
-    }
+//    private void setRouteProjectDetails(Project project, ProjectRouteLookupResponse response) {
+//        // progress 계산 (이미 project class에서 calculateProgress 메서드로 계산 끝)
+//
+//        // userMoveMemo 및 userMoveImage 설정
+//        setRouteUserMoveDetails(project, response);
+//
+//    }
 
     // setRouteUserMoveDetails 메서드 정의
     private void setRouteUserMoveDetails(Project project, ProjectRouteLookupResponse response) {
@@ -273,8 +288,5 @@ public class ProjectService {
 
     // 안하기로 함.
     // recommendLineString 설정 (MongoDB에서 가져오는 로직이므로 가정하여 작성)
-    // List<Point> recommendLineStringPoints = recommendProjectRepository.findByProjectId(project.getProjectId()).getRecommendLineString().getCoordinates();
-    // GeoJsonLineString recommendLineString = new GeoJsonLineString(recommendLineStringPoints);
-    // response.setRecommendLineString(recommendLineString);
 
 }
