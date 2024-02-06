@@ -3,11 +3,13 @@ package com.gdd.presentation.home
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gdd.presentation.LoginActivity
+import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
@@ -27,10 +29,25 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
 ) {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var mainActivity: MainActivity
 
+    private var backPressedTime = 0L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainActivity = _activity as MainActivity
+
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                   if (System.currentTimeMillis() - backPressedTime < 2000){
+                       mainActivity.finish()
+                   }else{
+                       backPressedTime = System.currentTimeMillis()
+                       showToast(resources.getString(R.string.all_finish_app))
+                   }
+                }
+            })
 
         initView()
         registerObserver()

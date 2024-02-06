@@ -14,6 +14,7 @@
     <string name="all_verify_success">인증에 성공했습니다 :)</string>
     <string name="all_verify_fail">인증에 실패했습니다 :(</string>
     <string name="all_load_fail">정보를 불러오지 못했습니다 :(</string>
+    <string name="all_finish_app">뒤로가기를 한번 더 눌러 종료합니다</string>
 
 
     <string name="start_sign_up">회원가입</string>
