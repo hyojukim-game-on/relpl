@@ -33,6 +33,10 @@ class CreatePathRelayViewModel @Inject constructor(
         get() = _joinRelayResult
 
     var isRecommendedPathSelected = true
+    var selectedPathId = ""
+    var selectedPathDistance = 0
+    lateinit var startCoordinate: Point
+    lateinit var endCoordinate: Point
 
     fun recommendPath(startCoordinate: Point, endCoordinate: Point){
         viewModelScope.launch {

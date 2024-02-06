@@ -39,6 +39,8 @@ class AuthAuthenticator @Inject constructor(
                 null
             } else {
                 Log.d(TAG, "authenticate Success: ${tokenResponse.body()!!.data.accessToken}, ${tokenResponse.body()!!.data.refreshToken}")
+                prefManager.setAccessToken(tokenResponse.body()!!.data.accessToken)
+                prefManager.setRefreshToken(tokenResponse.body()!!.data.refreshToken)
                 response.request.newBuilder()
                     .header("Authorization", "Bearer ${tokenResponse.body()!!.data.accessToken}")
                     .build()

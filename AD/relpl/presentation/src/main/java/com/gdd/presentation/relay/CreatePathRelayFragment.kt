@@ -20,6 +20,7 @@ import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.location.LocationProviderController
 import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentCreatePathRelayBinding
+import com.gdd.presentation.mapper.DateFormatter
 import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
@@ -29,6 +30,7 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
@@ -141,11 +143,23 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
         binding.btnSetPath.setOnClickListener {
             if (binding.recommendPathOverlay.visibility == View.GONE){
                 viewModel.isRecommendedPathSelected = true
+                viewModel.recommendedPathResult.value!!.getOrNull()?.let{
+                    viewModel.selectedPathId = it.recommendId
+                    viewModel.selectedPathDistance = it.recommendTotalDistance
+                    viewModel.startCoordinate = it.recommendPath[0]
+                    viewModel.endCoordinate = it.recommendPath.last()
+                }
                 val dialog = CreatePathRelayDialog(this, viewModel.recommendedPathResult.value!!.getOrNull()!!.recommendTotalDistance)
                 dialog.isCancelable = false
                 dialog.show(this.childFragmentManager, "")
             }else{
                 viewModel.isRecommendedPathSelected = false
+                viewModel.recommendedPathResult.value!!.getOrNull()?.let {
+                    viewModel.selectedPathId = it.shortestId
+                    viewModel.selectedPathDistance = it.shortestTotalDistance
+                    viewModel.startCoordinate = it.shortestPath[0]
+                    viewModel.endCoordinate = it.shortestPath.last()
+                }
                 val dialog = CreatePathRelayDialog(this, viewModel.recommendedPathResult.value!!.getOrNull()!!.shortestTotalDistance)
                 dialog.isCancelable = false
                 dialog.show(this.childFragmentManager, "")
@@ -223,8 +237,27 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                     recommendPathList = it.recommendPath.map {  p ->
                         p.toLatLng()
                     }
+                    recommendPathList.forEachIndexed { index, latLng ->
+                        Marker().apply {
+                            position =  latLng
+                            map = naverMap
+                            icon = OverlayImage.fromResource(R.drawable.ic_marker)
+                            iconTintColor =  resources.getColor(R.color.sage_blue)
+                            captionText = (index+1).toString()
+                        }
+
+                    }
                     shortPathList = it.shortestPath.map { p ->
                         p.toLatLng()
+                    }
+                    shortPathList.forEachIndexed { index, latLng ->
+                        Marker().apply {
+                            position =  latLng
+                            map = naverMap
+                            icon = OverlayImage.fromResource(R.drawable.ic_marker)
+                            iconTintColor =  resources.getColor(R.color.sage_orange)
+                            captionText = (index+1).toString()
+                        }
                     }
                     recommendPath = PathOverlay()
                     shortPath = PathOverlay()
@@ -285,7 +318,13 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
     override fun onCreateButtonClick(name: String, endDate: String) {
         viewModel.createPathRelay(
             prefManager.getUserId(),
-
+            viewModel.selectedPathId,
+            viewModel.selectedPathDistance,
+            name,
+            DateFormatter.curMsToShorFormat(),
+            DateFormatter.koreanToShortFormat(endDate),
+            viewModel.startCoordinate,
+            viewModel.endCoordinate
         )
     }
 
@@ -293,7 +332,4 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
         setDefaultUi()
     }
 
-    override fun onCancelButtonClick() {
-        setDefaultUi()
-    }
 }

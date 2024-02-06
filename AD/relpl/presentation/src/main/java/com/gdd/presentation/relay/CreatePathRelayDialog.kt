@@ -68,7 +68,6 @@ class CreatePathRelayDialog(
         }
 
         binding.tvCancel.setOnClickListener {
-            this.clickInterface?.onCancelButtonClick()
             dismiss()
         }
 
@@ -76,7 +75,6 @@ class CreatePathRelayDialog(
             this.clickInterface?.onReSetButtonClick()
             dismiss()
         }
-
 
         return binding.root
     }
@@ -91,6 +89,4 @@ interface CreatePathDialogClickInterface {
     fun onCreateButtonClick(name: String, endDate: String)
 
     fun onReSetButtonClick()
-
-    fun onCancelButtonClick()
 }
