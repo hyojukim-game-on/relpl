@@ -2,14 +2,16 @@ package com.ssafy.relpl.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.locationtech.jts.geom.Point;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.ToString;
+import org.springframework.data.geo.Point;
 
 import java.util.List;
 
 @Getter
 @Setter
-public class ProjectStopRequest {
+@ToString
+
+public class ProjectStopRouteRequest {
     private Long userId;
     private Long projectId;
     private String userNickname;
@@ -20,5 +22,4 @@ public class ProjectStopRequest {
     private int moveTime;
     private List<Point> userMovePath;
     private String moveMemo;
-    private MultipartFile moveImage;
 }

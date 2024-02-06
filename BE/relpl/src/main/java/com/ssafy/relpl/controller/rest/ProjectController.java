@@ -3,16 +3,14 @@ package com.ssafy.relpl.controller.rest;
 import com.ssafy.relpl.business.ProjectCreateRouteBusiness;
 import com.ssafy.relpl.business.ProjectRecommendBusiness;
 import com.ssafy.relpl.config.GeomFactoryConfig;
-import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
-import com.ssafy.relpl.dto.request.ProjectCreateRouteRequest;
-import com.ssafy.relpl.dto.request.ProjectJoinRequest;
-import com.ssafy.relpl.dto.request.ProjectRecommendRequest;
-import com.ssafy.relpl.dto.request.ProjectStopRequest;
+import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.service.ProjectService;
+import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,14 +61,21 @@ public class ProjectController {
         return projectService.join(request);
     }
 
-    @PostMapping(value = "/stop", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> stop(@RequestBody ProjectStopRequest request) throws ExecutionException, InterruptedException {
-        return projectService.stop(request);
-    }
 //    @PostMapping("/project/create/route")
 //    public ResponseEntity<?> projectRoute(@RequestBody ProjectCreateRouteRequest request) {
 //
 //    }
+
+    @PostMapping("/stop")
+    public ResponseEntity<?> stopList(@RequestBody ProjectStopRouteRequest request) throws IOException, ExecutionException, InterruptedException {
+        log.info(request.toString());
+        return projectService.stopRoute(request);
+    }
+
+    @PutMapping(value = "/stop", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> stopPhoto(@ModelAttribute ProjectStopPhotoRequest request) {
+        return projectService.stopPhoto(request);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllProjectList() {

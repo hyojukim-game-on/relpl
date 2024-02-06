@@ -1,6 +1,6 @@
 package com.ssafy.relpl.db.mongo.entity;
 
-import com.ssafy.relpl.dto.request.ProjectStopRequest;
+import com.ssafy.relpl.dto.request.ProjectStopRouteRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,11 +26,11 @@ public class UserRouteDetail {
     private Long projectId;
     private GeoJsonLineString recommendLineString;
 
-    public static UserRouteDetail createUserRouteDetail(ProjectStopRequest request) {
+    public static UserRouteDetail createUserRouteDetail(ProjectStopRouteRequest request) {
         return UserRouteDetail.builder()
                 .userId(request.getUserId())
                 .projectId(request.getProjectId())
-                .recommendLineString(convertToGeoJsonLineString(request.getUserMovePath()))
+//                .recommendLineString(convertToGeoJsonLineString(request.getUserMovePath()))
                 .build();
     }
 

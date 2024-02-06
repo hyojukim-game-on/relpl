@@ -15,8 +15,9 @@ import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
 import com.ssafy.relpl.dto.request.ProjectCreateDistanceRequest;
 import com.ssafy.relpl.dto.request.ProjectJoinRequest;
+import com.ssafy.relpl.dto.request.ProjectStopPhotoRequest;
+import com.ssafy.relpl.dto.request.ProjectStopRouteRequest;
 import com.ssafy.relpl.dto.response.ProjectAllResponse;
-import com.ssafy.relpl.dto.request.ProjectStopRequest;
 import com.ssafy.relpl.dto.response.ProjectCreateDistanceResponse;
 import com.ssafy.relpl.dto.response.ProjectExistResponse;
 import com.ssafy.relpl.dto.response.TmapApiResponse;
@@ -136,8 +137,8 @@ public class ProjectService {
     }
 
     @Transactional
-    public ResponseEntity<?> stop(ProjectStopRequest request) throws ExecutionException, InterruptedException {
-        log.info("project stop");
+    public ResponseEntity<?> stopPhoto(ProjectStopPhotoRequest request) {
+        log.info("project stop photo");
 
         // 플로깅 이미지가 없다면 에러
         if (request.getMoveImage().isEmpty()) {
@@ -149,56 +150,83 @@ public class ProjectService {
         // 플로깅 이미지 저장 후
         if (resultUrl != null) {
             log.info("플로깅 사진 s3에 업로드 성공");
-            Optional<User> userOptional = userRepository.findById(request.getUserId());
+            //해당 유저가 해당 프로젝트에 참여한 이력을 최신순으로 조회.
+            List<UserRoute> userRouteList = userRouteRepository.findByUserIdAndProjectIdOrderByUserMoveIdDesc(request.getUserId(), request.getProjectId());
 
-            //유저 조회
-            if(userOptional.isPresent()) {
-                User user = userOptional.get();
-                Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
+            //참여한 이력이 존재하는 경우
+            if(userRouteList.size() > 0) {
+                log.info("UserRoute 조회 성공");
+                UserRoute route = userRouteList.get(0);
+                route.setUserMoveImage(resultUrl);
 
-                //프로젝트 조회
-                if(projectOptional.isPresent()) {
-                    Project project = projectOptional.get();
-
-                    //프로젝트가 종료되지 않았고, 누군가 참여중인지 확인
-                    if(!project.isProjectIsDone() && project.isProjectIsPlogging()) {
-
-                        //가장 가까운 도로 id 찾아서 map 에 넣기 (tmap api 호출) wait
-                        HashMap<String, String> roadMap = performAsyncTasks(request.getUserMovePath());
-
-                        //map 의 key 를 redis 에 저장 (road_{tmapid})
-                        addRoadIntoRedis(roadMap);
-
-                        //도로를 mongoDB 에 저장 (키 반환)
-                        UserRouteDetail userRouteDetail = userRouteDetailRepository.save(UserRouteDetail.createUserRouteDetail(request));
-
-                        // UserRoute 객체 생성
-                        UserRoute userRoute = UserRoute.builder()
-                                .userId(request.getUserId())
-                                .projectId(request.getProjectId())
-                                .userNickname(request.getUserNickname())
-                                .projectName(request.getProjectName())
-                                .userMoveStart(request.getMoveStart())
-                                .userMoveEnd(request.getMoveEnd())
-                                .userMoveDistance(request.getMoveDistance())
-                                .userMoveTime(request.getMoveTime())
-                                .userMovePath(userRouteDetail.getId())
-                                .userMoveMemo(request.getMoveMemo())
-                                .userMoveImage(resultUrl)
-                                .build();
-
-                        // UserRoute 객체 저장
-                        userRouteRepository.save(userRoute);
-                        return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 중단 성공", 200));
-                    }
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 이미 종료되거나, 플로깅 중이지 않음"));
-                }
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 존재하지 않음"));
+                return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 중단 성공", 200));
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 유저가 존재하지 않음"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 유저 경로 조회 실패"));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: s3 이미지 저장 실패"));
     }
+
+    @Transactional
+    public ResponseEntity<?> stopRoute(ProjectStopRouteRequest request) throws ExecutionException, InterruptedException {
+        log.info("project stop route");
+        log.info("request: " + request.toString());
+
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
+
+        //유저 조회
+        if(userOptional.isPresent()) {
+            log.info("유저 조회");
+            User user = userOptional.get();
+            Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
+
+            //프로젝트 조회
+            if(projectOptional.isPresent()) {
+                log.info("프로젝트 조회");
+                Project project = projectOptional.get();
+
+                //프로젝트가 종료되지 않았고, 누군가 참여중인지 확인
+                if(!project.isProjectIsDone() && project.isProjectIsPlogging()) {
+                    log.info("프로젝트 플로깅 중 확인");
+
+                    //가장 가까운 도로 id 찾아서 map 에 넣기 (tmap api 호출) wait
+                    HashMap<String, String> roadMap = performAsyncTasks(request.getUserMovePath());
+                    log.info("가까운 도로 id 찾기");
+
+                    //map 의 key 를 redis 에 저장 (road_{tmapid})
+                    addRoadIntoRedis(roadMap);
+                    log.info("redis 도로 저장");
+
+                    //도로를 mongoDB 에 저장 (키 반환)
+                    UserRouteDetail userRouteDetail = userRouteDetailRepository.save(UserRouteDetail.createUserRouteDetail(request));
+                    log.info("mongoDB 도로 저장");
+
+                    // UserRoute 객체 생성
+                    UserRoute userRoute = UserRoute.builder()
+                            .userId(request.getUserId())
+                            .projectId(request.getProjectId())
+                            .userNickname(request.getUserNickname())
+                            .projectName(request.getProjectName())
+                            .userMoveStart(request.getMoveStart())
+                            .userMoveEnd(request.getMoveEnd())
+                            .userMoveDistance(request.getMoveDistance())
+                            .userMoveTime(request.getMoveTime())
+                            .userMovePath(userRouteDetail.getId())
+                            .userMoveMemo(request.getMoveMemo())
+                            .build();
+
+                    // UserRoute 객체 저장
+                    userRouteRepository.save(userRoute);
+                    log.info("UserRoute 저장");
+
+                    return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 중단 성공", 200));
+                }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 이미 종료되거나, 플로깅 중이지 않음"));
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 존재하지 않음"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 유저가 존재하지 않음"));
+    }
+
 
     private void addRoadIntoRedis(HashMap<String, String> roadMap) {
         log.info("Redis linkId 저장");
@@ -215,39 +243,92 @@ public class ProjectService {
         }
     }
 
-    @Async
-    public CompletableFuture<TmapApiResponse> asyncMethod(Point point) {
-        //tmap api 가까운 도로 호출
-        TmapApiResponse response = tmapService.callTmapApi(point.getX(), point.getY());
+    // 비동기 메서드 정의
+    public CompletableFuture<TmapApiResponse> asyncMethod(org.springframework.data.geo.Point point) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                // 5초 후에 작업 수행
+                Thread.sleep(1000);
+                log.info("Tmap api 호출");
 
-        return CompletableFuture.completedFuture(response);
-    }
+                // tmap api 가까운 도로 호출
+                TmapApiResponse response = tmapService.callTmapApi(point.getX(), point.getY());
+                log.info("TmapApiResponse: " + response.toString());
 
-    // 모든 비동기 작업이 완료될 때까지 기다리는 메서드
-    public void waitForAllTasks(List<Future<TmapApiResponse>> futures, HashMap<String, String> map) throws ExecutionException, InterruptedException {
-        for (Future<TmapApiResponse> future : futures) {
-            Long linkId = future.get().getResultData().getHeader().getLinkId();
-            map.put("road_" + linkId, "This road has already been plugged.");
-        }
+                return response;
+            } catch (InterruptedException e) {
+                // 예외 처리
+                Thread.currentThread().interrupt();
+                return null;
+            }
+        });
     }
 
     // 비동기 작업들을 수행하고 모든 작업이 완료될 때까지 기다리는 메서드
-    public HashMap<String, String> performAsyncTasks(List<Point> coordintates) throws ExecutionException, InterruptedException {
+    public HashMap<String, String> performAsyncTasks(List<org.springframework.data.geo.Point> coordinates) throws ExecutionException, InterruptedException {
         log.info("Tmap api 호출");
 
-        List<Future<TmapApiResponse>> futures = new ArrayList<>();
+        List<CompletableFuture<TmapApiResponse>> futures = new ArrayList<>();
         HashMap<String, String> map = new HashMap<>();
 
-        // 비동기 메서드 호출 및 Future 객체 저장 (마지막 플로깅 장소 제외)
-        for (int i=0; i<coordintates.size() - 1; i++) {
-            futures.add(asyncMethod(coordintates.get(i)).toCompletableFuture());
+        // 비동기 메서드 호출 및 CompletableFuture 객체 저장 (마지막 플로깅 장소 제외)
+        for (int i = 0; i < coordinates.size() - 1; i++) {
+            futures.add(asyncMethod(coordinates.get(i)));
         }
-        // 모든 비동기 작업이 완료될 때까지 기다림
-        waitForAllTasks(futures, map);
 
-        //도로 id 반환
+        // 모든 CompletableFuture 객체를 조합하여 하나의 CompletableFuture 생성
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        // 모든 작업이 완료될 때까지 기다림
+        allOf.join();
+
+        // 결과를 처리
+        for (CompletableFuture<TmapApiResponse> future : futures) {
+            TmapApiResponse response = future.get(); // 결과를 얻음
+            if (response != null) {
+                Long linkId = response.getResultData().getHeader().getLinkId();
+                map.put("road_" + linkId, "This road has already been plugged.");
+            }
+        }
+
+        // 결과 반환
         return map;
     }
+
+//    @Async
+//    public CompletableFuture<TmapApiResponse> asyncMethod(org.springframework.data.geo.Point point) {
+//        log.info("Tmap api 호출");
+//        //tmap api 가까운 도로 호출
+//        TmapApiResponse response = tmapService.callTmapApi(point.getX(), point.getY());
+//        log.info("TmapApiResponse: " + response.toString());
+//        return CompletableFuture.completedFuture(response);
+//    }
+//
+//    // 모든 비동기 작업이 완료될 때까지 기다리는 메서드
+//    public void waitForAllTasks(List<Future<TmapApiResponse>> futures, HashMap<String, String> map) throws ExecutionException, InterruptedException {
+//        for (Future<TmapApiResponse> future : futures) {
+//            Long linkId = future.get().getResultData().getHeader().getLinkId();
+//            map.put("road_" + linkId, "This road has already been plugged.");
+//        }
+//    }
+//
+//    // 비동기 작업들을 수행하고 모든 작업이 완료될 때까지 기다리는 메서드
+//    public HashMap<String, String> performAsyncTasks(List<org.springframework.data.geo.Point> coordintates) throws ExecutionException, InterruptedException {
+//        log.info("Tmap api 호출");
+//
+//        List<Future<TmapApiResponse>> futures = new ArrayList<>();
+//        HashMap<String, String> map = new HashMap<>();
+//
+//        // 비동기 메서드 호출 및 Future 객체 저장 (마지막 플로깅 장소 제외)
+//        for (int i=0; i<coordintates.size() - 1; i++) {
+//            futures.add(asyncMethod(coordintates.get(i)).toCompletableFuture());
+//        }
+//        // 모든 비동기 작업이 완료될 때까지 기다림
+//        waitForAllTasks(futures, map);
+//
+//        //도로 id 반환
+//        return map;
+//    }
 
     /* setUserProfilePhoto : s3에 프로젝트 중단 시 사진 업로드하기
     @param : 프로젝트 중단 시 제공한 사진 파일
