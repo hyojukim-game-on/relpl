@@ -2,12 +2,16 @@ package com.ssafy.relpl.db.postgre.repository;
 
 import com.ssafy.relpl.db.postgre.entity.UserRoute;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
+@Repository
 public interface UserRouteRepository extends JpaRepository<UserRoute, Long> {
-    Optional<UserRoute> findLatestUserRouteByUserIdAndProjectId(Long userId, Long projectId);
+    UserRoute findLatestUserRouteByUserIdAndProjectId(Long userId, Long projectId);
 
-    Optional<UserRoute> findTopByUserIdAndProjectIdAndUserMoveEnd(Long userId, Long projectId, String userMoveEnd);
+    UserRoute findTopByUserIdAndProjectIdAndUserMoveEnd(Long userId, Long projectId, String userMoveEnd);
+
+    List<UserRoute> findByProjectId(Long projectId);
+//    List<Long> findDistinctUserIdsByProjectId(Long projectId);
 }
-

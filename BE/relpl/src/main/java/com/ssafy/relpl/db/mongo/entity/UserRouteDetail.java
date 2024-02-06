@@ -26,6 +26,7 @@ public class UserRouteDetail {
     private Long projectId;
     private GeoJsonLineString recommendLineString;
 
+    // 상세릴레이 정보 조회 로직 실행을 위해서 일단 재성님이 주석처리 오더 내리심.
 //    public static UserRouteDetail createUserRouteDetail(ProjectStopRequest request) {
 //        return UserRouteDetail.builder()
 //                .userId(request.getUserId())

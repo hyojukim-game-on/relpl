@@ -15,6 +15,7 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
@@ -105,168 +107,165 @@ public class ProjectService {
         }
     }
 
-//    // 거리기반 릴레이 상세 정보 조회 로직
-//    public ResponseEntity<?> lookupDistance(ProjectDistanceLookupRequest request) {
-//        try {
-//            // 해당 프로젝트 조회
-//            Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
-//
-//            if (projectOptional.isPresent()) {
-//                Project project = projectOptional.get();
-//
-//                // 프로젝트 정보를 ProjectDistanceLookupResponse로 매핑
-//                ProjectDistanceLookupResponse response = ProjectDistanceLookupResponse.builder()
-//                        .projectId(project.getProjectId())
-//                        .projectName(project.getProjectName())
-//                        .projectTotalContributer(project.getProjectTotalContributer())
-//                        .projectTotalDistance(project.getProjectTotalDistance())
-//                        .projectRemainingDistance(project.getProjectRemainingDistance())
-//                        .projectCreateDate(project.getProjectCreateDate())
-//                        .projectEndDate(project.getProjectEndDate())
-//                        .projectIsPath(project.isProjectIsPath())
-//                        .projectStopCoordinate(project.getProjectStopCoordinate())
-//                        .build();
-//
-//                // progress 계산 및 설정, userMoveMemo 및 userMoveImage 설정 로직 추가
-//                setDistanceProjectDetails(project, response);
-//
-//                return ResponseEntity.ok(responseService.getSingleResult(response, "거리기반 릴레이 상세 정보 조회 성공", 200));
-//            } else {
-//                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "프로젝트가 존재하지 않습니다."));
-//            }
-//        } catch (Exception e) {
-//            log.error("거리기반 릴레이 상세 정보 조회 에러", e);
-//            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "거리기반 릴레이 상세 정보 조회 실패"));
-//        }
-//    }
-//
-//    // setDistanceProjectDetails 메서드 정의
-//    private void setDistanceProjectDetails(Project project, ProjectDistanceLookupResponse response) {
-//        // progress 계산
-//        double totalDistance = project.getProjectTotalDistance();
-//        double totalMoveDistance = 0;
-//
-//        for (UserRoute userRoute : project.getUserRoutes()) {
-//            totalMoveDistance += userRoute.getUserMoveDistance();
-//        }
-//
-//        int progress = (int) ((totalMoveDistance / totalDistance) * 100);
-//        response.setProgress(progress);
-//
-//        // userMoveMemo 및 userMoveImage 설정
-//        setUserMoveDetails(project, response);
-//    }
-//
-//    // userMoveMemo 및 userMoveImage 설정 로직
-//    private void setUserMoveDetails(Project project, ProjectDistanceLookupResponse response) {
-//        // 해당 프로젝트에 참여한 모든 userId 조회
-//        List<Long> userIds = project.getUserRoutes().stream().map(UserRoute::getUserId).distinct().collect(Collectors.toList());
-//
-//        // 가장 늦은 시간에 기록된 userMoveEnd 찾기
-//        String latestUserMoveEnd = "";
-//        for (Long userId : userIds) {
-//            Optional<UserRoute> latestUserRoute = userRouteRepository.findLatestUserRouteByUserIdAndProjectId(userId, project.getProjectId());
-//            if (latestUserRoute.isPresent()) {
-//                String userMoveEnd = latestUserRoute.get().getUserMoveEnd();
-//                if (userMoveEnd.compareTo(latestUserMoveEnd) > 0) {
-//                    latestUserMoveEnd = userMoveEnd;
-//                }
-//            }
-//        }
-//
-//        // userMoveEnd가 latestUserMoveEnd인 userId의 userMoveMemo 및 userMoveImage 가져오기
-//        for (Long userId : userIds) {
-//            Optional<UserRoute> userRoute = userRouteRepository.findTopByUserIdAndProjectIdAndUserMoveEnd(userId, project.getProjectId(), latestUserMoveEnd);
-//            if (userRoute.isPresent()) {
-//                response.setUserMoveMemo(userRoute.get().getUserMoveMemo());
-//                response.setUserMoveImage(userRoute.get().getUserMoveImage());
-//                break; // 가장 늦은 시간에 기록된 userMoveEnd를 찾았으면 루프 종료
-//            }
-//        }
-//    }
-//
-//
-//    // 경로 기반 릴레이 상세 정보 조호 로직
-//    public ResponseEntity<?> lookupRoute(ProjectRouteLookupRequest request) {
-//        try {
-//            // 해당 프로젝트 조회
-//            Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
-//
-//            if (projectOptional.isPresent()) {
-//                Project project = projectOptional.get();
-//
-//                // 프로젝트 정보를 ProjectRouteLookupResponse로 매핑
-//                ProjectRouteLookupResponse response = ProjectRouteLookupResponse.builder()
-//                        .projectId(project.getProjectId())
-//                        .projectName(project.getProjectName())
-//                        .projectTotalContributer(project.getProjectTotalContributer())
-//                        .projectTotalDistance(project.getProjectTotalDistance())
-//                        .projectRemainingDistance(project.getProjectRemainingDistance())
-//                        .projectCreateDate(project.getProjectCreateDate())
-//                        .projectEndDate(project.getProjectEndDate())
-//                        .projectIsPath(project.isProjectIsPath())
-//                        .projectStopCoordinate(project.getProjectStopCoordinate())
-//                        .build();
-//
-//                // 추가된 로직 호출
-//                setRouteProjectDetails(project, response);
-//
-//                return ResponseEntity.ok(responseService.getSingleResult(response, "경로기반 릴레이 상세 정보 조회 성공", 200));
-//            } else {
-//                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "프로젝트가 존재하지 않습니다."));
-//            }
-//        } catch (Exception e) {
-//            log.error("경로기반 릴레이 상세 정보 조회 에러", e);
-//            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "경로기반 릴레이 상세 정보 조회 실패"));
-//        }
-//    }
-//
-//    // setRouteProjectDetails 메서드 정의
-//    private void setRouteProjectDetails(Project project, ProjectRouteLookupResponse response) {
-//        // progress 계산
-//        double totalDistance = project.getProjectTotalDistance();
-//        double totalMoveDistance = 0;
-//
-//        for (UserRoute userRoute : project.getUserRoutes()) {
-//            totalMoveDistance += userRoute.getUserMoveDistance();
-//        }
-//
-//        int progress = (int) ((totalMoveDistance / totalDistance) * 100);
-//        response.setProgress(progress);
-//
-//        // userMoveMemo 및 userMoveImage 설정
-//        setUserMoveDetails(project, response);
-//
-//    }
-//
-//    // setRouteUserMoveDetails 메서드 정의
-//    private void setRouteUserMoveDetails(Project project, ProjectRouteLookupResponse response) {
-//        // 해당 프로젝트에 참여한 모든 userId 조회
-//        List<Long> userIds = project.getUserRoutes().stream().map(UserRoute::getUserId).distinct().collect(Collectors.toList());
-//
-//        // 가장 늦은 시간에 기록된 userMoveEnd 찾기
-//        String latestUserMoveEnd = "";
-//        for (Long userId : userIds) {
-//            Optional<UserRoute> latestUserRoute = userRouteRepository.findLatestUserRouteByUserIdAndProjectId(userId, project.getProjectId());
-//            if (latestUserRoute.isPresent()) {
-//                String userMoveEnd = latestUserRoute.get().getUserMoveEnd();
-//                if (userMoveEnd.compareTo(latestUserMoveEnd) > 0) {
-//                    latestUserMoveEnd = userMoveEnd;
-//                }
-//            }
-//        }
-//
-//        // userMoveEnd가 latestUserMoveEnd인 userId의 userMoveMemo 및 userMoveImage 가져오기
-//        for (Long userId : userIds) {
-//            Optional<UserRoute> userRoute = userRouteRepository.findTopByUserIdAndProjectIdAndUserMoveEnd(userId, project.getProjectId(), latestUserMoveEnd);
-//            if (userRoute.isPresent()) {
-//                response.setUserMoveMemo(userRoute.get().getUserMoveMemo());
-//                response.setUserMoveImage(userRoute.get().getUserMoveImage());
-//                break; // 가장 늦은 시간에 기록된 userMoveEnd를 찾았으면 루프 종료
-//            }
-//        }
-//    }
+    // 거리기반 릴레이 상세 정보 조회 로직
+    public ResponseEntity<?> lookupDistance(ProjectDistanceLookupRequest request) {
+        try {
+            // 해당 프로젝트 조회
+            Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
 
+            if (projectOptional.isPresent()) {
+                Project project = projectOptional.get();
+                org.springframework.data.geo.Point convertPoint = new org.springframework.data.geo.Point(project.getProjectStopCoordinate().getX(), project.getProjectStopCoordinate().getY());
+                // 프로젝트 정보를 ProjectDistanceLookupResponse로 매핑
+                ProjectDistanceLookupResponse response = ProjectDistanceLookupResponse.builder()
+                        .projectId(project.getProjectId())
+                        .projectName(project.getProjectName())
+                        .projectTotalContributer(project.getProjectTotalContributer())
+                        .projectTotalDistance(project.getProjectTotalDistance())
+                        .projectRemainingDistance(project.getProjectRemainingDistance())
+                        .projectCreateDate(project.getProjectCreateDate())
+                        .projectEndDate(project.getProjectEndDate())
+                        .projectIsPath(project.isProjectIsPath())
+//                        .projectStopCoordinate(project.getProjectStopCoordinate())
+                        .projectStopCoordinate(convertPoint)
+                        .progress(project.calculateProgress())  // 여기서 calculateProgress 메서드 호출
+                        .build();
+
+                // progress 계산 및 설정, userMoveMemo 및 userMoveImage 설정 로직 추가
+                setDistanceProjectDetails(project, response);
+
+                return ResponseEntity.ok(responseService.getSingleResult(response, "거리기반 릴레이 상세 정보 조회 성공", 200));
+            } else {
+                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "프로젝트가 존재하지 않습니다."));
+            }
+        } catch (Exception e) {
+            log.error("거리기반 릴레이 상세 정보 조회 에러", e);
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "거리기반 릴레이 상세 정보 조회 실패"));
+        }
+    }
+
+    // setDistanceProjectDetails 메서드 정의
+    private void setDistanceProjectDetails(Project project, ProjectDistanceLookupResponse response) {
+        // progress 계산 (이미 project class에서 calculateProgress 메서드로 계산 끝)
+
+        // userMoveMemo 및 userMoveImage 설정
+        setDistanceUserMoveDetails(project, response);
+    }
+
+    // userMoveMemo 및 userMoveImage 설정 로직
+    private void setDistanceUserMoveDetails(Project project, ProjectDistanceLookupResponse response) {
+        // 해당 프로젝트에 참여한 모든 userId 조회
+        List<UserRoute> userRouteList = userRouteRepository.findByProjectId(project.getProjectId());
+        List<Long> userIds = new ArrayList<>();
+        for(UserRoute userRoute : userRouteList) userIds.add(userRoute.getUserId());
+        log.info("프로젝트에 참여한 모든 userId 조회");
+
+        // 가장 늦은 시간에 기록된 userMoveEnd 찾기
+        String latestUserMoveEnd = "";
+        for (Long userId : userIds) {
+            // Optional<UserRoute>에서 직접 UserRoute 객체 추출
+            UserRoute latestUserRoute = userRouteRepository.findLatestUserRouteByUserIdAndProjectId(userId, project.getProjectId());
+            if (latestUserRoute != null) {
+                String userMoveEnd = latestUserRoute.getUserMoveEnd();
+                if (userMoveEnd.compareTo(latestUserMoveEnd) > 0) {
+                    latestUserMoveEnd = userMoveEnd;
+                }
+            }
+        }
+        log.info("가장 늦은 시간에 기록된 userMoveEnd 찾기");
+
+        // userMoveEnd가 latestUserMoveEnd인 userId의 userMoveMemo 및 userMoveImage 가져오기
+        for (Long userId : userIds) {
+            UserRoute userRoute = userRouteRepository.findTopByUserIdAndProjectIdAndUserMoveEnd(userId, project.getProjectId(), latestUserMoveEnd);
+            if (userRoute != null) {
+                response.addUserMoveMemo(userRoute.getUserMoveMemo());  // 수정된 부분: setUserMoveMemo에서 addUserMoveMemo로 변경
+                response.addUserMoveImage(userRoute.getUserMoveImage());  // 수정된 부분: setUserMoveImage에서 addUserMoveImage로 변경
+                break; // 가장 늦은 시간에 기록된 userMoveEnd를 찾았으면 루프 종료
+            }
+        }
+        log.info("userMoveMemo 및 userMoveImage 가져오기");
+    }
+
+
+    // 경로 기반 릴레이 상세 정보 조호 로직
+    public ResponseEntity<?> lookupRoute(ProjectRouteLookupRequest request) {
+        try {
+            // 해당 프로젝트 조회
+            Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
+
+            if (projectOptional.isPresent()) {
+                Project project = projectOptional.get();
+                org.springframework.data.geo.Point convertPoint = new org.springframework.data.geo.Point(project.getProjectStopCoordinate().getX(), project.getProjectStopCoordinate().getY());
+                // 프로젝트 정보를 ProjectRouteLookupResponse로 매핑
+                ProjectRouteLookupResponse response = ProjectRouteLookupResponse.builder()
+                        .projectId(project.getProjectId())
+                        .projectName(project.getProjectName())
+                        .projectTotalContributer(project.getProjectTotalContributer())
+                        .projectTotalDistance(project.getProjectTotalDistance())
+                        .projectRemainingDistance(project.getProjectRemainingDistance())
+                        .projectCreateDate(project.getProjectCreateDate())
+                        .projectEndDate(project.getProjectEndDate())
+                        .projectIsPath(project.isProjectIsPath())
+                        .projectStopCoordinate(convertPoint)
+                        .progress(project.calculateProgress())  // 여기서 calculateProgress 메서드 호출
+                        .build();
+
+                //추가된 로직 호출
+                setRouteProjectDetails(project, response);
+                log.info("추가된 로직 호출 완료");
+                return ResponseEntity.ok(responseService.getSingleResult(response, "경로기반 릴레이 상세 정보 조회 성공", 200));
+            } else {
+                return ResponseEntity.badRequest().body(responseService.getFailResult(400, "프로젝트가 존재하지 않습니다."));
+            }
+        } catch (Exception e) {
+            log.error("경로기반 릴레이 상세 정보 조회 에러", e);
+            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "경로기반 릴레이 상세 정보 조회 실패"));
+        }
+    }
+
+    //setRouteProjectDetails 메서드 정의
+    private void setRouteProjectDetails(Project project, ProjectRouteLookupResponse response) {
+        // progress 계산 (이미 project class에서 calculateProgress 메서드로 계산 끝)
+
+        // userMoveMemo 및 userMoveImage 설정
+        setRouteUserMoveDetails(project, response);
+
+    }
+
+    // setRouteUserMoveDetails 메서드 정의
+    private void setRouteUserMoveDetails(Project project, ProjectRouteLookupResponse response) {
+        // 해당 프로젝트에 참여한 모든 userId 조회
+        List<UserRoute> userRouteList = userRouteRepository.findByProjectId(project.getProjectId());
+        List<Long> userIds = new ArrayList<>();
+        for(UserRoute userRoute : userRouteList) userIds.add(userRoute.getUserId());
+        log.info("프로젝트에 참여한 모든 userId 조회");
+
+        // 가장 늦은 시간에 기록된 userMoveEnd 찾기
+        String latestUserMoveEnd = "";
+        for (Long userId : userIds) {
+            UserRoute latestUserRoute = userRouteRepository.findLatestUserRouteByUserIdAndProjectId(userId, project.getProjectId());
+            if (latestUserRoute != null) {
+                String userMoveEnd = latestUserRoute.getUserMoveEnd();
+                if (userMoveEnd.compareTo(latestUserMoveEnd) > 0) {
+                    latestUserMoveEnd = userMoveEnd;
+                }
+            }
+        }
+        log.info("가장 늦은 시간에 기록된 userMoveEnd 찾기");
+
+        // userMoveEnd가 latestUserMoveEnd인 userId의 userMoveMemo 및 userMoveImage 가져오기
+        for (Long userId : userIds) {
+            UserRoute userRoute = userRouteRepository.findTopByUserIdAndProjectIdAndUserMoveEnd(userId, project.getProjectId(), latestUserMoveEnd);
+            if (userRoute != null) {
+                response.addUserMoveMemo(userRoute.getUserMoveMemo());  // 수정된 부분: setUserMoveMemo에서 addUserMoveMemo로 변경
+                response.addUserMoveImage(userRoute.getUserMoveImage());  // 수정된 부분: setUserMoveImage에서 addUserMoveImage로 변경
+                break; // 가장 늦은 시간에 기록된 userMoveEnd를 찾았으면 루프 종료
+            }
+        }
+        log.info("userMoveMemo 및 userMoveImage 가져오기");
+    }
+
+    // 안하기로 함.
     // recommendLineString 설정 (MongoDB에서 가져오는 로직이므로 가정하여 작성)
     // List<Point> recommendLineStringPoints = recommendProjectRepository.findByProjectId(project.getProjectId()).getRecommendLineString().getCoordinates();
     // GeoJsonLineString recommendLineString = new GeoJsonLineString(recommendLineStringPoints);

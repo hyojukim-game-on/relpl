@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -62,6 +63,13 @@ public class Project {
     @Column (name = "project_total_contributer")
     private int projectTotalContributer;
 
+    @Column(name = "project_coordinate_total_size")
+    private int projectCoordinateTotalSize;
+
+    @Column(name = "project_coordinate_current_index")
+    private int projectCoordinateCurrentSize;
+
+
     public static Project createDistanceProject(ProjectCreateDistanceRequest request, Point startPoint) {
         return Project.builder()
                 .userId(request.getUserId())
@@ -78,6 +86,7 @@ public class Project {
                 .projectIsPlogging(true)
                 .projectTotalContributer(1)
                 .build();
+
     }
 
     public static Project createRouteProject(ProjectCreateRouteRequest request, Point startPoint, Point endPoint, int projectTotalDistance) {
@@ -96,11 +105,18 @@ public class Project {
                 .projectIsPlogging(true)
                 .projectTotalContributer(1)
                 .build();
+
     }
 
-//    // Project 클래스에 getUserRoutes() 메서드 추가
-//    public List<UserRoute> getUserRoutes() {
-//        // 해당 메서드의 구현 내용 추가
-//        return this.userRoutes;
-//    }
+    // progress 진행률 계산
+    public int calculateProgress() {
+        if (projectCoordinateTotalSize == 0) {
+            // 예외 처리: 분모가 0일 경우, progress는 0으로 설정
+            return 0;
+        }
+
+        double progressPercentage = ((double) projectCoordinateCurrentSize / projectCoordinateTotalSize) * 100;
+        return (int) progressPercentage;
+    }
+
 }
