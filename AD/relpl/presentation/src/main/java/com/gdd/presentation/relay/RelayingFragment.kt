@@ -17,7 +17,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
-import com.gdd.presentation.base.location.LocationTrackingService
+import com.gdd.presentation.base.location.relaying_service.DistanceLocationTrackingService
+import com.gdd.presentation.base.location.relaying_service.LocationTrackingService
 import com.gdd.presentation.databinding.FragmentRelayingBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.naver.maps.map.CameraAnimation
@@ -29,7 +30,6 @@ import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -50,7 +50,6 @@ class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
         path = PathOverlay().apply {
             color = _activity.getColor(R.color.sage_green)
         }
-
         checkPermissions()
         registerListener()
         registerObserve()
@@ -58,7 +57,7 @@ class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
 
     private fun registerListener(){
         binding.fabStop.setOnClickListener {
-            _activity.stopService(Intent(_activity,LocationTrackingService::class.java))
+            _activity.stopService(Intent(_activity, DistanceLocationTrackingService::class.java))
             viewLifecycleOwner.lifecycleScope.cancel()
             relayingViewModel.stopTracking()
         }
@@ -90,7 +89,7 @@ class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
         }
     }
 
-    private fun checkPermissions() {
+    fun checkPermissions() {
         if (PermissionHelper.checkPermissionList(
                 _activity,
                 requestPermissions
@@ -108,13 +107,13 @@ class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
     }
 
 
-    private val permissionGrantedListener: () -> Unit = {
+    val permissionGrantedListener: () -> Unit = {
         val mapFragment = childFragmentManager.findFragmentById(R.id.layout_map) as MapFragment?
             ?: MapFragment.newInstance().also {
                 childFragmentManager.beginTransaction().add(R.id.layout_map, it).commit()
             }
         mapFragment.getMapAsync(mapReadyCallback)
-        _activity.startForegroundService(Intent(_activity, LocationTrackingService::class.java)).apply {
+        _activity.startForegroundService(Intent(_activity, DistanceLocationTrackingService::class.java)).apply {
             Log.d(TAG, "ComponentName: $this")
         }
     }
@@ -141,7 +140,7 @@ class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
     }
 
     private val requestPermissions =
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             listOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION)
         else
             listOf(Manifest.permission.ACCESS_FINE_LOCATION)

@@ -14,10 +14,9 @@ class LocationTrackingRepositoryImpl @Inject constructor(
     override suspend fun saveLocationTrackingData(
         milliTime: Long,
         latitude: Double,
-        longitude: Double,
-        count: Int
+        longitude: Double
     ) {
-        locationTrackingLocalDataSource.saveLocationTrackingData(milliTime, latitude, longitude, count)
+        locationTrackingLocalDataSource.saveLocationTrackingData(milliTime, latitude, longitude)
     }
 
     override fun getAllLocationTrackingData(): Flow<List<TrackingData>> {
