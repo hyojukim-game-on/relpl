@@ -248,7 +248,7 @@ public class ProjectService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 // 5초 후에 작업 수행
-                Thread.sleep(1000);
+                Thread.sleep(100);
                 log.info("Tmap api 호출");
 
                 // tmap api 가까운 도로 호출
