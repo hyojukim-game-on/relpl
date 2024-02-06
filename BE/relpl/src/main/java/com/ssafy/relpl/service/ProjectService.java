@@ -25,12 +25,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -217,6 +216,34 @@ public class ProjectService {
                     // UserRoute 객체 저장
                     userRouteRepository.save(userRoute);
                     log.info("UserRoute 저장");
+                    
+                    // 프로젝트 수정
+                    org.springframework.data.geo.Point lastPoint = request.getUserMovePath().get(request.getUserMovePath().size() - 2);
+                    GeometryFactory geometryFactory = new GeometryFactory();
+                    Coordinate coordinate = new Coordinate(lastPoint.getX(), lastPoint.getY()); // x 좌표와 y 좌표
+                    Point point = geometryFactory.createPoint(coordinate);
+
+                    project.setProjectStopCoordinate(point);    //중단점 좌표 등록
+                    project.setProjectIsPlogging(false);        //플로깅 중인지 여부 = false
+                    project.setProjectRemainingDistance(project.getProjectRemainingDistance() - request.getMoveDistance()); //현재 남은 프로젝트 거리
+                    project.setProjectTotalContributer(project.getProjectTotalContributer() + 1);       // 프로젝트 참여 유저 수
+                    project.setProjectCoordinateCurrentSize(request.getProjectCoordinateCurrentSize()); // 프로젝트 진행율을 위한 진행된 경로 정점 개수
+                    log.info("프로젝트 수정");
+
+                    // 프로젝트 완료
+                    if(project.isProjectIsPath()) {
+                        if(project.getProjectCoordinateCurrentSize() >= project.getProjectCoordinateTotalSize()) {
+                            log.info("경로 기반 프로젝트 완료");
+                            project.setProjectEndDate((new Date()).toString());
+                            project.setProjectIsDone(true);
+                        }
+                    } else {
+                        if(project.getProjectRemainingDistance() <= 0) {
+                            log.info("거리 기반 프로젝트 완료");
+                            project.setProjectEndDate((new Date()).toString());
+                            project.setProjectIsDone(true);
+                        }
+                    }
 
                     return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 중단 성공", 200));
                 }
@@ -294,41 +321,6 @@ public class ProjectService {
         // 결과 반환
         return map;
     }
-
-//    @Async
-//    public CompletableFuture<TmapApiResponse> asyncMethod(org.springframework.data.geo.Point point) {
-//        log.info("Tmap api 호출");
-//        //tmap api 가까운 도로 호출
-//        TmapApiResponse response = tmapService.callTmapApi(point.getX(), point.getY());
-//        log.info("TmapApiResponse: " + response.toString());
-//        return CompletableFuture.completedFuture(response);
-//    }
-//
-//    // 모든 비동기 작업이 완료될 때까지 기다리는 메서드
-//    public void waitForAllTasks(List<Future<TmapApiResponse>> futures, HashMap<String, String> map) throws ExecutionException, InterruptedException {
-//        for (Future<TmapApiResponse> future : futures) {
-//            Long linkId = future.get().getResultData().getHeader().getLinkId();
-//            map.put("road_" + linkId, "This road has already been plugged.");
-//        }
-//    }
-//
-//    // 비동기 작업들을 수행하고 모든 작업이 완료될 때까지 기다리는 메서드
-//    public HashMap<String, String> performAsyncTasks(List<org.springframework.data.geo.Point> coordintates) throws ExecutionException, InterruptedException {
-//        log.info("Tmap api 호출");
-//
-//        List<Future<TmapApiResponse>> futures = new ArrayList<>();
-//        HashMap<String, String> map = new HashMap<>();
-//
-//        // 비동기 메서드 호출 및 Future 객체 저장 (마지막 플로깅 장소 제외)
-//        for (int i=0; i<coordintates.size() - 1; i++) {
-//            futures.add(asyncMethod(coordintates.get(i)).toCompletableFuture());
-//        }
-//        // 모든 비동기 작업이 완료될 때까지 기다림
-//        waitForAllTasks(futures, map);
-//
-//        //도로 id 반환
-//        return map;
-//    }
 
     /* setUserProfilePhoto : s3에 프로젝트 중단 시 사진 업로드하기
     @param : 프로젝트 중단 시 제공한 사진 파일

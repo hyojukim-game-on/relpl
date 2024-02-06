@@ -22,4 +22,5 @@ public class ProjectStopRouteRequest {
     private int moveTime;
     private List<Point> userMovePath;
     private String moveMemo;
+    private int projectCoordinateCurrentSize;
 }
