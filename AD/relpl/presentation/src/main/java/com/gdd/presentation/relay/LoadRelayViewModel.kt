@@ -72,11 +72,11 @@ class LoadRelayViewModel @Inject constructor(
 
     fun getDistanceRelayInfo(projectId: Long){
         viewModelScope.launch {
-            delay(200)
-            _distanceRelayInfoResult.postValue(Result.success(distanceRelayInfoEx))
-//            getDistanceRelayInfoUseCase(projectId).let {
-//                _distanceRelayInfoResult.postValue(it)
-//            }
+//            delay(200)
+//            _distanceRelayInfoResult.postValue(Result.success(distanceRelayInfoEx))
+            getDistanceRelayInfoUseCase(projectId).let {
+                _distanceRelayInfoResult.postValue(it)
+            }
         }
     }
 

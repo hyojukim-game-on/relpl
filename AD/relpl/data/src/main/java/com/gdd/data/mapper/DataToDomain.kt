@@ -128,15 +128,15 @@ fun DistanceProjectResponse.toDistanceRelayInfo(): DistanceRelayInfo{
     return DistanceRelayInfo(
         this.projectId,
         this.projectName,
-        this.totalContributor,
-        this.totalDistance.toStringDistance(),
-        this.remainDistance.toStringDistance(),
-        this.createDate.toKoreanDateFormat(),
-        this.endDate.toKoreanDateFormat(),
-        this.isPath,
-        this.stopCoordinate.toPoint(),
+        this.projectTotalContributer,
+        this.projectTotalDistance.toStringDistance(),
+        this.projectRemainingDistance.toStringDistance(),
+        this.projectCreateDate.toKoreanDateFormat(),
+        this.projectEndDate.toKoreanDateFormat(),
+        this.projectIsPath,
+        this.projectStopCoordinate.toPoint(),
         this.progress,
-        this.memo ?: "메모가 없습니다"
+        this.userMoveMemo ?: "메모가 없습니다"
     )
 }
 
