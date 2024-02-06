@@ -2,6 +2,7 @@ package com.ssafy.relpl.db.mongo.entity;
 
 import com.ssafy.relpl.dto.response.TmapApiResponse;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -15,9 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
 @Builder
+@Data
 @Document(collection = "tmaproad")
 public class TmapRoad {
 

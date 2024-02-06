@@ -1,6 +1,8 @@
 package com.ssafy.relpl.db.postgre.repository;
 
 import com.ssafy.relpl.db.postgre.entity.Project;
+import org.locationtech.jts.geom.LineString;
+import org.springframework.data.geo.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,4 +35,5 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "LIMIT 10;"
             , nativeQuery = true)
     List<Project> findNearProject10(@Param("x") double x, @Param("y") double y, @Param("distance") int distance);
+
 }
