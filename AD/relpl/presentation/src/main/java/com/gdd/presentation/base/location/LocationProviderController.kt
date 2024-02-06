@@ -18,7 +18,7 @@ import com.google.android.gms.tasks.Task
 private const val TAG = "LocationProviderControl_Genseong"
 @SuppressLint("MissingPermission")
 class LocationProviderController(
-    context: Context,
+    private val context: Context,
     private val lifecycleOwner: LifecycleOwner
 ) : DefaultLifecycleObserver {
 
