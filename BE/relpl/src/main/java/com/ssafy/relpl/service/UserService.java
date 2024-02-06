@@ -7,17 +7,21 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.relpl.config.AWSS3Config;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.User;
+import com.ssafy.relpl.db.postgre.entity.UserRoute;
 import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
+import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.dto.response.*;
 import com.ssafy.relpl.service.result.CommonResult;
+import com.ssafy.relpl.util.common.UserHistoryDetailEntry;
 import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +33,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Slf4j
@@ -38,6 +47,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final UserRouteRepository userRouteRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -303,11 +313,70 @@ public class UserService {
         // 릴레이 아이디로 릴레이 있는지 조회
         Optional<Project> projectOptional = projectRepository.findById(request.getProjectId());
 
+        // 릴레이 아이디로 userRoute 테이블에서 참여한 유저 정보 조회
+        List<UserRoute> userRouteList = userRouteRepository.findByProjectId(request.getProjectId());
+
+        // 유저별 릴레이 정보 리스트
+        ArrayList<UserHistoryDetailEntry> detailList = new ArrayList<>();
+
+
+        
+        // 로직2
+        // projectTime : project.EndDate - project.CreateDate
+        // 5일 18시간 38분 동안
+        
+        // 로직3
+        // projectPeople : 한 명의 유저가 같은 릴레이에 여러 번 참여한 경우 중복 제거
+        // 네 분께서
+        
         // 존재하는 프로젝트일 경우
         if (projectOptional.isPresent()) {
+
+            // 릴레이 1개 객체
             Project project = projectOptional.get();
-            UserHistoryDetailResponse response = UserHistoryDetailResponse.builder().build();
-            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(data, "프로젝트 상세내역 조회에 성공하였습니다.", 200));
+
+            for (UserRoute userRoute : userRouteList) {
+
+                // 로직1
+                // moveContribution : 전체 프로젝트 거리 대비 해당 유저의 moveDistance %
+                // 릴레이 기여도 64%
+                int moveContribution = (userRoute.getUserMoveDistance() / project.getProjectTotalDistance()) * 100;
+
+                UserHistoryDetailEntry entry = UserHistoryDetailEntry.builder()
+                        .userNickname(userRoute.getUserNickname())
+                        .moveStart(userRoute.getUserMoveStart())
+                        .moveEnd(userRoute.getUserMoveEnd())
+                        .moveDistance(userRoute.getUserMoveDistance())
+                        .moveTime(String.valueOf(userRoute.getUserMoveTime()))
+                        .moveMemo(userRoute.getUserMoveMemo())
+                        .moveContribution(moveContribution)
+                        .moveImage(userRoute.getUserMoveImage())
+                        .build();
+
+
+                detailList.add(entry);
+            }
+
+
+            // 날짜 포맷 정의
+            java.time.format.DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+            // 문자열을 LocalDateTime 객체로 파싱
+            LocalDateTime createDateTime = LocalDateTime.parse(project.getProjectCreateDate(), formatter);
+            LocalDateTime endDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
+
+            // createDate와 endDate 사이의 분 차이를 계산
+            long projectTime = ChronoUnit.MINUTES.between(createDateTime, endDateTime);
+
+
+            UserHistoryDetailResponse response = UserHistoryDetailResponse.builder()
+                    .projectName(project.getProjectName())
+                    .projectDistance(project.getProjectTotalDistance())
+                    .projectTime()
+                    .projectPeople(project.getProjectTotalContributer())
+                    .detailList(detailList)
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "프로젝트 상세내역 조회에 성공하였습니다.", 200));
         } else { // 존재하지 않는 프로젝트일 경우
             log.error("projectId 가 없음");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 상세내역 조회에 실패하였습니다."));
