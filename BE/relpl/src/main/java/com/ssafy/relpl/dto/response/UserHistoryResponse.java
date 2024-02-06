@@ -18,5 +18,5 @@ public class UserHistoryResponse {
     int totalProject;
     int userTotalDistance;
     int userTotalTime;
-    ArrayList<Map<String, Object>> detailList;
+    ArrayList<Map<String, Object>> detailList; // 각 릴레이의 정보가 담긴 리스트
 }

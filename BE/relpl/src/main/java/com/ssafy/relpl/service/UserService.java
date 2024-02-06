@@ -280,6 +280,11 @@ public class UserService {
     }
 
 
+    /* getUserHistory : 내 기록 조회 (유저가 참여한 릴레이 조회)
+    * @param : UserHistoryRequest (= userId)
+    * @return : UserHistoryResponse (= 참여 릴레이 수, 누적 거리, 누적 시간, 릴레이 별 상세 정보 리스트)
+    * */
+
     public ResponseEntity<CommonResult> getUserHistory(UserHistoryRequest request) {
 
         log.info("getUserHistory in UserService 내부로 들어옴");

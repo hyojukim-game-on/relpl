@@ -65,6 +65,7 @@ public class UserController {
         return userService.setProfilePic(request);
     }
 
+    // 내 기록 보기
     @PostMapping(value = "/history")
     public ResponseEntity<CommonResult> getUserHistory(@RequestBody UserHistoryRequest request) throws IOException {
         log.info("getUserHistory 내부로 들어옴");
