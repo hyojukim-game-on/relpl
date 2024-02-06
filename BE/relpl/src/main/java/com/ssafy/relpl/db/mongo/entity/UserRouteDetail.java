@@ -1,6 +1,6 @@
 package com.ssafy.relpl.db.mongo.entity;
 
-import com.ssafy.relpl.dto.request.ProjectStopRequest;
+//import com.ssafy.relpl.dto.request.ProjectStopRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,13 +26,13 @@ public class UserRouteDetail {
     private Long projectId;
     private GeoJsonLineString recommendLineString;
 
-    public static UserRouteDetail createUserRouteDetail(ProjectStopRequest request) {
-        return UserRouteDetail.builder()
-                .userId(request.getUserId())
-                .projectId(request.getProjectId())
-                .recommendLineString(convertToGeoJsonLineString(request.getUserMovePath()))
-                .build();
-    }
+//    public static UserRouteDetail createUserRouteDetail(ProjectStopRequest request) {
+//        return UserRouteDetail.builder()
+//                .userId(request.getUserId())
+//                .projectId(request.getProjectId())
+//                .recommendLineString(convertToGeoJsonLineString(request.getUserMovePath()))
+//                .build();
+//    }
 
     public static GeoJsonLineString convertToGeoJsonLineString(List<Point> points) {
         List<org.springframework.data.geo.Point> coordinates = points.stream()

@@ -18,28 +18,13 @@ public class ProjectRouteLookupResponse {
     private String projectCreateDate;
     private String projectEndDate;
     private boolean projectIsPath;
-    private Point projectStopCoordinate;
+    private Point projectStopCoordinate; // 해당 projectId에 UserRoute에서 가장 마지막 늦은 시간에 기록된 userMoveEnd에 해당하는 projectStopCoordinate 좌표
 
 
-    private int progress;
-    private String userMoveMemo;
-    private String userMoveImage;
-    private GeoJsonLineString recommendLineString;
+    private int progress; // 해당 projectId의 진행률 % (% 단위는 생략)
+    private String userMoveMemo; //해당 projectId의 마지막에 기록된 userId의 userMoveMemo
+    private String userMoveImage; // 해당 projectId의 마지막에 기록된 userId의 userMoveImage
+    private GeoJsonLineString recommendLineString; // 해당 projectId에 참여한 모든 userId들이 기록한 userMoveEnd의  projectStopCoordinate
 
-    public static ProjectRouteLookupResponse buildFromProject(Project project) {
-        return ProjectRouteLookupResponse.builder()
-                .projectId(project.getProjectId())
-                .projectName(project.getProjectName())
-                .projectTotalContributer(project.getProjectTotalContributer())
-                .projectTotalDistance(project.getProjectTotalDistance())
-                .projectRemainingDistance(project.getProjectRemainingDistance())
-                .projectCreateDate(project.getProjectCreateDate())
-                .projectEndDate(project.getProjectEndDate())
-                .projectIsPath(project.isProjectIsPath())
-                .projectStopCoordinate(project.getProjectStopCoordinate())
-                .userMoveMemo(project.getUserMoveMemo()) // 수정된 부분
-                .userMoveImage(project.getUserMoveImage()) // 수정된 부분
-                .recommendLineString(project.getRecommendLineString()) // 추가된 부분
-                .build();
-    }
+
 }

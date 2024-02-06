@@ -2,8 +2,10 @@ package com.ssafy.relpl.dto.response;
 
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ssafy.relpl.db.postgre.entity.Report;
+import com.ssafy.relpl.serializer.CustomPointSerializer;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
 
@@ -12,7 +14,8 @@ public class ReportListResponse {
 
     private String reportDate; // yyyy-mm-dd
 
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonSerialize(using = CustomPointSerializer.class)
     private Point reportCoordinate;
 
     public ReportListResponse(Report report) {

@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
+import java.util.List;
+
 @Data
 @Builder
 @Entity
@@ -95,4 +97,10 @@ public class Project {
                 .projectTotalContributer(1)
                 .build();
     }
+
+//    // Project 클래스에 getUserRoutes() 메서드 추가
+//    public List<UserRoute> getUserRoutes() {
+//        // 해당 메서드의 구현 내용 추가
+//        return this.userRoutes;
+//    }
 }
