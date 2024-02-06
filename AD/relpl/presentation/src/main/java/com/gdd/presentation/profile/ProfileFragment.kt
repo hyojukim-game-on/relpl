@@ -164,6 +164,34 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(
                 }
             }
         }
+
+        mainViewModel.userInfoResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+                    mainViewModel.user = it
+
+                    if (it.imageUri != null){
+                        Glide.with(this)
+                            .load(mainViewModel.user.imageUri)
+                            .fitCenter()
+                            .apply(RequestOptions().circleCrop())
+                            .into(binding.ivProfilePhoto)
+                    }
+                    binding.tvNickname.text = it.nickname
+                    binding.tvPhone.text = phoneFormat(it.phone)
+                    binding.tvPointCur.text= pointFormat(it.totalCoin)
+                    binding.tvReportCount.text = "${it.totalReport}회"
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showToast(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
     }
 
     fun phoneFormat(phone: String): String{

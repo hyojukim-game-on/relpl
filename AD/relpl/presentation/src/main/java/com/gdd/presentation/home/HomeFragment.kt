@@ -33,8 +33,14 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         super.onViewCreated(view, savedInstanceState)
 
         initView()
-
+        registerObserver()
         registerListener()
+    }
+
+    private fun registerObserver(){
+        mainViewModel.userInfoResult.observe(viewLifecycleOwner){
+
+        }
     }
 
     private fun registerListener(){

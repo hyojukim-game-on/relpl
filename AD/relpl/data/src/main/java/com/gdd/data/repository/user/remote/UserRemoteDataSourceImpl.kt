@@ -170,4 +170,8 @@ class UserRemoteDataSourceImpl @Inject constructor(
         return userService.exit(ExitRequest(userId, userPassword)).toNonDefault()
             .map { it }
     }
+
+    override suspend fun reloadUserInfo(userId: Long): Result<SignInResponse> {
+        return userService.loadUserInfo(UserIdRequest(userId)).toNonDefault()
+    }
 }

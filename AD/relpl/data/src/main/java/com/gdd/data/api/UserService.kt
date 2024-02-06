@@ -111,4 +111,9 @@ interface UserService {
         @Body exitRequest: ExitRequest
     ): Result<DefaultResponse<Boolean>>
 
+    @POST("user/info")
+    suspend fun loadUserInfo(
+        @Body userIdRequest: UserIdRequest
+    ): Result<DefaultResponse<SignInResponse>>
+
 }

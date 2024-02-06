@@ -108,4 +108,10 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun exit(userId: Long, userPassword: String): Result<Boolean> {
         return userRemoteDataSource.exit(userId, userPassword)
     }
+
+    override suspend fun reloadUserInfo(userId: Long): Result<User> {
+        return userRemoteDataSource.reloadUserInfo(userId).map {
+            it.toUser()
+        }
+    }
 }

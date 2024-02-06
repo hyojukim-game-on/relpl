@@ -218,6 +218,7 @@ class ProfileChangeFragment : BaseFragment<FragmentProfileChangeBinding>(
         viewModel.profileChangeResult.observe(viewLifecycleOwner){ result ->
             if (result.isSuccess){
                 //mainViewModel에서 정보 다시 load
+                activityViewModel.reloadUserInfo(prefManager.getUserId())
                 parentFragmentManager.popBackStack()
             }else{
                 result.exceptionOrNull()?.let {

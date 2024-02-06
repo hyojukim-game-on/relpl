@@ -47,4 +47,6 @@ interface UserRemoteDataSource {
     suspend fun autoLogin(userId: Long): Result<SignInResponse>
 
     suspend fun exit(userId: Long, userPassword: String): Result<Boolean>
+
+    suspend fun reloadUserInfo(userId: Long): Result<SignInResponse>
 }
