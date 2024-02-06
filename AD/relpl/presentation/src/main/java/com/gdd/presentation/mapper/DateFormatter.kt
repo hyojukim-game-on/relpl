@@ -7,6 +7,7 @@ object DateFormatter {
     private val longDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
     private val koreanDateFormat = SimpleDateFormat("yyyy년MM월dd일", Locale.KOREA)
     private val shortDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+    private val koreanDateToMinuteFormat = SimpleDateFormat("yyyy년 MM월 dd일 aa kk시 mm분", Locale.KOREA)
 
     /**
      * @param dateString "yyyy-MM-dd HH:mm"
@@ -38,6 +39,10 @@ object DateFormatter {
 
     fun curMsToShorFormat(): String{
         return shortDateFormat.format(System.currentTimeMillis())
+    }
+
+    fun getRelayStartTimeString(millis: Long): String{
+        return koreanDateToMinuteFormat.format(millis)
     }
 
 }
