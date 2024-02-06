@@ -227,12 +227,12 @@ public class ProjectService {
                     project.setProjectIsPlogging(false);        //플로깅 중인지 여부 = false
                     project.setProjectRemainingDistance(project.getProjectRemainingDistance() - request.getMoveDistance()); //현재 남은 프로젝트 거리
                     project.setProjectTotalContributer(project.getProjectTotalContributer() + 1);       // 프로젝트 참여 유저 수
-                    project.setProjectCoordinateCurrentSize(request.getProjectCoordinateCurrentSize()); // 프로젝트 진행율을 위한 진행된 경로 정점 개수
+                    project.setProjectCoordinateTotalSize(request.getProjectCoordinateCurrentSize()); // 프로젝트 진행율을 위한 진행된 경로 정점 개수
                     log.info("프로젝트 수정");
 
                     // 프로젝트 완료
                     if(project.isProjectIsPath()) {
-                        if(project.getProjectCoordinateCurrentSize() >= project.getProjectCoordinateTotalSize()) {
+                        if(project.getProjectCoordinateCurrentIndex() >= project.getProjectCoordinateTotalSize()) {
                             log.info("경로 기반 프로젝트 완료");
                             project.setProjectEndDate((new Date()).toString());
                             project.setProjectIsDone(true);

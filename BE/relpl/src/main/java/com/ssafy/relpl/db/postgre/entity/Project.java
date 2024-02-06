@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
-import java.util.List;
-
 @Data
 @Builder
 @Entity
@@ -62,11 +60,11 @@ public class Project {
     @Column (name = "project_total_contributer")
     private int projectTotalContributer;
 
-    @Column(name = "project_coordinate_total_size")
+    @Column (name = "project_coordinate_total_size")
     private int projectCoordinateTotalSize;
 
-    @Column(name = "project_coordinate_current_size")
-    private int projectCoordinateCurrentSize;
+    @Column (name = "project_coordinate_current_index")
+    private int projectCoordinateCurrentIndex;
 
     public static Project createDistanceProject(ProjectCreateDistanceRequest request, Point startPoint) {
         return Project.builder()
@@ -103,10 +101,4 @@ public class Project {
                 .projectTotalContributer(1)
                 .build();
     }
-
-//    // Project 클래스에 getUserRoutes() 메서드 추가
-//    public List<UserRoute> getUserRoutes() {
-//        // 해당 메서드의 구현 내용 추가
-//        return this.userRoutes;
-//    }
 }
