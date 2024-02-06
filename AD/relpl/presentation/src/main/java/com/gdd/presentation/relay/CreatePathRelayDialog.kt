@@ -46,7 +46,7 @@ class CreatePathRelayDialog(
     ): View {
         _binding = DialogCreatePathRelayBinding.inflate(layoutInflater)
         calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, distance%1000 + 1)
+        calendar.add(Calendar.DATE, distance/500 + 1)
 
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

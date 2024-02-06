@@ -37,6 +37,7 @@ class CreatePathRelayViewModel @Inject constructor(
     var selectedPathDistance = 0
     lateinit var startCoordinate: Point
     lateinit var endCoordinate: Point
+    var projectSelectedCoordinateTotalSize = 0
 
     fun recommendPath(startCoordinate: Point, endCoordinate: Point){
         viewModelScope.launch {
@@ -49,6 +50,7 @@ class CreatePathRelayViewModel @Inject constructor(
     fun createPathRelay(userId: Long,
                         projectSelectedId : String,
                         projectSelectedTotalDistance: Int,
+                        projectSelectedCoordinateTotalSize: Int,
                         projectName: String,
                         projectCreateDate: String,
                         projectEndDate: String,
@@ -60,6 +62,7 @@ class CreatePathRelayViewModel @Inject constructor(
                 userId,
                 projectSelectedId,
                 projectSelectedTotalDistance,
+                projectSelectedCoordinateTotalSize,
                 projectName,
                 projectCreateDate,
                 projectEndDate,

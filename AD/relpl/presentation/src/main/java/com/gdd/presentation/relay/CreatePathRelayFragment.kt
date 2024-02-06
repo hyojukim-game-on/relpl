@@ -53,6 +53,10 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
     private lateinit var shortPath : PathOverlay
     private lateinit var recommendPath: PathOverlay
 
+    private var startPointMarker: Marker = Marker()
+    private var endPointMarker: Marker = Marker()
+
+
     @Inject
     lateinit var prefManager: PrefManager
 
@@ -148,6 +152,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                     viewModel.selectedPathDistance = it.recommendTotalDistance
                     viewModel.startCoordinate = it.recommendPath[0]
                     viewModel.endCoordinate = it.recommendPath.last()
+                    viewModel.projectSelectedCoordinateTotalSize = recommendPathList.size
                 }
                 val dialog = CreatePathRelayDialog(this, viewModel.recommendedPathResult.value!!.getOrNull()!!.recommendTotalDistance)
                 dialog.isCancelable = false
@@ -159,6 +164,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                     viewModel.selectedPathDistance = it.shortestTotalDistance
                     viewModel.startCoordinate = it.shortestPath[0]
                     viewModel.endCoordinate = it.shortestPath.last()
+                    viewModel.projectSelectedCoordinateTotalSize = shortPathList.size
                 }
                 val dialog = CreatePathRelayDialog(this, viewModel.recommendedPathResult.value!!.getOrNull()!!.shortestTotalDistance)
                 dialog.isCancelable = false
@@ -238,14 +244,16 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                         p.toLatLng()
                     }
 
-                    Marker().apply {
+                    startPointMarker.apply {
+                        map = null
                         position =  recommendPathList[0]
                         map = naverMap
                         icon = OverlayImage.fromResource(R.drawable.ic_marker)
                         iconTintColor =  resources.getColor(R.color.sage_blue)
                         captionText = "출발점"
                     }
-                    Marker().apply {
+                    endPointMarker.apply {
+                        map = null
                         position =  recommendPathList.last()
                         map = naverMap
                         icon = OverlayImage.fromResource(R.drawable.ic_marker)
@@ -276,7 +284,8 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
         viewModel.createPathRelayResult.observe(viewLifecycleOwner){ result ->
             if (result.isSuccess){
                 result.getOrNull()?.let {
-                  viewModel.joinRelay(it)
+                    showSnackBar(it.toString())
+//                  viewModel.joinRelay(it)
                 }
             }else {
                 result.exceptionOrNull()?.let {
@@ -305,6 +314,8 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
     }
 
     private fun setDefaultUi(){
+        startPointMarker.map = null
+        endPointMarker.map = null
         binding.layoutBottomSelectPath.visibility = View.GONE
         binding.layoutBottomSetDestination.visibility = View.VISIBLE
         binding.ivMarker.visibility = View.VISIBLE
@@ -318,6 +329,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             prefManager.getUserId(),
             viewModel.selectedPathId,
             viewModel.selectedPathDistance,
+            viewModel.projectSelectedCoordinateTotalSize,
             name,
             DateFormatter.curMsToShorFormat(),
             DateFormatter.koreanToShortFormat(endDate),

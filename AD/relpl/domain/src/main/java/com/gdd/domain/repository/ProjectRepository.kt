@@ -22,6 +22,7 @@ interface ProjectRepository {
     suspend fun createPathRelay(userId: Long,
                                 projectSelectedId : String,
                                 projectSelectedTotalDistance: Int,
+                                projectSelectedCoordinateTotalSize: Int,
                                 projectName: String,
                                 projectCreateDate: String,
                                 projectEndDate: String,
