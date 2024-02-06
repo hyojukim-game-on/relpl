@@ -1,5 +1,6 @@
 package com.gdd.data.repository.tracking
 
+import android.util.Log
 import com.gdd.data.mapper.toTrackData
 import com.gdd.data.repository.tracking.local.LocationTrackingLocalDataSource
 import com.gdd.domain.model.TrackingData
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+private const val TAG = "LocationTrackingReposit_Genseong"
 class LocationTrackingRepositoryImpl @Inject constructor(
     private val locationTrackingLocalDataSource: LocationTrackingLocalDataSource
 ): LocationTrackingRepository {
@@ -22,6 +24,7 @@ class LocationTrackingRepositoryImpl @Inject constructor(
     override fun getAllLocationTrackingData(): Flow<List<TrackingData>> {
         return locationTrackingLocalDataSource.getAllLocationTrackingData().map { list ->
             list.map {
+                Log.d(TAG, "getAllLocationTrackingData: trackingStateFlow")
                 it.toTrackData()
             }
         }

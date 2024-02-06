@@ -27,7 +27,6 @@ class LocationProviderController(
     private var cancellationToken = CancellationTokenSource()
 
     private var distanceFlag = -1
-    private var distancePointFlag = 0.0
     private var beforeLocation: Location? = null
 
     private var locationListener: (Location?, LocationTrackingException?) -> Unit = { _, _ -> }
@@ -39,6 +38,7 @@ class LocationProviderController(
                 
                 if (beforeLocation == null){
                     beforeLocation = locationResult.lastLocation!!
+                    locationListener(locationResult.lastLocation!!, null)
                 } else if (beforeLocation!!.distanceTo(locationResult.lastLocation!!) >= distanceFlag) {
                     beforeLocation = locationResult.lastLocation!!
                     locationListener(locationResult.lastLocation!!, null)
