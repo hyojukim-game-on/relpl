@@ -20,6 +20,7 @@ import com.gdd.presentation.profile.ProfileFragment
 import com.gdd.presentation.rank.RankFragment
 import com.gdd.presentation.report.ReportFragment
 import com.gdd.presentation.relay.LoadRelayFragment
+import com.gdd.presentation.relay.RelayingFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -86,7 +87,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
 
         binding.reportCard.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.layout_main_fragment,ReportFragment())
+                .replace(R.id.layout_main_fragment,RelayingFragment())
                 .addToBackStack(null)
                 .commit()
         }

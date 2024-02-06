@@ -11,12 +11,11 @@ class LocationTrackingLocalDataSourceImpl @Inject constructor(
     override suspend fun saveLocationTrackingData(
         milliTime: Long,
         latitude: Double,
-        longitude: Double,
-        count: Int
+        longitude: Double
     ) {
         locationTrackingDao.insertLocationTrackingData(
             LocationTrackingEntity(
-                milliTime, latitude, longitude, count
+                milliTime, latitude, longitude
             )
         )
     }

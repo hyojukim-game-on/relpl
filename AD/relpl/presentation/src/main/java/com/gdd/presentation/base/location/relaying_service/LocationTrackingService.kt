@@ -1,10 +1,11 @@
-package com.gdd.presentation.base.location
+package com.gdd.presentation.base.location.relaying_service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -15,27 +16,28 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.lifecycleScope
 import com.gdd.domain.repository.LocationTrackingRepository
 import com.gdd.presentation.R
+import com.gdd.presentation.base.location.LocationProviderController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 import javax.inject.Inject
 
 private const val TAG = "LocationTrackingService_Genseong"
 
 @AndroidEntryPoint
-class LocationTrackingService : Service(), LifecycleOwner {
+abstract class LocationTrackingService : Service(), LifecycleOwner {
 
     @Inject
     lateinit var locationTrackingRepository: LocationTrackingRepository
 
-    private lateinit var notificationManager: NotificationManager
-    private lateinit var locationProviderController: LocationProviderController
+    protected lateinit var notificationManager: NotificationManager
+    protected lateinit var locationProviderController: LocationProviderController
     private val lifecycleRegistry = LifecycleRegistry(this)
     override val lifecycle: Lifecycle
         get() = lifecycleRegistry
 
-    private var firstTime: Long? = null
+    protected abstract var locationUpdateListener: (location: Location)->Unit
+    protected abstract var notiMessage: String
+    protected abstract var distanceStandard: Int
 
     override fun onCreate() {
         super.onCreate()
@@ -44,19 +46,21 @@ class LocationTrackingService : Service(), LifecycleOwner {
         makeNoticeChannel()
     }
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+
+        startTracking()
+
         Log.d(TAG, "onStartCommand: ")
         val notificationBuilder =
             NotificationCompat
                 .Builder(this, LOCATION_TRANCKING_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_location)
                 .setContentTitle("릴플이 당신과 함께하는 중이에요")
+                .setContentText(notiMessage)
                 .setOnlyAlertOnce(true)
                 .setAutoCancel(false)
                 .setOngoing(true)
-
         val noti = notificationBuilder.build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
@@ -66,27 +70,22 @@ class LocationTrackingService : Service(), LifecycleOwner {
         }
 
 
-        locationProviderController.startTrackingLocation(10) { location, locationTrackingException ->
+        locationProviderController.startTrackingLocation(distanceStandard) { location, locationTrackingException ->
             if (location != null) {
-                Log.d(TAG, "onStartCommand: ${location.longitude}${location.latitude}")
+                Log.d(TAG, "Tracking location: ${location.longitude}${location.latitude}")
                 synchronized(notificationManager) {
                     notificationManager.notify(LOCATION_TRACKING_SERVICE_ID,notificationBuilder.build())
                 }
-
+                /** save real time location tracking data for RelayingFragment showing current location */
                 lifecycleScope.launch {
                     val time = System.currentTimeMillis()
                     locationTrackingRepository.saveLocationTrackingData(
                         time,
                         location.latitude,
-                        location.longitude,
-                        if (firstTime == null){
-                            firstTime = time
-                            0
-                        } else {
-                            ((time - firstTime!!)/1000).toInt()
-                        }
+                        location.longitude
                     )
                 }
+                locationUpdateListener(location)
             }
         }
 
@@ -101,6 +100,7 @@ class LocationTrackingService : Service(), LifecycleOwner {
     override fun onDestroy() {
         super.onDestroy()
         locationProviderController.stopTracking()
+        stopTracking()
     }
 
     private fun makeNoticeChannel() {
@@ -113,6 +113,16 @@ class LocationTrackingService : Service(), LifecycleOwner {
             enableLights(false)
         })
     }
+
+    /**
+     * run in onStartCommand() before location tracking
+     */
+    protected abstract fun startTracking()
+
+    /**
+     * run in onDestroy() after stop location tracking
+     */
+    protected abstract fun stopTracking()
 
 
     companion object {
