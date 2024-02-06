@@ -21,16 +21,16 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      */
     @Query(value =
             "SELECT " +
-            "* FROM project " +
-            "WHERE ST_DWithin" +
-                "(project_stop_coordinate " +
-                ", ST_SetSRID(ST_MakePoint(:x, :y), 4326), :distance, true)" +
-            "ORDER BY" +
-            "    ST_Distance(" +
-            "        ST_Transform(project_stop_coordinate, 4326), " +
-            "        ST_SetSRID(ST_MakePoint(:x, :y), 4326)\n" +
-            "    ) ASC " +
-            "LIMIT 10;"
+                    "* FROM project " +
+                    "WHERE ST_DWithin" +
+                    "(project_stop_coordinate " +
+                    ", ST_SetSRID(ST_MakePoint(:x, :y), 4326), :distance, true)" +
+                    "ORDER BY" +
+                    "    ST_Distance(" +
+                    "        ST_Transform(project_stop_coordinate, 4326), " +
+                    "        ST_SetSRID(ST_MakePoint(:x, :y), 4326)\n" +
+                    "    ) ASC " +
+                    "LIMIT 10;"
             , nativeQuery = true)
     List<Project> findNearProject10(@Param("x") double x, @Param("y") double y, @Param("distance") int distance);
 }

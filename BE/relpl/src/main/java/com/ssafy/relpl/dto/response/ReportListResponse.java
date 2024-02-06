@@ -14,7 +14,8 @@ public class ReportListResponse {
 
     private String reportDate; // yyyy-mm-dd
 
-    //    @JsonIgnore
+
+    //@JsonIgnore
     @JsonSerialize(using = CustomPointSerializer.class)
     private Point reportCoordinate;
 
