@@ -302,9 +302,7 @@ public class ProjectRecommendBusiness {
         List<org.springframework.data.geo.Point> pointList = new ArrayList<>();
 
         org.springframework.data.geo.Point tmapStartPoint = tmapRoadList.get(0).getGeometry().getCoordinates().get(0);
-        double startDiff = Math.sqrt(Math.pow(Math.abs(end.getX() - tmapStartPoint.getX()), 2) + Math.pow(Math.abs(end.getY() - tmapStartPoint.getY()), 2));
         pathTotalDistance = 0;
-        pathTotalDistance += (int) startDiff; // 두 점 사이의 거리
 
         pointSet.add(
                 new org.springframework.data.geo.Point(
