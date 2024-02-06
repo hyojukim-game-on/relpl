@@ -111,9 +111,11 @@ public class ProjectRecommendBusiness {
                     .shortestId(shortestProject.getId())
                     .shortestPath(shortestPointList)
                     .shortestTotalDistance(shortestTotalDistance)
+                    .shortestCoordinateTotalSize(shortestPointList.size())
                     .recommendId(recommendProject.getId())
                     .recommendPath(recommendPointList)
                     .recommendTotalDistance(recommendTotalDistance)
+                    .recommendCoordinateTotalSize(recommendPointList.size())
                     .build();
             return ResponseEntity.ok(responseService.getSingleResult(response, "경로 추천 성공.", 200));
         } catch (Exception e) {

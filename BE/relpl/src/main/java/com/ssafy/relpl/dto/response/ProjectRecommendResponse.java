@@ -11,8 +11,10 @@ public class ProjectRecommendResponse {
     String shortestId;
     List<Point> shortestPath;
     int shortestTotalDistance;
+    int shortestCoordinateTotalSize;
 
     String recommendId;
     List<Point> recommendPath;
     int recommendTotalDistance;
+    int recommendCoordinateTotalSize;
 }
