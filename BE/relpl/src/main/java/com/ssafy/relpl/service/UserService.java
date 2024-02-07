@@ -305,48 +305,63 @@ public class UserService {
     public ResponseEntity<CommonResult> getUserHistory(UserHistoryRequest request) {
         log.info("UserService 내의 getUserHistory 로 들어옴");
 
-        // UserRoute 테치블에서 userId 레코드 가져오기
-        List<UserRoute> userRouteList = userRouteRepository.findByUserId(request.getUserId());
-        log.info("userRouteList:{}", userRouteList);
+        try{
 
-        // 초기화
-        int totalProjects = userRouteList.size();
-        int userTotalDistance = 0;
-        int userTotalTime = 0;
-        List<Map<String, Object>> detailList = new ArrayList<>();
+            // User 테이블에서 userId 레코드 존재 여부 확인
+            Optional<User> userOptional = userRepository.findById(request.getUserId());
 
-        if (totalProjects == 0) {
-            userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
-            userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
+            if (userOptional.isEmpty()) {
+                // 유저가 존재하지 않는 경우 에러 응답 반환
+                log.info("존재하지 않는 userId: {}", request.getUserId());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "존재하지 않는 유저입니다."));
+            }
 
-            Set<Long> projectIds = userRouteList.stream().map(UserRoute::getProjectId).collect(Collectors.toSet());
-            Map<Long, Project> projects = projectRepository.findAllById(projectIds).stream()
-                    .collect(Collectors.toMap(Project::getProjectId, project -> project));
+            // UserRoute 테치블에서 userId 레코드 가져오기
+            List<UserRoute> userRouteList = userRouteRepository.findByUserId(request.getUserId());
+            log.info("userRouteList:{}", userRouteList);
 
-            detailList = userRouteList.stream().map(userRoute -> {
-                Project project = projects.get(userRoute.getProjectId());
-                Map<String, Object> projectDetails = new HashMap<>();
-                if (project != null) {
-                    projectDetails.put("projectId", project.getProjectId());
-                    projectDetails.put("projectName", project.getProjectName());
-                    projectDetails.put("projectIsDone", project.isProjectIsDone());
-                    projectDetails.put("createDate", project.getProjectCreateDate());
-                    projectDetails.put("endDate", project.getProjectEndDate());
-                    projectDetails.put("totalDistance", project.getProjectTotalDistance());
-                    projectDetails.put("totalContributor", project.getProjectTotalContributer());
-                }
-                return projectDetails;
-            }).collect(Collectors.toList());
+            // 초기화
+            int totalProjects = userRouteList.size();
+            int userTotalDistance = 0;
+            int userTotalTime = 0;
+            List<Map<String, Object>> detailList = new ArrayList<>();
+
+            if (totalProjects == 0) {
+                userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
+                userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
+
+                Set<Long> projectIds = userRouteList.stream().map(UserRoute::getProjectId).collect(Collectors.toSet());
+                Map<Long, Project> projects = projectRepository.findAllById(projectIds).stream()
+                        .collect(Collectors.toMap(Project::getProjectId, project -> project));
+
+                detailList = userRouteList.stream().map(userRoute -> {
+                    Project project = projects.get(userRoute.getProjectId());
+                    Map<String, Object> projectDetails = new HashMap<>();
+                    if (project != null) {
+                        projectDetails.put("projectId", project.getProjectId());
+                        projectDetails.put("projectName", project.getProjectName());
+                        projectDetails.put("projectIsDone", project.isProjectIsDone());
+                        projectDetails.put("createDate", project.getProjectCreateDate());
+                        projectDetails.put("endDate", project.getProjectEndDate());
+                        projectDetails.put("totalDistance", project.getProjectTotalDistance());
+                        projectDetails.put("totalContributor", project.getProjectTotalContributer());
+                    }
+                    return projectDetails;
+                }).collect(Collectors.toList());
+            }
+
+            UserHistoryResponse response = UserHistoryResponse.builder()
+                    .totalProject(totalProjects)
+                    .userTotalDistance(userTotalDistance)
+                    .userTotalTime(userTotalTime)
+                    .detailList((ArrayList<Map<String, Object>>) detailList)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.OK).body((responseService.getSingleResult(response, "OK", 200)));
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((responseService.getFailResult(400, "BAD REQUEST")));
         }
-
-        UserHistoryResponse response = UserHistoryResponse.builder()
-                .totalProject(totalProjects)
-                .userTotalDistance(userTotalDistance)
-                .userTotalTime(userTotalTime)
-                .detailList((ArrayList<Map<String, Object>>) detailList)
-                .build();
-
-        return ResponseEntity.ok(responseService.getSingleResult(response, "OK", 200));
-
     }
 }
