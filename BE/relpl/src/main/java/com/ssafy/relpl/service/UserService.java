@@ -5,6 +5,9 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.relpl.config.AWSS3Config;
+import com.ssafy.relpl.db.mongo.entity.UserRouteDetail;
+import com.ssafy.relpl.db.mongo.repository.UserRouteDetailRepository;
+import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.User;
 import com.ssafy.relpl.db.postgre.entity.UserRoute;
@@ -14,11 +17,14 @@ import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.dto.response.*;
 import com.ssafy.relpl.service.result.CommonResult;
+import com.ssafy.relpl.util.common.UserHistoryDetailEntry;
 import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.geo.Point;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +38,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.lang.reflect.Array;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -39,6 +54,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
+
+    private final UserRouteDetailRepository userRouteDetailRepository;
+    private final UserRouteRepository userRouteRepository;
+    private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
@@ -46,8 +65,8 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
     //    private final RedisTemplate redisTemplate;
     private final AuthenticationManager authenticationManager;
-    private final UserRouteRepository userRouteRepository;
-    private final ProjectRepository projectRepository;
+
+
 
 
     @Value("${cloud.aws.s3.bucket}")
@@ -325,6 +344,71 @@ public class UserService {
             int userTotalDistance = 0;
             int userTotalTime = 0;
             List<Map<String, Object>> detailList = new ArrayList<>();
+    /* getUserHistoryDetail : projectId 로 [PostGreSQL] Project 테이블 조회
+    * @param : projectId
+    * @return : projectRepository 조회 후 해당 프로젝트 없을 경우 에러 반환
+    * */
+    public ResponseEntity<CommonResult> getUserHistoryDetail(UserHistoryDetailRequest request) {
+        log.info("getUserHistoryDetail 내부로 들어옴");
+
+        return projectRepository.findById(request.getProjectId())
+                .map(project -> processProjectDetails(project, request))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 상세내역 조회에 실패하였습니다.")));
+    }
+
+    /* processProjectDetails : projectId 로 [PostGreSQL] UserRoute 테이블 조회
+    * @param : projectId
+    * @return : userRouteRepository 조회 후 해당 프로젝트 없을 경우 에러 반환
+    * */
+    private ResponseEntity<CommonResult> processProjectDetails(Project project, UserHistoryDetailRequest request) {
+        List<UserRoute> userRouteList = userRouteRepository.findByProjectId(request.getProjectId());
+        List<UserHistoryDetailEntry> detailList = userRouteList.stream()
+                .map(userRoute -> createUserHistoryDetailEntry(userRoute, project))
+                .collect(Collectors.toList());
+
+        UserHistoryDetailResponse response = createUserHistoryDetailResponse(project, detailList);
+        return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "프로젝트 상세내역 조회에 성공하였습니다.", 200));
+    }
+
+    private UserHistoryDetailEntry createUserHistoryDetailEntry(UserRoute userRoute, Project project) {
+        List<UserRouteDetail> userRouteDetailList = userRouteDetailRepository.findByProjectId(userRoute.getProjectId());
+        List<Point> movePath = userRouteDetailList.stream()
+                .map(detail -> detail.getUserRouteCoordinate().getCoordinates().get(0))
+                .collect(Collectors.toList());
+
+        int moveContribution = calculateMoveContribution(userRoute.getUserMoveDistance(), project.getProjectTotalDistance());
+
+        return UserHistoryDetailEntry.builder()
+                .userNickname(userRoute.getUserNickname())
+                .movePath(movePath)
+                .moveStart(userRoute.getUserMoveStart())
+                .moveEnd(userRoute.getUserMoveEnd())
+                .moveDistance(userRoute.getUserMoveDistance())
+                .moveTime(String.valueOf(userRoute.getUserMoveTime()))
+                .moveMemo(userRoute.getUserMoveMemo())
+                .moveContribution(moveContribution)
+                .moveImage(userRoute.getUserMoveImage())
+                .build();
+    }
+
+    private int calculateMoveContribution(double userMoveDistance, double projectTotalDistance) {
+        return (int) ((userMoveDistance / projectTotalDistance) * 100);
+    }
+
+    private UserHistoryDetailResponse createUserHistoryDetailResponse(Project project, List<UserHistoryDetailEntry> detailList) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime createDateTime = LocalDateTime.parse(project.getProjectCreateDate(), formatter);
+        LocalDateTime endDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
+        long projectTime = ChronoUnit.MINUTES.between(createDateTime, endDateTime);
+
+        return UserHistoryDetailResponse.builder()
+                .projectName(project.getProjectName())
+                .projectDistance(project.getProjectTotalDistance())
+                .projectTime((int) projectTime)
+                .projectPeople(project.getProjectTotalContributer())
+                .detailList(detailList)
+                .build();
+    }
 
             if (totalProjects == 0) {
                 userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
