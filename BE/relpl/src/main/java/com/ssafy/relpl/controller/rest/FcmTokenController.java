@@ -16,10 +16,11 @@ public class FcmTokenController {
 
     private final FcmTokenService fcmTokenService;
 
-    //fcmtoken 등록 여부 확인 메서드
+    //fcmtoken 등록
     @PostMapping
-    public ResponseEntity<?> pushFcmToken(@RequestBody FcmTokenRequest request) {
+    public ResponseEntity<?> regist(@RequestBody FcmTokenRequest request) {
         // FcmTokenService 에 존재하는 fcmtoken 등록 여부 로직 반환
-        return fcmTokenService.checkFcmToken(request);
+        return fcmTokenService.regist(request);
     }
+
 }

@@ -75,6 +75,9 @@ dependencies {
 
 	// 데이터베이스 캐싱 관련
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+	//fcm
+	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
 
 tasks.named('test') {
