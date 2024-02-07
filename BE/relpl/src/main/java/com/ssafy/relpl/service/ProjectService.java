@@ -375,7 +375,7 @@ public class ProjectService {
                             .userMoveEnd(request.getMoveEnd())
                             .userMoveDistance(request.getMoveDistance())
                             .userMoveTime(request.getMoveTime())
-                            .userMovePath(userRouteDetail.getId())
+                            .userMovePath(userRouteDetail.getUserRouteDetailId())
                             .userMoveMemo(request.getMoveMemo())
                             .build();
 
