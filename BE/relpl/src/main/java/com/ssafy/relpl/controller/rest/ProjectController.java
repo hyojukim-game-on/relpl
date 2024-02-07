@@ -78,7 +78,7 @@ public class ProjectController {
     }
 
     // 거리기반 릴레이 상세 정보 조회 컨트롤러
-    @PostMapping("/distance/{projectId}") // Project entity 에 존재하는 projectId
+    @PostMapping("/check/distance") // Project entity 에 존재하는 projectId
     public ResponseEntity<?> lookupDistance(@RequestBody ProjectDistanceLookupRequest request) {
         log.info("여기는 컨트롤러다. 거리기반 릴레이 상세정보 조회 요청받음.");
         // return
@@ -87,7 +87,7 @@ public class ProjectController {
     }
 
     // 경로기반 릴레이 상세 정보 조회 컨트롤러
-    @PostMapping("/route/{projectId}") // Project entity 에 존재하는 projectId
+    @PostMapping("/check/route") // Project entity 에 존재하는 projectId
     public ResponseEntity<?> lookupRoute(@RequestBody ProjectRouteLookupRequest request) {
         log.info("여기는 컨트롤러다. 경로기반 릴레이 상세정보 조회 요청받음.");
         // return
