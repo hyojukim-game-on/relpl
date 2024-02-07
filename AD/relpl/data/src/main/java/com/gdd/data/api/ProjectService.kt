@@ -27,9 +27,9 @@ interface ProjectService {
     @GET("project/all")
     suspend fun getAllAvailableProject(): Result<DefaultResponse<List<MarkerResponse>>>
 
-    @GET("project//distance/{projectId}")
+    @POST("project/distance")
     suspend fun getDistanceProjectInfo(
-        @Path(value = "projectId") projectId: Long
+        @Body projectIdRequest: ProjectIdRequest
     ): Result<DefaultResponse<DistanceProjectResponse>>
 
     @PUT("project/join")

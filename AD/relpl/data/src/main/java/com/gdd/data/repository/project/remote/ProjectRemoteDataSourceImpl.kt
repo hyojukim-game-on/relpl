@@ -29,7 +29,7 @@ class ProjectRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getDistanceProjectInfo(projectId: Long): Result<DistanceProjectResponse> {
-        return projectService.getDistanceProjectInfo(projectId).toNonDefault()
+        return projectService.getDistanceProjectInfo(ProjectIdRequest(projectId)).toNonDefault()
     }
 
     override suspend fun joinProject(projectId: Long): Result<Boolean> {
