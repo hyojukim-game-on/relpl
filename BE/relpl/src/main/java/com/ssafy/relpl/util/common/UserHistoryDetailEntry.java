@@ -2,16 +2,17 @@ package com.ssafy.relpl.util.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import org.locationtech.jts.geom.Point;
+import lombok.Getter;
+import org.springframework.data.geo.Point;
 
 import java.util.List;
 
 @AllArgsConstructor
+@Getter
 @Builder
 public class UserHistoryDetailEntry {
 
     String userNickname;
-    // mongoDB userRoute (UserRouteDetail) coordinates List<LineString>
     List<Point> movePath;
     String moveStart;
     String moveEnd;
