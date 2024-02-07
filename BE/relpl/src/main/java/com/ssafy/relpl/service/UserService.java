@@ -67,8 +67,6 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
 
-
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -82,7 +80,7 @@ public class UserService {
     public ResponseEntity<CommonResult> save(UserSignupRequest request) throws BaseException {
         //사용자가 이미 존재하는지 확인
         Optional<User> find = userRepository.findByUserUid(request.getUserUid());
-        if (find.isPresent()){
+        if (find.isPresent()) {
             //사용자가 이미 있다면 Failed 반환
             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "회원가입 실패"));
         }
@@ -96,14 +94,16 @@ public class UserService {
                 .build());
         //회원가입 성공 응답 반환
         return ResponseEntity.ok(responseService.getSingleResult(UserSignupResponse.createUserSignupResponse(saved), "회원가입 성공", 200));
-    };
+    }
+
+    ;
 
     public ResponseEntity<CommonResult> login(UserLoginRequest request) {
         log.info("start");
         Optional<User> user = userRepository.findByUserUid(request.getUserUid());
 
         //유저 아이디가 존재하고, 유저 아이디와 비밀번호가 일치하는 경우
-        if(user.isPresent() && passwordEncoder.matches(request.getUserPassword(), user.get().getUserPassword())) {
+        if (user.isPresent() && passwordEncoder.matches(request.getUserPassword(), user.get().getUserPassword())) {
             //totalCoin 조회 필요
             //totalDistance 조회 필요
             //totalReport 조회 필요
@@ -125,8 +125,8 @@ public class UserService {
 
     public ResponseEntity<CommonResult> autologin(UserAutoLoginRequest request) {
         Optional<User> user = userRepository.findById(request.getUserId());
-        if(user.isPresent()) {
-            if(user.get().isUserIsActive()) {
+        if (user.isPresent()) {
+            if (user.get().isUserIsActive()) {
                 //totalCoin 조회 필요
                 //totalDistance 조회 필요
                 //totalReport 조회 필요
@@ -145,7 +145,7 @@ public class UserService {
 
     public ResponseEntity<CommonResult> reissue(UserReissueRequest request) {
         Optional<User> user = userRepository.findById(request.getUserId());
-        if(!(user.isPresent() && user.get().isUserIsActive())) {
+        if (!(user.isPresent() && user.get().isUserIsActive())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "존재하지 않는 유저입니다."));
         }
         try {
@@ -154,7 +154,7 @@ public class UserService {
                 //refreshToken 의 name 으로 조회했을 때 존재하고, refreshToken 과 일치하는지 확인
                 String savedToken = (String) redisTemplate.opsForValue().get("token_" + request.getUserId());
                 log.info("saved refreshToken: " + savedToken);
-                if(request.getRefreshToken().equals(savedToken)) {
+                if (request.getRefreshToken().equals(savedToken)) {
                     //재발급
                     String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, request.getUserId());
                     String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, String.valueOf(request.getUserId()));
@@ -178,21 +178,21 @@ public class UserService {
     }
 
     public ResponseEntity<CommonResult> duplicateNickname(String nickname) {
-        if(userRepository.findByUserNickname(nickname).isPresent()) {
+        if (userRepository.findByUserNickname(nickname).isPresent()) {
             return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(true), "닉네임 사용 불가능", 200));
         }
         return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateNicknameResponse.createUserDuplicateNicknameResponse(false), "닉네임 사용 가능", 200));
     }
 
     public ResponseEntity<CommonResult> duplicateUserPhone(UserDuplicatePhoneRequest request) {
-        if(userRepository.findByUserPhone(request.getUserPhone()).isPresent()) {
+        if (userRepository.findByUserPhone(request.getUserPhone()).isPresent()) {
             return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(true), "휴대폰번호 사용 불가능", 200));
         }
         return ResponseEntity.ok(responseService.getSingleResult(UserDuplicatePhoneResponse.createUserDuplicatePhoneResponse(false), "휴대폰번호 사용 가능", 200));
     }
 
     public ResponseEntity<CommonResult> duplicateUserId(UserDuplicateIdRequest request) {
-        if(userRepository.findByUserUid(request.getUserUid()).isPresent()){
+        if (userRepository.findByUserUid(request.getUserUid()).isPresent()) {
             //중복된 ID 있음
             return ResponseEntity.ok(responseService.getSingleResult(UserDuplicateIdResponse.createUserDuplicateIdResponse(true), "아이디 사용 불가능", 200));
         }
@@ -209,7 +209,7 @@ public class UserService {
     public ResponseEntity<?> getUserInfo(UserInfoRequest request) {
         Optional<User> userOptional = userRepository.findById(request.getUserId());
 
-        if(userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
 
             //totalCoin 조회 필요
@@ -255,7 +255,7 @@ public class UserService {
                 user.setUserImage(resultUrl);
                 userRepository.save(user);
 
-                log.info("저장된 프로필 사진 url:{}",user.getUserImage());
+                log.info("저장된 프로필 사진 url:{}", user.getUserImage());
                 log.info(resultUrl);
                 log.info("DB에 프로필 사진 업로드 성공");
 
@@ -274,13 +274,12 @@ public class UserService {
     }
 
 
-
     /* setUserProfilePhoto : s3에 유저 프로필 사진 업로드하기
     @param : 유저가 제공한 사진 파일
     @return : 성공 시) uploadedFileUrl s3에 업로드 한 프로필 사진 url , 실패 시) null
     * */
     public String setUserProfilePhoto(MultipartFile file) {
-        try{
+        try {
 
             // 유저가 제공한 프로필 사진 파일의 원래 이름
             String originalFileName = file.getOriginalFilename();
@@ -317,24 +316,13 @@ public class UserService {
 
 
     /* getUserHistory : 내 기록 조회 (유저가 참여한 릴레이 조회)
-    * @param : UserHistoryRequest (= userId)
-    * @return : UserHistoryResponse (= 참여 릴레이 수, 누적 거리, 누적 시간, 릴레이 별 상세 정보 리스트)
-    * */
-
+     * @param : UserHistoryRequest (= userId)
+     * @return : UserHistoryResponse (= 참여 릴레이 수, 누적 거리, 누적 시간, 릴레이 별 상세 정보 리스트)
+     * */
     public ResponseEntity<CommonResult> getUserHistory(UserHistoryRequest request) {
         log.info("UserService 내의 getUserHistory 로 들어옴");
 
-        try{
-
-            // User 테이블에서 userId 레코드 존재 여부 확인
-            Optional<User> userOptional = userRepository.findById(request.getUserId());
-
-            if (userOptional.isEmpty()) {
-                // 유저가 존재하지 않는 경우 에러 응답 반환
-                log.info("존재하지 않는 userId: {}", request.getUserId());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "존재하지 않는 유저입니다."));
-            }
-
+        try {
             // UserRoute 테치블에서 userId 레코드 가져오기
             List<UserRoute> userRouteList = userRouteRepository.findByUserId(request.getUserId());
             log.info("userRouteList:{}", userRouteList);
@@ -344,10 +332,50 @@ public class UserService {
             int userTotalDistance = 0;
             int userTotalTime = 0;
             List<Map<String, Object>> detailList = new ArrayList<>();
+
+            if (totalProjects == 0) {
+                userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
+                userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
+
+                Set<Long> projectIds = userRouteList.stream().map(UserRoute::getProjectId).collect(Collectors.toSet());
+                Map<Long, Project> projects = projectRepository.findAllById(projectIds).stream()
+                        .collect(Collectors.toMap(Project::getProjectId, project -> project));
+
+                detailList = userRouteList.stream().map(userRoute -> {
+                    Project project = projects.get(userRoute.getProjectId());
+                    Map<String, Object> projectDetails = new HashMap<>();
+                    if (project != null) {
+                        projectDetails.put("projectId", project.getProjectId());
+                        projectDetails.put("projectName", project.getProjectName());
+                        projectDetails.put("projectIsDone", project.isProjectIsDone());
+                        projectDetails.put("createDate", project.getProjectCreateDate());
+                        projectDetails.put("endDate", project.getProjectEndDate());
+                        projectDetails.put("totalDistance", project.getProjectTotalDistance());
+                        projectDetails.put("totalContributor", project.getProjectTotalContributer());
+                    }
+                    return projectDetails;
+                }).collect(Collectors.toList());
+            }
+
+            UserHistoryResponse response = UserHistoryResponse.builder()
+                    .totalProject(totalProjects)
+                    .userTotalDistance(userTotalDistance)
+                    .userTotalTime(userTotalTime)
+                    .detailList((ArrayList<Map<String, Object>>) detailList)
+                    .build();
+
+            return ResponseEntity.ok(responseService.getSingleResult(response, "OK", 200));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "BAD REQUEST"));
+        }
+    }
+
+
     /* getUserHistoryDetail : projectId 로 [PostGreSQL] Project 테이블 조회
-    * @param : projectId
-    * @return : projectRepository 조회 후 해당 프로젝트 없을 경우 에러 반환
-    * */
+     * @param : projectId
+     * @return : projectRepository 조회 후 해당 프로젝트 없을 경우 에러 반환
+     * */
     public ResponseEntity<CommonResult> getUserHistoryDetail(UserHistoryDetailRequest request) {
         log.info("getUserHistoryDetail 내부로 들어옴");
 
@@ -357,9 +385,9 @@ public class UserService {
     }
 
     /* processProjectDetails : projectId 로 [PostGreSQL] UserRoute 테이블 조회
-    * @param : projectId
-    * @return : userRouteRepository 조회 후 해당 프로젝트 없을 경우 에러 반환
-    * */
+     * @param : projectId
+     * @return : userRouteRepository 조회 후 해당 프로젝트 없을 경우 에러 반환
+     * */
     private ResponseEntity<CommonResult> processProjectDetails(Project project, UserHistoryDetailRequest request) {
         List<UserRoute> userRouteList = userRouteRepository.findByProjectId(request.getProjectId());
         List<UserHistoryDetailEntry> detailList = userRouteList.stream()
@@ -408,44 +436,5 @@ public class UserService {
                 .projectPeople(project.getProjectTotalContributer())
                 .detailList(detailList)
                 .build();
-    }
-
-            if (totalProjects == 0) {
-                userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
-                userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
-
-                Set<Long> projectIds = userRouteList.stream().map(UserRoute::getProjectId).collect(Collectors.toSet());
-                Map<Long, Project> projects = projectRepository.findAllById(projectIds).stream()
-                        .collect(Collectors.toMap(Project::getProjectId, project -> project));
-
-                detailList = userRouteList.stream().map(userRoute -> {
-                    Project project = projects.get(userRoute.getProjectId());
-                    Map<String, Object> projectDetails = new HashMap<>();
-                    if (project != null) {
-                        projectDetails.put("projectId", project.getProjectId());
-                        projectDetails.put("projectName", project.getProjectName());
-                        projectDetails.put("projectIsDone", project.isProjectIsDone());
-                        projectDetails.put("createDate", project.getProjectCreateDate());
-                        projectDetails.put("endDate", project.getProjectEndDate());
-                        projectDetails.put("totalDistance", project.getProjectTotalDistance());
-                        projectDetails.put("totalContributor", project.getProjectTotalContributer());
-                    }
-                    return projectDetails;
-                }).collect(Collectors.toList());
-            }
-
-            UserHistoryResponse response = UserHistoryResponse.builder()
-                    .totalProject(totalProjects)
-                    .userTotalDistance(userTotalDistance)
-                    .userTotalTime(userTotalTime)
-                    .detailList((ArrayList<Map<String, Object>>) detailList)
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.OK).body((responseService.getSingleResult(response, "OK", 200)));
-
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((responseService.getFailResult(400, "BAD REQUEST")));
-        }
     }
 }
