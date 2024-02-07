@@ -26,4 +26,6 @@ public interface UserRouteRepository extends JpaRepository<UserRoute, Long> {
 
     List<UserRoute> findByProjectId(Long projectId);
 //    List<Long> findDistinctUserIdsByProjectId(Long projectId);
+
+    List<UserRoute> findByUserIdAndProjectIdOrderByUserMoveIdDesc(Long userId, Long projectId);
 }

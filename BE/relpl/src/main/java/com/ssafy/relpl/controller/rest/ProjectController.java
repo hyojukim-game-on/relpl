@@ -5,12 +5,16 @@ import com.ssafy.relpl.business.ProjectRecommendBusiness;
 import com.ssafy.relpl.config.GeomFactoryConfig;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.service.ProjectService;
+import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -55,6 +59,17 @@ public class ProjectController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody ProjectJoinRequest request) {
         return projectService.join(request);
+    }
+
+    @PostMapping("/stop")
+    public ResponseEntity<?> stopList(@RequestBody ProjectStopRouteRequest request) throws IOException, ExecutionException, InterruptedException {
+        log.info(request.toString());
+        return projectService.stopRoute(request);
+    }
+
+    @PutMapping(value = "/stop", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> stopPhoto(@ModelAttribute ProjectStopPhotoRequest request) {
+        return projectService.stopPhoto(request);
     }
 
     @GetMapping("/all")

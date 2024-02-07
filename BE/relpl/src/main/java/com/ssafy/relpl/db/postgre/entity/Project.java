@@ -6,9 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @Builder
 @Entity
@@ -69,7 +66,6 @@ public class Project {
     @Column(name = "project_coordinate_current_index")
     private int projectCoordinateCurrentSize;
 
-
     public static Project createDistanceProject(ProjectCreateDistanceRequest request, Point startPoint) {
         return Project.builder()
                 .userId(request.getUserId())
@@ -86,7 +82,6 @@ public class Project {
                 .projectIsPlogging(true)
                 .projectTotalContributer(1)
                 .build();
-
     }
 
     public static Project createRouteProject(ProjectCreateRouteRequest request, Point startPoint, Point endPoint) {
