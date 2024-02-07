@@ -27,6 +27,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "WHERE ST_DWithin" +
                     "(project_stop_coordinate " +
                     ", ST_SetSRID(ST_MakePoint(:x, :y), 4326), :distance, true)" +
+                    "   AND " +
+                    "project_ispath = FALSE " +
                     "ORDER BY" +
                     "    ST_Distance(" +
                     "        ST_Transform(project_stop_coordinate, 4326), " +
