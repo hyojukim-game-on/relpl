@@ -16,8 +16,7 @@ import com.gdd.data.toNonDefault
 import javax.inject.Inject
 
 class ProjectRemoteDataSourceImpl @Inject constructor(
-    private val projectService: ProjectService,
-    private val projectInfoDao: ProjectInfoDao
+    private val projectService: ProjectService
 ): ProjectRemoteDataSource {
     override suspend fun isExistProject(lat: Double, lng: Double): Result<IsExistDistanceResponse> {
         return projectService.isExistProject(lng, lat)
