@@ -21,4 +21,6 @@ interface LocationTrackingRepository {
     fun getAllRelayPathData(): Flow<List<RelayPathData>>
 
     suspend fun deleteAllRelayPathData()
+
+    suspend fun updateRelayPathPoint(relayPathData: RelayPathData)
 }

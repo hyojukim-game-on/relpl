@@ -3,7 +3,7 @@ package com.gdd.data.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.gdd.data.model.tracking.LocationTrackingEntity
+import androidx.room.Update
 import com.gdd.data.model.tracking.RelayPathEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -17,4 +17,7 @@ interface RelayPathDao {
 
     @Query("DELETE FROM relay_path_table")
     suspend fun deleteAllRelayPathData()
+
+    @Update
+    suspend fun updateRelayPathPoint(relayPathEntity: RelayPathEntity)
 }
