@@ -76,4 +76,11 @@ public class UserController {
         log.info("getUserHistory 내부로 들어옴");
         return userService.getUserHistory(request);
     }
+
+    // 내 기록 상세보기
+    @PostMapping(value = "/history/detail")
+    public ResponseEntity<CommonResult> getUserHistoryDetail(@RequestBody UserHistoryDetailRequest request) throws IOException {
+        log.info("getUserHistoryDetail 내부로 들어옴");
+        return userService.getUserHistoryDetail(request);
+    }
 }
