@@ -86,12 +86,12 @@ interface UserService {
         @PartMap data: HashMap<String, RequestBody>
     ): Result<DefaultResponse<Boolean>>
 
-    @GET("user/history")
+    @POST("user/history")
     suspend fun getHistory(
         @Body userIdRequest: UserIdRequest
     ): Result<DefaultResponse<HistorySummeryResponse>>
 
-    @GET("user/history/detail")
+    @POST("user/history/detail")
     suspend fun getHistoryDetail(
         @Body projectIdRequest: ProjectIdRequest
     ): Result<DefaultResponse<HistoryDetailSummeryResponse>>

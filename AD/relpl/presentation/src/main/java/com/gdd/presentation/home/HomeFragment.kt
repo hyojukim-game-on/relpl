@@ -16,6 +16,7 @@ import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.distanceFormat
 import com.gdd.presentation.base.pointFormat
 import com.gdd.presentation.databinding.FragmentHomeBinding
+import com.gdd.presentation.history.HistoryFragment
 import com.gdd.presentation.profile.ProfileFragment
 import com.gdd.presentation.rank.RankFragment
 import com.gdd.presentation.report.ReportFragment
@@ -101,6 +102,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         binding.rankCard.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, RankFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.recordCard.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, HistoryFragment())
                 .addToBackStack(null)
                 .commit()
         }

@@ -8,4 +8,9 @@ data class History(
     val endDate: String,
     val totalDistance: Int,
     val totalContributor: Int
-)
+): Comparable<History>{
+    override fun compareTo(other: History): Int {
+        return createDate.compareTo(other.createDate)
+    }
+
+}

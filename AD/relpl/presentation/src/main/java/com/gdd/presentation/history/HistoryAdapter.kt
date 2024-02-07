@@ -22,7 +22,8 @@ class HistoryAdapter(private val layoutInflater: LayoutInflater,
             if (item.projectIsDone) binding.clNotDone.visibility = View.GONE
 
             binding.tvTitle.text = item.projectName
-            binding.tvDate.text = "${item.createDate.toFormattedDate()} 부터 ${item.endDate.toFormattedDate()} 까지"
+            binding.tvDateFrom.text = "${item.createDate.toFormattedDate()} 부터"
+            binding.tvDateTo.text = "${item.endDate.toFormattedDate()} 까지"
             binding.tvDistance.text = item.totalDistance.toRelayDistance()
             binding.tvContributor.text = item.totalContributor.toKoreanNumber()
 

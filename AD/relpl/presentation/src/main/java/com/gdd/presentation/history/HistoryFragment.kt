@@ -13,6 +13,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gdd.domain.model.history.History
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
@@ -49,6 +51,14 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel.loadHistory(prefManager.getUserId())
 
+        if(mainViewModel.user.imageUri != null){
+            Glide.with(this)
+                .load(mainViewModel.user.imageUri)
+                .fitCenter()
+                .apply(RequestOptions().circleCrop())
+                .into(binding.ivProfilePhoto)
+        }
+
         binding.tvUserNickname.text = resources.getString(R.string.history_user_nickname, mainViewModel.user.nickname)
         // 프로필 이미지 띄우기
 
@@ -68,8 +78,11 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
                     if (it.totalProject == 0){
                         binding.tvNoDataSummery.visibility = View.VISIBLE
                         binding.tvNoData.visibility = View.VISIBLE
-                    }else{
                         binding.llInfoSummery.visibility = View.GONE
+                    }else{
+                        binding.tvNoDataSummery.visibility = View.GONE
+                        binding.tvNoData.visibility = View.GONE
+
                         binding.tvTotalProject.text = it.totalProject.toString()
                         binding.tvTotalDistanceKm.text = (it.userTotalDistance / 1000).toString()
                         binding.tvTotalDistanceM.text = (it.userTotalDistance % 1000).toString()
@@ -81,7 +94,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
                         binding.tvTotalTimeHour.text = hour.toString()
                         binding.tvTotalTimeMin.text = min.toString()
 
-                        historyList = it.detailList
+                        historyList = it.detailList.sorted().reversed()
                         initRecyclerView()
                     }
                 }

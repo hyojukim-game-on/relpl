@@ -3,7 +3,7 @@
     android:id="@+id/item"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="145dp"
+    android:layout_height="140dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="15dp"
     app:cardBackgroundColor="@color/sage_green_background"
@@ -15,26 +15,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="27dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="17dp">
+        android:layout_gravity="center">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="17dp"
+            android:layout_marginStart="10dp"
             android:text="진평동 골목길 청소합시다!"
-            android:textAppearance="@style/Relpl.Text.History.Item.Title"/>
+            style="@style/Relpl.Text.History.Item.Title"
+            android:textColor="@color/sage_green_text"/>
 
         <TextView
-            android:id="@+id/tv_date"
+            android:id="@+id/tv_date_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2024년 1월 8일 부터 2024년 1월 14일 까지"
+            android:text="2024년 1월 8일 부터"
             android:layout_gravity="end"
-            android:textAppearance="@style/Relpl.Text.History.Item.Content"/>
+            style="@style/Relpl.Text.R.14"/>
+
+        <TextView
+            android:id="@+id/tv_date_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024년 1월 14일 까지"
+            android:layout_gravity="end"
+            style="@style/Relpl.Text.R.14"
+            android:layout_marginTop="5dp"/>
 
         <TextView
             android:id="@+id/tv_distance"
@@ -42,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="총 2km 130m의 길을"
             android:layout_gravity="end"
-            android:textAppearance="@style/Relpl.Text.History.Item.Content"
+            style="@style/Relpl.Text.R.14"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
@@ -52,7 +61,7 @@
             android:layout_height="wrap_content"
             android:text="네 분께서 깨끗하게 해주셨어요 :)"
             android:layout_gravity="end"
-            android:textAppearance="@style/Relpl.Text.History.Item.Content"/>
+            style="@style/Relpl.Text.R.14"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
