@@ -15,12 +15,16 @@ interface LocationTrackingLocalDataSource {
 
     fun getAllLocationTrackingData(): Flow<List<LocationTrackingEntity>>
 
+    suspend fun getAllLocationTrackingDataOnce(): List<LocationTrackingEntity>
+
     suspend fun deleteAllLocationTrackingData()
 
 
     suspend fun insertRelayPathList(relayPathEntityList: List<RelayPathEntity>)
 
     fun getAllRelayPathData(): Flow<List<RelayPathEntity>>
+
+    suspend fun getAllRelayPathDataOnce(): List<RelayPathEntity>
 
     suspend fun deleteAllRelayPathData()
 

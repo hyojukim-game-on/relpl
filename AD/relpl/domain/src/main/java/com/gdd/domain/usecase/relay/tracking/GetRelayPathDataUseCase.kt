@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetRelayPathDataUseCase @Inject constructor(
     private val locationTrackingRepository: LocationTrackingRepository
 ) {
-    operator fun invoke(): Flow<List<RelayPathData>> {
-        return locationTrackingRepository.getAllRelayPathData()
+    suspend operator fun invoke(): List<RelayPathData> {
+        return locationTrackingRepository.getAllRelayPathDataOnce()
     }
 }

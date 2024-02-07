@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.usecase.relay.tracking.ClearTrackingDataUseCase
-import com.gdd.domain.usecase.relay.tracking.GetLocationTrackingDataUseCase
+import com.gdd.domain.usecase.relay.tracking.GetLocationTrackingDataUseCaseFlow
 import com.gdd.presentation.model.mapper.toTrackingPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
@@ -18,13 +18,13 @@ private const val TAG = "RelayingViewModel_Genseong"
 
 @HiltViewModel
 class RelayingViewModel @Inject constructor(
-    private val getLocationTrackingDataUseCase: GetLocationTrackingDataUseCase,
+    private val getLocationTrackingDataUseCaseFlow: GetLocationTrackingDataUseCaseFlow,
     private val clearTrackingDataUseCase: ClearTrackingDataUseCase
 ) : ViewModel() {
     private var firstTime: Long? = null
     private var elapsedTimeFlag = true
 
-    val trackingStateFlow = getLocationTrackingDataUseCase()
+    val trackingStateFlow = getLocationTrackingDataUseCaseFlow()
         .shareIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),

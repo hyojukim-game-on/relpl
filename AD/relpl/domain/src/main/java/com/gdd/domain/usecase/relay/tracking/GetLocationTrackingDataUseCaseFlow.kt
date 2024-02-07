@@ -5,10 +5,10 @@ import com.gdd.domain.repository.LocationTrackingRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetLocationTrackingDataUseCase @Inject constructor(
+class GetLocationTrackingDataUseCaseFlow @Inject constructor(
     private val locationTrackingRepository: LocationTrackingRepository
 ) {
-    suspend operator fun invoke(): List<TrackingData> {
-        return locationTrackingRepository.getAllLocationTrackingDataOnce()
+    operator fun invoke(): Flow<List<TrackingData>> {
+        return locationTrackingRepository.getAllLocationTrackingData()
     }
 }

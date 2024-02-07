@@ -46,4 +46,12 @@ class LocationTrackingLocalDataSourceImpl @Inject constructor(
     override suspend fun updateRelayPathPoint(relayPathEntity: RelayPathEntity) {
         relayPathDao.updateRelayPathPoint(relayPathEntity)
     }
+
+    override suspend fun getAllLocationTrackingDataOnce(): List<LocationTrackingEntity> {
+        return locationTrackingDao.getAllLocationTrackingDataOnce()
+    }
+
+    override suspend fun getAllRelayPathDataOnce(): List<RelayPathEntity> {
+        return relayPathDao.getAllRelayPathDataOnce()
+    }
 }
