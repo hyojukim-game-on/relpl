@@ -36,8 +36,4 @@ interface ProjectRemoteDataSource {
                                 projectStartPoint: PointResponse,
                                 projectEndPoint: PointResponse
     ): Result<Long>
-
-    suspend fun saveProjectInfo()
-
-    suspend fun getProjectInfo()
 }
