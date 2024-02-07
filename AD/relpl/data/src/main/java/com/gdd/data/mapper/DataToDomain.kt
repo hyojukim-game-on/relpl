@@ -18,8 +18,9 @@ import com.gdd.data.model.report.ReportRecordResponse
 import com.gdd.data.model.signin.SignInResponse
 import com.gdd.data.model.signup.SignupResponse
 import com.gdd.data.model.tracking.LocationTrackingEntity
+import com.gdd.data.model.tracking.RelayPathEntity
 import com.gdd.domain.model.Point
-import com.gdd.domain.model.TrackingData
+import com.gdd.domain.model.tracking.TrackingData
 import com.gdd.domain.model.history.History
 import com.gdd.domain.model.history.HistoryDetail
 import com.gdd.domain.model.history.HistoryDetailInfo
@@ -33,6 +34,7 @@ import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.RecommendedPath
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.model.report.ReportRecord
+import com.gdd.domain.model.tracking.RelayPathData
 import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.model.user.User
 import java.text.SimpleDateFormat
@@ -172,6 +174,10 @@ fun RankResponseItem.toRankItem(): RankItem{
 
 fun LocationTrackingEntity.toTrackData(): TrackingData {
     return TrackingData(milliTime, longitude, latitude)
+}
+
+fun RelayPathEntity.toRelayPathData(): RelayPathData{
+    return RelayPathData(latitude, longitude, visit)
 }
 
 fun RecommendPathResponse.toRecommendedPath(): RecommendedPath{

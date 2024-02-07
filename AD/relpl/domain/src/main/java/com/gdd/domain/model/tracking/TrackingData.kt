@@ -1,4 +1,4 @@
-package com.gdd.domain.model
+package com.gdd.domain.model.tracking
 
 data class TrackingData(
     val timeMillis: Long,

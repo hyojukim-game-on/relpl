@@ -1,4 +1,4 @@
-package com.gdd.domain.usecase.relay
+package com.gdd.domain.usecase.relay.tracking
 
 import com.gdd.domain.repository.LocationTrackingRepository
 import javax.inject.Inject

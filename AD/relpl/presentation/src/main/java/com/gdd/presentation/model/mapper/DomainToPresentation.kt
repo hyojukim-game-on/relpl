@@ -1,6 +1,6 @@
 package com.gdd.presentation.model.mapper
 
-import com.gdd.domain.model.TrackingData
+import com.gdd.domain.model.tracking.TrackingData
 import com.gdd.domain.model.report.ReportRecord
 import com.gdd.presentation.model.ReportRecordPoint
 import com.naver.maps.geometry.LatLng
