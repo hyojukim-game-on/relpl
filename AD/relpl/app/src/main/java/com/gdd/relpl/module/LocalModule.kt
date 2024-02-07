@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.gdd.data.RelplDataBase
 import com.gdd.data.dao.LocationTrackingDao
+import com.gdd.data.dao.ProjectInfoDao
 import com.gdd.data.dao.RelayPathDao
 import dagger.Module
 import dagger.Provides
@@ -41,5 +42,13 @@ object LocalModule {
         relplDatabase: RelplDataBase
     ): RelayPathDao {
         return relplDatabase.relayPathDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesProjectInfoDao(
+        relplDataBase: RelplDataBase
+    ): ProjectInfoDao {
+        return relplDataBase.projectInfoDao()
     }
 }

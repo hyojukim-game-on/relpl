@@ -83,12 +83,12 @@ class PrefManager(context: Context) {
         }
     }
 
-    fun getRelayingMode(mode: RELAYING_MODE): RELAYING_MODE {
+    fun getRelayingMode(): RELAYING_MODE {
         return when(pref.getInt(PREF_RELAYING_MODE,-1)){
             RELAYING_MODE.PATH.ordinal->RELAYING_MODE.PATH
             RELAYING_MODE.DISTANCE.ordinal->RELAYING_MODE.DISTANCE
-            RELAYING_MODE.None.ordinal->RELAYING_MODE.None
-            else->RELAYING_MODE.None
+            RELAYING_MODE.NONE.ordinal->RELAYING_MODE.NONE
+            else->RELAYING_MODE.NONE
         }
     }
 
@@ -100,7 +100,7 @@ class PrefManager(context: Context) {
     }
 
     enum class RELAYING_MODE{
-        DISTANCE, PATH, None
+        DISTANCE, PATH, NONE
     }
 
     companion object{
