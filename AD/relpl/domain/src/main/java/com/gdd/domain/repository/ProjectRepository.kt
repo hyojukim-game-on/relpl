@@ -5,6 +5,7 @@ import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RecommendedPath
+import com.gdd.domain.model.relay.RelayInfoData
 import com.gdd.domain.model.relay.RelayMarker
 
 interface ProjectRepository {
@@ -32,4 +33,17 @@ interface ProjectRepository {
                                 projectStartPoint: Point,
                                 projectEndPoint: Point
     ): Result<Long>
+
+    suspend fun saveProjectInfo(id: Long,
+                                name: String,
+                                totalContributer: Int,
+                                totalDistance: Int,
+                                remainDistance: Int,
+                                createDate: String,
+                                endDate: String,
+                                isPath: Boolean,
+                                endLatitude: Double,
+                                endLongitude: Double)
+
+    suspend fun getProjectInfo(): RelayInfoData
 }

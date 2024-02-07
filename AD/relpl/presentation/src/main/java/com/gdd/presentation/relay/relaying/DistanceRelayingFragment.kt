@@ -1,5 +1,6 @@
 package com.gdd.presentation.relay.relaying
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -52,6 +53,12 @@ class DistanceRelayingFragment : RelayingFragment() {
     }
 
     override fun registerObserve() {
+        // relay info
+        relayingViewModel.relayInfo.observe(viewLifecycleOwner){
+            binding.tvRelayName.text = it.name
+            binding.tvPeople.text = it.totalContributer.toString()
+        }
+
         // trackingStateFlow
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -81,6 +88,7 @@ class DistanceRelayingFragment : RelayingFragment() {
 
     private var firstTime: Long? = null
     private var elapsedTimeFlag = true
+    @SuppressLint("SetTextI18n")
     private fun registerUiObserve() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -93,9 +101,19 @@ class DistanceRelayingFragment : RelayingFragment() {
                             DateFormatter.getRelayStartTimeString(list.first().timeMillis)
                     }
                     // 진행 거리
-                    binding.tvProgressDistance.text = list.zipWithNext().sumOf {
+                    val progressDistance = list.zipWithNext().sumOf {
                         it.first.latLng.distanceTo(it.second.latLng)
-                    }.toInt().toString() + "m"
+                    }.toInt()
+                    binding.tvProgressDistance.text = "${progressDistance}M"
+                    binding.tvRemainDistance.text = relayingViewModel.relayInfo.value?.let {
+                        "${it.remainDistance - progressDistance}"
+                    } ?: "측정중..."
+                    //진행률
+                    val progressPercent = relayingViewModel.relayInfo.value?.let {
+                        (it.remainDistance - progressDistance)/it.totalDistance
+                    } ?: 0
+                    binding.pgCurrent.progress = progressDistance
+                    binding.tvProgress.text = "현재 ${progressPercent}% 진행됐습니다."
                 }
             }
         }
@@ -127,6 +145,8 @@ class DistanceRelayingFragment : RelayingFragment() {
                 stopRelay()
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.layout_main_fragment,RelayStopInfoFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
             .show()
     }

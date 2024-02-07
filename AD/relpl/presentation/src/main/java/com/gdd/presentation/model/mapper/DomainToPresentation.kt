@@ -1,8 +1,10 @@
 package com.gdd.presentation.model.mapper
 
-import com.gdd.domain.model.tracking.TrackingData
+import com.gdd.domain.model.relay.RelayInfoData
 import com.gdd.domain.model.report.ReportRecord
 import com.gdd.domain.model.tracking.RelayPathData
+import com.gdd.domain.model.tracking.TrackingData
+import com.gdd.presentation.model.RelayInfo
 import com.gdd.presentation.model.RelayPath
 import com.gdd.presentation.model.ReportRecordPoint
 import com.gdd.presentation.model.TrackingPoint
@@ -26,5 +28,22 @@ fun RelayPathData.toRelayPath(): RelayPath{
     return RelayPath(
         LatLng(latitude, longitude),
         visit
+    )
+}
+
+fun RelayInfoData.toRelayInfo(): RelayInfo{
+    return RelayInfo(
+        id,
+        name,
+        totalContributer,
+        totalDistance,
+        remainDistance,
+        createDate,
+        endDate,
+        isPath,
+        LatLng(
+            endPoint.y,
+            endPoint.x
+        )
     )
 }

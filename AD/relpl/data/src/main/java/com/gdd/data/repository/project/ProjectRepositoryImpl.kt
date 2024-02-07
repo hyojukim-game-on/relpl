@@ -6,18 +6,22 @@ import com.gdd.data.mapper.toMarker
 import com.gdd.data.mapper.toPathRelayInfo
 import com.gdd.data.mapper.toPointResponse
 import com.gdd.data.mapper.toRecommendedPath
+import com.gdd.data.mapper.toRelayInfoData
+import com.gdd.data.repository.project.local.ProjectLocalDataSource
 import com.gdd.data.repository.project.remote.ProjectRemoteDataSource
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RecommendedPath
+import com.gdd.domain.model.relay.RelayInfoData
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.repository.ProjectRepository
 import javax.inject.Inject
 
 class ProjectRepositoryImpl @Inject constructor(
-    private val projectRemoteDataSource: ProjectRemoteDataSource
+    private val projectRemoteDataSource: ProjectRemoteDataSource,
+    private val projectLocalDataSource: ProjectLocalDataSource
 ) : ProjectRepository{
     override suspend fun isExistDistanceRelay(lat: Double, lng: Double): Result<IsExistDistanceRelay> {
         return projectRemoteDataSource.isExistProject(lat, lng).map {
@@ -101,5 +105,35 @@ class ProjectRepositoryImpl @Inject constructor(
             projectStartPoint.toPointResponse(),
             projectEndPoint.toPointResponse()
         )
+    }
+
+    override suspend fun saveProjectInfo(
+        id: Long,
+        name: String,
+        totalContributer: Int,
+        totalDistance: Int,
+        remainDistance: Int,
+        createDate: String,
+        endDate: String,
+        isPath: Boolean,
+        endLatitude: Double,
+        endLongitude: Double
+    ) {
+        projectLocalDataSource.saveProjectInfo(
+            id,
+            name,
+            totalContributer,
+            totalDistance,
+            remainDistance,
+            createDate,
+            endDate,
+            isPath,
+            endLatitude,
+            endLongitude
+        )
+    }
+
+    override suspend fun getProjectInfo(): RelayInfoData {
+        return projectLocalDataSource.getProjectInfo().toRelayInfoData()
     }
 }

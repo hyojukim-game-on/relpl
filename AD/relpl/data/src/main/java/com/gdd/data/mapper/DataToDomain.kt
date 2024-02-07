@@ -12,6 +12,7 @@ import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
 import com.gdd.data.model.project.PathProjectResponse
+import com.gdd.data.model.project.ProjectInfoEntity
 import com.gdd.data.model.project.RecommendPathResponse
 import com.gdd.data.model.rank.RankResponse
 import com.gdd.data.model.rank.RankResponseItem
@@ -34,6 +35,7 @@ import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RecommendedPath
+import com.gdd.domain.model.relay.RelayInfoData
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.model.report.ReportRecord
 import com.gdd.domain.model.tracking.RelayPathData
@@ -219,6 +221,12 @@ fun IsExistDistanceResponse.toIsExistDistanceRelay(): IsExistDistanceRelay{
         this.exist,
         this.projectId,
         this.startCoordinate.toPoint()
+    )
+}
+
+fun ProjectInfoEntity.toRelayInfoData(): RelayInfoData{
+    return RelayInfoData(
+        id,name,totalContributer,totalDistance,remainDistance,createDate,endDate,isPath,Point(endLongitude,endLatitude)
     )
 }
 // 여기부터 dto -> dto가 아닌 형식 변환의 mapper들 입니다
