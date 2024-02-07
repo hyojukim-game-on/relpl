@@ -13,12 +13,16 @@ interface LocationTrackingRepository {
 
     fun getAllLocationTrackingData(): Flow<List<TrackingData>>
 
+    suspend fun getAllLocationTrackingDataOnce(): List<TrackingData>
+
     suspend fun deleteAllLocationTrackingData()
 
 
     suspend fun insertRelayPathList(relayPathDataList: List<RelayPathData>)
 
     fun getAllRelayPathData(): Flow<List<RelayPathData>>
+
+    suspend fun getAllRelayPathDataOnce(): List<RelayPathData>
 
     suspend fun deleteAllRelayPathData()
 

@@ -15,6 +15,9 @@ interface RelayPathDao {
     @Query("SELECT * FROM relay_path_table")
     fun getAllRelayPathData(): Flow<List<RelayPathEntity>>
 
+    @Query("SELECT * FROM relay_path_table")
+    suspend fun getAllRelayPathDataOnce(): List<RelayPathEntity>
+
     @Query("DELETE FROM relay_path_table")
     suspend fun deleteAllRelayPathData()
 

@@ -15,6 +15,8 @@ interface LocationTrackingDao {
     @Query("SELECT * FROM location_tracking_table")
     fun getAllLocationTrackingData(): Flow<List<LocationTrackingEntity>>
 
+    @Query("SELECT * FROM location_tracking_table")
+    suspend fun getAllLocationTrackingDataOnce(): List<LocationTrackingEntity>
 
     @Query("DELETE FROM location_tracking_table")
     suspend fun deleteAllLocationTrackingData()

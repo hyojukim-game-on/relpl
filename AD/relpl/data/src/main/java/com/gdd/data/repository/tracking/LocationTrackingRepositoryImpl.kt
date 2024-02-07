@@ -60,4 +60,17 @@ class LocationTrackingRepositoryImpl @Inject constructor(
             relayPathData.toRelayPathEntity()
         )
     }
+
+    override suspend fun getAllLocationTrackingDataOnce(): List<TrackingData> {
+        return locationTrackingLocalDataSource.getAllLocationTrackingDataOnce().map {
+            Log.d(TAG, "getAllLocationTrackingData: trackingStateFlow")
+            it.toTrackData()
+        }
+    }
+
+    override suspend fun getAllRelayPathDataOnce(): List<RelayPathData> {
+        return locationTrackingLocalDataSource.getAllRelayPathDataOnce().map {
+            it.toRelayPathData()
+        }
+    }
 }
