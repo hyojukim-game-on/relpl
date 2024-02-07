@@ -11,7 +11,8 @@ import java.util.List;
 public class UserHistoryDetailEntry {
 
     String userNickname;
-//    List<Point> movePath;
+    // mongoDB userRoute (UserRouteDetail) coordinates List<LineString>
+    List<Point> movePath;
     String moveStart;
     String moveEnd;
     int moveDistance;

@@ -45,12 +45,12 @@ public class UserController {
     }
 
     @PostMapping("/isExist/phone")
-    public ResponseEntity<CommonResult> duplicatePhone(@RequestBody UserDuplicatePhoneRequest request){
+    public ResponseEntity<CommonResult> duplicatePhone(@RequestBody UserDuplicatePhoneRequest request) {
         return userService.duplicateUserPhone(request);
     }
 
     @PostMapping("/isExist/uid")
-    public ResponseEntity<CommonResult> duplicateUserId(@RequestBody UserDuplicateIdRequest request){
+    public ResponseEntity<CommonResult> duplicateUserId(@RequestBody UserDuplicateIdRequest request) {
         return userService.duplicateUserId(request);
     }
 
@@ -76,3 +76,4 @@ public class UserController {
         log.info("getUserHistoryDetail 내부로 들어옴");
         return userService.getUserHistoryDetail(request);
     }
+}

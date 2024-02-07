@@ -319,16 +319,6 @@ public class UserService {
         // 유저별 릴레이 정보 리스트
         ArrayList<UserHistoryDetailEntry> detailList = new ArrayList<>();
 
-
-        
-        // 로직2
-        // projectTime : project.EndDate - project.CreateDate
-        // 5일 18시간 38분 동안
-        
-        // 로직3
-        // projectPeople : 한 명의 유저가 같은 릴레이에 여러 번 참여한 경우 중복 제거
-        // 네 분께서
-        
         // 존재하는 프로젝트일 경우
         if (projectOptional.isPresent()) {
 
@@ -339,7 +329,7 @@ public class UserService {
 
                 // 로직1
                 // moveContribution : 전체 프로젝트 거리 대비 해당 유저의 moveDistance %
-                // 릴레이 기여도 64%
+                // 릴레이 기여도 64% 형태로 앱에서 제공 예정
                 int moveContribution = (userRoute.getUserMoveDistance() / project.getProjectTotalDistance()) * 100;
 
                 UserHistoryDetailEntry entry = UserHistoryDetailEntry.builder()
@@ -353,10 +343,12 @@ public class UserService {
                         .moveImage(userRoute.getUserMoveImage())
                         .build();
 
-
                 detailList.add(entry);
             }
 
+            // 로직2
+            // projectTime : project.EndDate - project.CreateDate (yyyy-MM-dd HH:mm)
+            // 5일 18시간 38분 동안 형태로 변환해서 앱에서 사용 예정
 
             // 날짜 포맷 정의
             java.time.format.DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -365,18 +357,19 @@ public class UserService {
             LocalDateTime createDateTime = LocalDateTime.parse(project.getProjectCreateDate(), formatter);
             LocalDateTime endDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
 
-            // createDate와 endDate 사이의 분 차이를 계산
+            // createDateTime 과 endDateTime 사이의 분 차이를 long 으로 계산
             long projectTime = ChronoUnit.MINUTES.between(createDateTime, endDateTime);
-
 
             UserHistoryDetailResponse response = UserHistoryDetailResponse.builder()
                     .projectName(project.getProjectName())
                     .projectDistance(project.getProjectTotalDistance())
-                    .projectTime()
+                    .projectTime((int) projectTime) // 분 단위로 int 제공
                     .projectPeople(project.getProjectTotalContributer())
                     .detailList(detailList)
                     .build();
+
             return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "프로젝트 상세내역 조회에 성공하였습니다.", 200));
+
         } else { // 존재하지 않는 프로젝트일 경우
             log.error("projectId 가 없음");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 상세내역 조회에 실패하였습니다."));
