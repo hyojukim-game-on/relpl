@@ -6,6 +6,5 @@ import androidx.room.Entity
 data class LocationTrackingEntity(
     val milliTime: Long,
     val latitude: Double,
-    val longitude: Double,
-    val count: Int
+    val longitude: Double
 )

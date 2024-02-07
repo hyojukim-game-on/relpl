@@ -12,6 +12,7 @@ import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
 import com.gdd.data.model.project.PathProjectResponse
+import com.gdd.data.model.project.ProjectInfoEntity
 import com.gdd.data.model.project.RecommendPathResponse
 import com.gdd.data.model.rank.RankResponse
 import com.gdd.data.model.rank.RankResponseItem
@@ -19,8 +20,9 @@ import com.gdd.data.model.report.ReportRecordResponse
 import com.gdd.data.model.signin.SignInResponse
 import com.gdd.data.model.signup.SignupResponse
 import com.gdd.data.model.tracking.LocationTrackingEntity
+import com.gdd.data.model.tracking.RelayPathEntity
 import com.gdd.domain.model.Point
-import com.gdd.domain.model.TrackingData
+import com.gdd.domain.model.tracking.TrackingData
 import com.gdd.domain.model.history.History
 import com.gdd.domain.model.history.HistoryDetail
 import com.gdd.domain.model.history.HistoryDetailInfo
@@ -33,8 +35,10 @@ import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RecommendedPath
+import com.gdd.domain.model.relay.RelayInfoData
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.model.report.ReportRecord
+import com.gdd.domain.model.tracking.RelayPathData
 import com.gdd.domain.model.user.SignUpResult
 import com.gdd.domain.model.user.User
 import java.text.SimpleDateFormat
@@ -193,6 +197,10 @@ fun LocationTrackingEntity.toTrackData(): TrackingData {
     return TrackingData(milliTime, longitude, latitude)
 }
 
+fun RelayPathEntity.toRelayPathData(): RelayPathData{
+    return RelayPathData(latitude, longitude, visit)
+}
+
 fun RecommendPathResponse.toRecommendedPath(): RecommendedPath{
     return RecommendedPath(
         this.shortestId,
@@ -213,6 +221,12 @@ fun IsExistDistanceResponse.toIsExistDistanceRelay(): IsExistDistanceRelay{
         this.exist,
         this.projectId,
         this.startCoordinate.toPoint()
+    )
+}
+
+fun ProjectInfoEntity.toRelayInfoData(): RelayInfoData{
+    return RelayInfoData(
+        id,name,totalContributer,totalDistance,remainDistance,createDate,endDate,isPath,Point(endLongitude,endLatitude)
     )
 }
 // 여기부터 dto -> dto가 아닌 형식 변환의 mapper들 입니다

@@ -1,8 +1,7 @@
 package com.gdd.data.repository.project.remote
 
 import com.gdd.data.api.ProjectService
-import com.gdd.data.mapper.toIsExistDistanceRelay
-import com.gdd.data.model.ExistBooleanData
+import com.gdd.data.dao.ProjectInfoDao
 import com.gdd.data.model.PointResponse
 import com.gdd.data.model.ProjectIdRequest
 import com.gdd.data.model.project.CreateDistanceRelayRequest
@@ -17,7 +16,7 @@ import com.gdd.data.toNonDefault
 import javax.inject.Inject
 
 class ProjectRemoteDataSourceImpl @Inject constructor(
-    private val projectService: ProjectService
+    private val projectService: ProjectService,
 ): ProjectRemoteDataSource {
     override suspend fun isExistProject(lat: Double, lng: Double): Result<IsExistDistanceResponse> {
         return projectService.isExistProject(lng, lat)
@@ -100,4 +99,6 @@ class ProjectRemoteDataSourceImpl @Inject constructor(
                 it.projectId
             }
     }
+
+
 }

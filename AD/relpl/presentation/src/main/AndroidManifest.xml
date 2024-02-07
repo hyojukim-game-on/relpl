@@ -10,7 +10,12 @@
 
     <application android:theme="@style/Theme.Relpl">
         <service
-            android:name=".base.location.LocationTrackingService"
+            android:name=".base.location.relaying_service.DistanceLocationTrackingService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <service
+            android:name=".base.location.relaying_service.PathLocationTrackingService"
             android:exported="false"
             android:foregroundServiceType="location" />
 
