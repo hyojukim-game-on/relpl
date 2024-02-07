@@ -8,6 +8,7 @@ import com.gdd.data.model.project.CreatePathRelayRequest
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.PathProjectResponse
 import com.gdd.data.model.project.RecommendPathRequest
 import com.gdd.data.model.project.RecommendPathResponse
 import retrofit2.http.Body
@@ -27,10 +28,15 @@ interface ProjectService {
     @GET("project/all")
     suspend fun getAllAvailableProject(): Result<DefaultResponse<List<MarkerResponse>>>
 
-    @POST("project/distance")
+    @POST("project/check/distance")
     suspend fun getDistanceProjectInfo(
         @Body projectIdRequest: ProjectIdRequest
     ): Result<DefaultResponse<DistanceProjectResponse>>
+
+    @POST("project/check/route")
+    suspend fun getPathProjectInfo(
+        @Body projectIdRequest: ProjectIdRequest
+    ): Result<DefaultResponse<PathProjectResponse>>
 
     @PUT("project/join")
     suspend fun joinProject(

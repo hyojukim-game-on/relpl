@@ -8,10 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.IsExistDistanceRelay
+import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.usecase.relay.CreateDistanceRelayUseCase
 import com.gdd.domain.usecase.relay.GetAllRelayMarkerUseCase
 import com.gdd.domain.usecase.relay.GetDistanceRelayInfoUseCase
+import com.gdd.domain.usecase.relay.GetPathRelayInfoUseCase
 import com.gdd.domain.usecase.relay.IsExistDistanceRelayUseCase
 import com.gdd.domain.usecase.relay.JoinRelayUseCase
 import com.naver.maps.geometry.LatLng
@@ -26,6 +28,7 @@ private const val TAG = "LoadRelayViewModel_Genseong"
 class LoadRelayViewModel @Inject constructor(
     private val getAllRelayMarkerUseCase: GetAllRelayMarkerUseCase,
     private val getDistanceRelayInfoUseCase: GetDistanceRelayInfoUseCase,
+    private val getPathRelayInfoUseCase: GetPathRelayInfoUseCase,
     private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase,
     private val joinRelayUseCase: JoinRelayUseCase,
     private val createDistanceRelayUseCase: CreateDistanceRelayUseCase
@@ -43,6 +46,10 @@ class LoadRelayViewModel @Inject constructor(
     private val _distanceRelayInfoResult = MutableLiveData<Result<DistanceRelayInfo>>()
     val distanceRelayInfoResult: LiveData<Result<DistanceRelayInfo>>
         get() = _distanceRelayInfoResult
+
+    private val _pathRelayInfoResult = MutableLiveData<Result<PathRelayInfo>>()
+    val pathRelayInfoResult: LiveData<Result<PathRelayInfo>>
+        get() = _pathRelayInfoResult
 
     private val _joinRelayResult = MutableLiveData<Result<Boolean>>()
     val joinRelayResult : LiveData<Result<Boolean>>
@@ -72,8 +79,6 @@ class LoadRelayViewModel @Inject constructor(
 
     fun getDistanceRelayInfo(projectId: Long){
         viewModelScope.launch {
-//            delay(200)
-//            _distanceRelayInfoResult.postValue(Result.success(distanceRelayInfoEx))
             getDistanceRelayInfoUseCase(projectId).let {
                 _distanceRelayInfoResult.postValue(it)
             }
@@ -81,7 +86,11 @@ class LoadRelayViewModel @Inject constructor(
     }
 
     fun getPathRelayInfo(projectId: Long){
-
+        viewModelScope.launch {
+            getPathRelayInfoUseCase(projectId).let {
+                _pathRelayInfoResult.postValue(it)
+            }
+        }
     }
 
     fun joinRelay(projectId: Long){

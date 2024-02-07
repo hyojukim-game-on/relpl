@@ -6,6 +6,7 @@ import com.gdd.data.model.PointResponse
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.PathProjectResponse
 import com.gdd.data.model.project.RecommendPathResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -16,6 +17,8 @@ interface ProjectRemoteDataSource {
     suspend fun getAllAvailableProject(): Result<List<MarkerResponse>>
 
     suspend fun getDistanceProjectInfo(projectId: Long): Result<DistanceProjectResponse>
+
+    suspend fun getPathProjectInfo(projectId: Long): Result<PathProjectResponse>
 
     suspend fun joinProject(projectId: Long): Result<Boolean>
 

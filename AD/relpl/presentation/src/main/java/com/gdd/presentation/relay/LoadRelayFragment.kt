@@ -31,6 +31,7 @@ import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
 import com.gdd.domain.model.Point
 import com.gdd.domain.model.relay.DistanceRelayInfo
+import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.PrefManager
@@ -38,6 +39,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.base.location.LocationProviderController
+import com.gdd.presentation.base.splitWhen
 import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentLoadRelayBinding
 import com.gdd.presentation.mapper.DateFormatter
@@ -60,6 +62,7 @@ import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import org.w3c.dom.Text
@@ -78,6 +81,9 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     private lateinit var naverMap: NaverMap
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var locationProviderController: LocationProviderController
+
+    private val passedPath = PathOverlay()
+    private val remainPath = PathOverlay()
 
     @Inject
     lateinit var prefManager: PrefManager
@@ -184,7 +190,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                             tag = it.projectId.toString()
                             setOnClickListener {marker ->
                                 if (it.isPath)
-                                    viewModel.getDistanceRelayInfo(this.tag.toString().toLong())
+                                    viewModel.getPathRelayInfo(this.tag.toString().toLong())
                                 else
                                     viewModel.getDistanceRelayInfo(this.tag.toString().toLong())
                                 true
@@ -242,11 +248,56 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         viewModel.distanceRelayInfoResult.observe(viewLifecycleOwner){ result ->
             if (result.isSuccess){
                 result.getOrNull()?.let {
-                    initBottomSheetInfo(it)
+                    initDistanceBottomSheetInfo(it)
+                    naverMap.moveCamera(
+                        CameraUpdate.scrollTo(it.stopCoordinate.toLatLng()).animate(CameraAnimation.Easing)
+                            .finishCallback {
+                                naverMap.moveCamera(
+                                    CameraUpdate.zoomTo(16.0)
+                                        .animate(CameraAnimation.Easing)
+                                )
+                            }
+                    )
                     bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    bottomSheetDialog.findViewById<TextView>(R.id.tv_relay_name)!!.text = it.projectName
                     bottomSheetDialog.show()
 
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
+
+        viewModel.pathRelayInfoResult.observe(viewLifecycleOwner){ result ->
+            if (result.isSuccess){
+                result.getOrNull()?.let {
+                    initPathBottomSheetInfo(it)
+                    naverMap.moveCamera(
+                        CameraUpdate.scrollTo(it.stopCoordinate.toLatLng()).animate(CameraAnimation.Easing)
+                            .finishCallback {
+                                naverMap.moveCamera(
+                                    CameraUpdate.zoomTo(16.0)
+                                        .animate(CameraAnimation.Easing)
+                                )
+                            }
+                    )
+
+                    bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    bottomSheetDialog.show()
+
+                }
+            }else{
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException){
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
                 }
             }
         }
@@ -272,7 +323,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         }
     }
 
-    private fun initBottomSheetInfo(data: DistanceRelayInfo){
+    private fun initDistanceBottomSheetInfo(data: DistanceRelayInfo){
         bottomSheetDialog.findViewById<TextView>(R.id.tv_relay_name)?.text = data.projectName
         bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text = data.totalContributor.toString()
         bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress = data.progress
@@ -286,6 +337,49 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
             viewModel.joinRelay(data.projectId)
         }
+    }
+
+    private fun initPathBottomSheetInfo(data: PathRelayInfo){
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_relay_name)?.text = data.projectName
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text = data.totalContributor.toString()
+        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress = data.progress
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text = "현재 ${data.progress}% 진행됐습니다"
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_total_distance)?.text = data.totalDistance
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_remain_distance)?.text = data.remainDistance
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_start_date)?.text = data.createDate
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_end_date)?.text = data.endDate
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_memo)?.text = data.memo
+
+        bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
+            viewModel.joinRelay(data.projectId)
+        }
+
+        drawPassedPath(data.route.map { it.toLatLng() }, data.stopCoordinate.toLatLng())
+    }
+
+    private fun drawPassedPath(path: List<LatLng>, point: LatLng){
+        val route = path.splitWhen {
+            point.latitude == it.latitude && point.longitude == it.longitude
+        }
+
+        passedPath.apply {
+            map = null
+            coords = route[0]
+            color = resources.getColor(R.color.text_gray)
+            width = 25
+            outlineWidth = 1
+            map = naverMap
+        }
+
+        remainPath.apply {
+            map = null
+            coords = route[1]
+            color = resources.getColor(R.color.sage_green)
+            width = 25
+            outlineWidth = 1
+            map = naverMap
+        }
+
     }
 
     private fun showCannotCreateDistanceProjectDialog(){

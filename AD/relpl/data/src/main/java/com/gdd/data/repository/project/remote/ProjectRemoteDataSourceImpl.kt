@@ -10,6 +10,7 @@ import com.gdd.data.model.project.CreatePathRelayRequest
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.PathProjectResponse
 import com.gdd.data.model.project.RecommendPathRequest
 import com.gdd.data.model.project.RecommendPathResponse
 import com.gdd.data.toNonDefault
@@ -30,6 +31,10 @@ class ProjectRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getDistanceProjectInfo(projectId: Long): Result<DistanceProjectResponse> {
         return projectService.getDistanceProjectInfo(ProjectIdRequest(projectId)).toNonDefault()
+    }
+
+    override suspend fun getPathProjectInfo(projectId: Long): Result<PathProjectResponse> {
+        return projectService.getPathProjectInfo(ProjectIdRequest(projectId)).toNonDefault()
     }
 
     override suspend fun joinProject(projectId: Long): Result<Boolean> {

@@ -35,3 +35,13 @@ fun Int.distanceFormat(): String{
 fun Point.toLatLng(): LatLng{
     return LatLng(this.y, this.x)
 }
+
+fun List<LatLng>.splitWhen(predicate: (LatLng) -> Boolean): List<List<LatLng>> {
+    return this.fold(mutableListOf<MutableList<LatLng>>(mutableListOf())) { acc, item ->
+        if (predicate(item) && acc.last().isNotEmpty()) {
+            acc.add(mutableListOf())
+        }
+        acc.last().add(item)
+        acc
+    }
+}

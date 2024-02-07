@@ -11,6 +11,7 @@ import com.gdd.data.model.point.PointRecordResponse
 import com.gdd.data.model.project.DistanceProjectResponse
 import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
+import com.gdd.data.model.project.PathProjectResponse
 import com.gdd.data.model.project.RecommendPathResponse
 import com.gdd.data.model.rank.RankResponse
 import com.gdd.data.model.rank.RankResponseItem
@@ -30,6 +31,7 @@ import com.gdd.domain.model.rank.Rank
 import com.gdd.domain.model.rank.RankItem
 import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.IsExistDistanceRelay
+import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RecommendedPath
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.model.report.ReportRecord
@@ -137,6 +139,23 @@ fun DistanceProjectResponse.toDistanceRelayInfo(): DistanceRelayInfo{
         this.projectStopCoordinate.toPoint(),
         this.progress,
         this.userMoveMemo ?: "메모가 없습니다"
+    )
+}
+
+fun PathProjectResponse.toPathRelayInfo(): PathRelayInfo{
+    return PathRelayInfo(
+        this.projectId,
+        this.projectName,
+        this.projectTotalContributer,
+        this.projectTotalDistance.toStringDistance(),
+        this.projectRemainingDistance.toStringDistance(),
+        this.projectCreateDate.toKoreanDateFormat(),
+        this.projectEndDate.toKoreanDateFormat(),
+        this.projectIsPath,
+        this.projectStopCoordinate.toPoint(),
+        this.projectProgress,
+        this.userMoveMemo ?: "메모가 없습니다",
+        this.projectRoute.map { it.toPoint() }
     )
 }
 
