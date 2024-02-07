@@ -19,7 +19,6 @@ private const val TAG = "RelayingViewModel_Genseong"
 @HiltViewModel
 class RelayingViewModel @Inject constructor(
     private val getLocationTrackingDataUseCaseFlow: GetLocationTrackingDataUseCaseFlow,
-    private val clearTrackingDataUseCase: ClearTrackingDataUseCase
 ) : ViewModel() {
     private var firstTime: Long? = null
     private var elapsedTimeFlag = true
@@ -38,9 +37,6 @@ class RelayingViewModel @Inject constructor(
         }
 
     fun stopTracking() {
-        viewModelScope.launch {
-            clearTrackingDataUseCase()
-            viewModelScope.cancel()
-        }
+        viewModelScope.cancel()
     }
 }

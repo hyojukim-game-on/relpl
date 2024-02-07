@@ -1,7 +1,9 @@
 package com.gdd.presentation.relay.relaying
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
@@ -11,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.gdd.presentation.R
 import com.gdd.presentation.base.location.relaying_service.DistanceLocationTrackingService
 import com.gdd.presentation.mapper.DateFormatter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
@@ -44,7 +47,7 @@ class DistanceRelayingFragment : RelayingFragment() {
 
     override fun registerListener() {
         binding.btnStopRelay.setOnClickListener {
-            stopRelay()
+            showStopDialog()
         }
     }
 
@@ -111,6 +114,21 @@ class DistanceRelayingFragment : RelayingFragment() {
                 delay(1000)
             }
         }
+    }
+
+    private fun showStopDialog(){
+        MaterialAlertDialogBuilder(_activity)
+            .setTitle("릴레이 플로깅 그만하기")
+            .setMessage("여기까지 할까요?")
+            .setNegativeButton("취소") { _, _ ->
+
+            }
+            .setPositiveButton("확인") { _, _ ->
+                stopRelay()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.layout_main_fragment,RelayStopInfoFragment())
+            }
+            .show()
     }
 
     override fun startRelay() {
