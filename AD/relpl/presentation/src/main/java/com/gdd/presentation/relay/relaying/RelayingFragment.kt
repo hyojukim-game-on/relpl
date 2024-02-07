@@ -95,7 +95,6 @@ abstract class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
             }
         mapFragment.getMapAsync(mapReady)
         startRelay()
-        uiObserve()
         bottomSheetSetting()
     }
 
@@ -125,21 +124,6 @@ abstract class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
             listOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION)
         else
             listOf(Manifest.permission.ACCESS_FINE_LOCATION)
-
-    private fun uiObserve(){
-        relayingViewModel.remainDistance.observe(viewLifecycleOwner){
-            binding.tvRemainDistance.text = it
-        }
-        relayingViewModel.progressDistance.observe(viewLifecycleOwner){
-            binding.tvProgressDistance.text = it
-        }
-        relayingViewModel.startTime.observe(viewLifecycleOwner){
-            binding.tvStartTime.text = it
-        }
-        relayingViewModel.elapsedTime.observe(viewLifecycleOwner){
-            binding.tvElapsedTime.text = it
-        }
-    }
 
     private fun bottomSheetSetting() {
         // 바텀시트 제어

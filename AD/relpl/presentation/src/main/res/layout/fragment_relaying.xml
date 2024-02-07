@@ -224,7 +224,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:fontFamily="@font/font_wanted_sans_semibold"
-                            android:text="2024년 1월 1일 오전 0시 0분"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
