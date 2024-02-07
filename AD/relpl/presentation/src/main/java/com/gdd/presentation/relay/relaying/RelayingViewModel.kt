@@ -1,18 +1,13 @@
 package com.gdd.presentation.relay.relaying
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gdd.domain.usecase.relay.ClearTrackingDataUseCase
-import com.gdd.domain.usecase.relay.GetLocationTrackingDataUseCase
-import com.gdd.presentation.mapper.DateFormatter
+import com.gdd.domain.usecase.relay.tracking.ClearTrackingDataUseCase
+import com.gdd.domain.usecase.relay.tracking.GetLocationTrackingDataUseCase
 import com.gdd.presentation.model.mapper.toTrackingPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
