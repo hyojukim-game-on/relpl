@@ -12,6 +12,7 @@ abstract class BaseActivity<B : ViewBinding>(private val inflate: (LayoutInflate
     protected lateinit var binding: B
         private set
 
+
     private var backPressedTime = 0L
 
     val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -36,4 +37,5 @@ abstract class BaseActivity<B : ViewBinding>(private val inflate: (LayoutInflate
     fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
 }

@@ -3,6 +3,7 @@ package com.gdd.presentation.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +21,6 @@ abstract class BaseFragment<B : ViewBinding>(
     private var _binding: B? = null
     protected val binding get() = _binding!!
     protected lateinit var _activity: Context
-
-
     @SuppressLint("ResourceType")
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -57,5 +56,6 @@ abstract class BaseFragment<B : ViewBinding>(
     fun showSnackBar(message: String){
         Snackbar.make(binding.root,message,Snackbar.LENGTH_SHORT).show()
     }
+
 
 }

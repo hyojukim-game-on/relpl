@@ -10,6 +10,7 @@ import com.gdd.domain.usecase.relay.CreatePathRelayUseCase
 import com.gdd.domain.usecase.relay.JoinRelayUseCase
 import com.gdd.domain.usecase.relay.RecommendPathUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,6 +42,7 @@ class CreatePathRelayViewModel @Inject constructor(
 
     fun recommendPath(startCoordinate: Point, endCoordinate: Point){
         viewModelScope.launch {
+
             recommendPathUseCase(startCoordinate, endCoordinate).let {
                 _recommendedPathResult.postValue(it)
             }

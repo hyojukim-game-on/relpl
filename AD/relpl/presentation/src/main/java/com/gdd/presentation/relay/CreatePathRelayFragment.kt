@@ -1,13 +1,9 @@
 package com.gdd.presentation.relay
 
 import android.annotation.SuppressLint
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -17,12 +13,12 @@ import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.base.LoadingDialog
 import com.gdd.presentation.base.location.LocationProviderController
 import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentCreatePathRelayBinding
 import com.gdd.presentation.mapper.DateFormatter
 import com.gdd.retrofit_adapter.RelplException
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
@@ -55,6 +51,8 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
 
     private var startPointMarker: Marker = Marker()
     private var endPointMarker: Marker = Marker()
+
+    private lateinit var loading: LoadingDialog
 
 
     @Inject
@@ -115,6 +113,9 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
         }
 
         binding.btnSetDestination.setOnClickListener {
+            loading = LoadingDialog()
+            loading.show(this.childFragmentManager, "")
+
             locationProviderController.getCurrnetLocation {task ->
                 if (!task.isCanceled){
                     if (task.isSuccessful) {
@@ -229,6 +230,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
 
     private fun registerObserver(){
         viewModel.recommendedPathResult.observe(viewLifecycleOwner){ result ->
+            loading.dismiss()
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     Log.d(TAG, "registerObserver: ${it.recommendPath.size}, ${it.shortestPath.size}")
@@ -325,6 +327,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
     }
 
     override fun onCreateButtonClick(name: String, endDate: String) {
+
         viewModel.createPathRelay(
             prefManager.getUserId(),
             viewModel.selectedPathId,
@@ -336,6 +339,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             viewModel.startCoordinate,
             viewModel.endCoordinate
         )
+
     }
 
     override fun onReSetButtonClick() {
