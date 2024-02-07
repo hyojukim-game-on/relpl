@@ -7,7 +7,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.relpl.config.AWSS3Config;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.User;
-import com.ssafy.relpl.db.postgre.repository.UserHistoryRepository;
+import com.ssafy.relpl.db.postgre.entity.UserRoute;
+import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
 import com.ssafy.relpl.dto.request.*;
@@ -17,7 +18,6 @@ import com.ssafy.relpl.util.jwt.JwtTokenProvider;
 import com.ssafy.relpl.util.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -30,8 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -46,8 +46,9 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
     //    private final RedisTemplate redisTemplate;
     private final AuthenticationManager authenticationManager;
-    private final UserHistoryRepository userHistoryRepository;
     private final UserRouteRepository userRouteRepository;
+    private final ProjectRepository projectRepository;
+
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -286,49 +287,30 @@ public class UserService {
     * */
 
     public ResponseEntity<CommonResult> getUserHistory(UserHistoryRequest request) {
+        log.info("UserService 내의 getUserHistory 로 들어옴");
 
-        log.info("getUserHistory in UserService 내부로 들어옴");
+        // UserRoute 테치블에서 userId 레코드 가져오기
+        List<UserRoute> userRouteList = userRouteRepository.findByUserId(request.getUserId());
+        log.info("userRouteList:{}", userRouteList);
 
-        // 참여한 릴레이가 없을 때 0 0 0 빈 리스트로 초기화
-        int totalProject = 0;
+        // 초기화
+        int totalProjects = userRouteList.size();
         int userTotalDistance = 0;
         int userTotalTime = 0;
+        List<Map<String, Object>> detailList = new ArrayList<>();
 
-        // 참여한 릴레이 수 , 플로깅한 총 거리 (m), 플로깅한 총 누적 시간 (분), 릴레이 별 상세 정보
-        ArrayList<Map<String, Object>> detailList = new ArrayList<>();
-        
-        // 로그 찍어보기
-        log.info("totalProject:{}",totalProject);
-        log.info("userTotalDistance:{}",userTotalDistance);
-        log.info("userTotalTime:{}",userTotalTime);
-        log.info("detailList:{}",detailList);
+        if (totalProjects == 0) {
+            userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
+            userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
 
-        try {
+            Set<Long> projectIds = userRouteList.stream().map(UserRoute::getProjectId).collect(Collectors.toSet());
+            Map<Long, Project> projects = projectRepository.findAllById(projectIds).stream()
+                    .collect(Collectors.toMap(Project::getProjectId, project -> project));
 
-            // DB 의 Project 테이블에서 userId 있는 record 모두 불러오기
-            List<Project> projectList = userHistoryRepository.findProjectByUserId(request.getUserId());
-            log.info("projectList:{}",projectList);
-            log.info(projectList.getClass().getName());
-
-            // 해당 유저가 참여한 릴레이 수 더해주기
-            totalProject = projectList.size();
-            
-            
-            // 릴레이 참여했을 경우 누적 거리, 시간, 각 릴레이 정보 넣어주기
-            if (totalProject != 0) {
-
-                // 해당 유저가 플로깅 한 총 누적 거리 (DB 의 userRoute 에서 집계해서 더해주기)
-                userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
-
-                // 해당 유저가 플로깅 한 총 누적 시간 (DB 의 userRoute 에서 집계해서 더해주기)
-                userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
-
-                // 유저가 참여한 모든 릴레이에 대해 각 릴레이의 상세 정보를 HashMap 형태로
-                // 넣어서 detailList 완성하기
-                for (Project project : projectList) {
-
-                    Map<String, Object> projectDetails = new HashMap<>();
-
+            detailList = userRouteList.stream().map(userRoute -> {
+                Project project = projects.get(userRoute.getProjectId());
+                Map<String, Object> projectDetails = new HashMap<>();
+                if (project != null) {
                     projectDetails.put("projectId", project.getProjectId());
                     projectDetails.put("projectName", project.getProjectName());
                     projectDetails.put("projectIsDone", project.isProjectIsDone());
@@ -336,36 +318,19 @@ public class UserService {
                     projectDetails.put("endDate", project.getProjectEndDate());
                     projectDetails.put("totalDistance", project.getProjectTotalDistance());
                     projectDetails.put("totalContributor", project.getProjectTotalContributer());
-
-                    // 릴레이에 대한 상세 정보 detailList 에 추가
-                    detailList.add(projectDetails);
-                    }
-
-                    // 응답 데이터 생성
-                    UserHistoryResponse response = UserHistoryResponse.builder()
-                            .totalProject(totalProject)
-                            .userTotalDistance(userTotalDistance)
-                            .userTotalTime(userTotalTime)
-                            .detailList(detailList)
-                            .build();
-
-                    return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "OK", 200));
-            // 릴레이 참여 안 했을 경우 0 0 0 빈 리스트 리턴
-            } else {
-                // 응답 데이터 생성
-                UserHistoryResponse response = UserHistoryResponse.builder()
-                        .totalProject(totalProject)
-                        .userTotalDistance(userTotalDistance)
-                        .userTotalTime(userTotalTime)
-                        .detailList(detailList)
-                        .build();
-
-                return ResponseEntity.status(HttpStatus.OK).body(responseService.getSingleResult(response, "OK", 200));
-            }
-        } catch (Exception e) {
-            log.info("유저 아이디로 유저의 플로깅 히스토리 조회 실패");
-            log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "Bad Request"));
+                }
+                return projectDetails;
+            }).collect(Collectors.toList());
         }
+
+        UserHistoryResponse response = UserHistoryResponse.builder()
+                .totalProject(totalProjects)
+                .userTotalDistance(userTotalDistance)
+                .userTotalTime(userTotalTime)
+                .detailList((ArrayList<Map<String, Object>>) detailList)
+                .build();
+
+        return ResponseEntity.ok(responseService.getSingleResult(response, "OK", 200));
+
     }
 }
