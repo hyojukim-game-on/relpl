@@ -1,4 +1,4 @@
-package com.gdd.presentation.model.mapper
+package com.gdd.presentation.model
 
 import com.naver.maps.geometry.LatLng
 
