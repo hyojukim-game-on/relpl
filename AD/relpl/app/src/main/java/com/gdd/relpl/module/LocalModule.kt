@@ -2,8 +2,9 @@ package com.gdd.relpl.module
 
 import android.content.Context
 import androidx.room.Room
-import com.gdd.data.RelplDatabase
+import com.gdd.data.RelplDataBase
 import com.gdd.data.dao.LocationTrackingDao
+import com.gdd.data.dao.RelayPathDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,10 +19,10 @@ object LocalModule {
     @Singleton
     fun providesRelplDatabase(
         @ApplicationContext context: Context
-    ): RelplDatabase {
+    ): RelplDataBase {
         return Room.databaseBuilder(
             context,
-            RelplDatabase::class.java,
+            RelplDataBase::class.java,
             "relpl_db"
         ).build()
     }
@@ -29,8 +30,16 @@ object LocalModule {
     @Provides
     @Singleton
     fun providesLocationTrackingDao(
-        relplDatabase: RelplDatabase
+        relplDatabase: RelplDataBase
     ): LocationTrackingDao {
         return relplDatabase.locationTrackingDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesRelayPathDao(
+        relplDatabase: RelplDataBase
+    ): RelayPathDao {
+        return relplDatabase.relayPathDao()
     }
 }

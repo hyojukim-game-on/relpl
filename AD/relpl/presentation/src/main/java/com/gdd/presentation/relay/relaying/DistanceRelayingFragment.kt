@@ -82,8 +82,6 @@ class DistanceRelayingFragment : RelayingFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 relayingViewModel.trackingStateFlow.collect { list ->
-                    Log.d(TAG, "registerUiObserve: $list")
-                    Log.d(TAG, "registerUiObserve: $firstTime")
                     // 시작 시간
                     if (list.isNotEmpty() && binding.tvStartTime.text.isNullOrBlank()) {
                         firstTime = list.first().timeMillis
@@ -102,9 +100,7 @@ class DistanceRelayingFragment : RelayingFragment() {
         // 경과 시간
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             while (elapsedTimeFlag) {
-                Log.d(TAG, "registerUiObserve: Main")
                 if (firstTime != null) {
-                    Log.d(TAG, "registerUiObserve: Main2")
                     val hour = (System.currentTimeMillis() - firstTime!!) / 3600000
                     val minute = (System.currentTimeMillis() - firstTime!!) % 3600000 / 60000
                     withContext(Dispatchers.Main){
