@@ -20,27 +20,18 @@ import java.util.stream.Collectors;
 public class UserRouteDetail {
 
     @Id
-    private String id;
-    private Long userMoveId;
+    private String userRouteDetailId;
+    private Long userRouteId;
     private Long userId;
     private Long projectId;
-    private GeoJsonLineString recommendLineString;
+    private GeoJsonLineString userRouteCoordinate;
 
     public static UserRouteDetail createUserRouteDetail(ProjectStopRouteRequest request) {
         return UserRouteDetail.builder()
                 .userId(request.getUserId())
                 .projectId(request.getProjectId())
-//                .recommendLineString(convertToGeoJsonLineString(request.getUserMovePath()))
+                .userRouteCoordinate(new GeoJsonLineString(request.getUserMovePath()))
                 .build();
     }
-
-    public static GeoJsonLineString convertToGeoJsonLineString(List<Point> points) {
-        List<org.springframework.data.geo.Point> coordinates = points.stream()
-                .map(point -> new org.springframework.data.geo.Point(point.getCoordinate().getX(), point.getCoordinate().getY()))
-                .collect(Collectors.toList());
-
-        return new GeoJsonLineString(coordinates);
-    }
-
 
 }
