@@ -224,7 +224,10 @@ public class ProjectService {
                 List<org.springframework.data.geo.Point> convertCurrentProjectPointList = new ArrayList<>();
                 if (recommendProject.isPresent()) {
                     RecommendProject currentProject = recommendProject.get();
-                    convertCurrentProjectPointList = currentProject.getRecommendLineString().getCoordinates();
+                    List<org.springframework.data.geo.Point> currentProjectPointList = currentProject.getRecommendLineString().getCoordinates();
+                    for (org.springframework.data.geo.Point p : currentProjectPointList) {
+                        convertCurrentProjectPointList.add(new org.springframework.data.geo.Point(p.getX(), p.getY()));
+                    }
                 } else {
                     log.error("프로젝트 전체 경로 조회 실패");
                     throw new Exception();
