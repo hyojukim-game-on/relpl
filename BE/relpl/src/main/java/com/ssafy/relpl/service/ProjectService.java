@@ -220,7 +220,7 @@ public class ProjectService {
             if (projectOptional.isPresent()) {
                 Project project = projectOptional.get();
 
-                Optional<RecommendProject> recommendProject = recommendProjectRepository.findByProjectId(project.getProjectId());
+                Optional<RecommendProject> recommendProject = recommendProjectRepository.findByProjectId(request.getProjectId());
                 List<org.springframework.data.geo.Point> convertCurrentProjectPointList = new ArrayList<>();
                 if (recommendProject.isPresent()) {
                     RecommendProject currentProject = recommendProject.get();
