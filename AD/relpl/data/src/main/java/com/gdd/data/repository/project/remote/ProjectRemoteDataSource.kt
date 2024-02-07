@@ -20,7 +20,7 @@ interface ProjectRemoteDataSource {
 
     suspend fun getPathProjectInfo(projectId: Long): Result<PathProjectResponse>
 
-    suspend fun joinProject(projectId: Long): Result<Boolean>
+    suspend fun joinProject(projectId: Long): Result<Long>
 
     suspend fun createDistanceRelay(userId: Long, projectName: String, projectCreateDate: String, projectEndDate: String, projectTotalDistance: Int, projectStartCoordinate: PointResponse): Result<Long>
 

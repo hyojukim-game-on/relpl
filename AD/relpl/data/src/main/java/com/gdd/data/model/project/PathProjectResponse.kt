@@ -14,6 +14,6 @@ data class PathProjectResponse(
     val projectStopCoordinate: PointResponse, // 중단점 좌표
     val projectProgress: Int, //진행률 서버 계산 필요
     val userMoveMemo: String?,
-    val userMoveImage: String,
+    val userMoveImage: String?,
     val projectRoute: List<PointResponse>
 )

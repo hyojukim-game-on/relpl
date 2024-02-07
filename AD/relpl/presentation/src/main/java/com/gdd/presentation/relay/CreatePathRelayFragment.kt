@@ -300,8 +300,25 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             }
         }
 
+        /**
+         * 여기서 참여
+         */
         viewModel.joinRelayResult.observe(viewLifecycleOwner){ result ->
-            //화면 전환
+            //참여 성공했으면 화면 전환
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    //여기서 화면 전환
+                    showToast("$it 번 프로젝트 참여 성공")
+                }
+            } else {
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException) {
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
         }
     }
     @SuppressLint("MissingPermission")

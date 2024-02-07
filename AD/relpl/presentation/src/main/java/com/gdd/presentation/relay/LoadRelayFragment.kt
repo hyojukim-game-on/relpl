@@ -70,10 +70,11 @@ import javax.inject.Inject
 
 
 private const val TAG = "LoadRelayFragment_Genseong"
+
 @AndroidEntryPoint
 class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     FragmentLoadRelayBinding::bind, R.layout.fragment_load_relay
-) , DialogClickInterface{
+), DialogClickInterface {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val viewModel: LoadRelayViewModel by viewModels()
     private lateinit var mainActivity: MainActivity
@@ -84,6 +85,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
 
     private val passedPath = PathOverlay()
     private val remainPath = PathOverlay()
+    private val destinationMarker = Marker()
 
     @Inject
     lateinit var prefManager: PrefManager
@@ -99,11 +101,29 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         //위치권한 확인
         checkLocationPermission()
 
-//        locationManager = mainActivity.getSystemService(LOCATION_SERVICE) as LocationManager
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (bottomSheetDialog.isShowing) {
+                        bottomSheetDialog.dismiss()
+                    } else {
+                        if (remainPath.map != null || passedPath.map != null) {
+                            removeAllOverlay()
+                        } else {
+                            parentFragmentManager.popBackStack()
+                        }
+                    }
+                }
+            })
 
         registerListener()
         registerObserver()
         setFabSpeedDialUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeAllOverlay()
     }
 
     private fun checkLocationPermission() {
@@ -146,11 +166,11 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         viewModel.getAllMarker()
     }
 
-    private fun registerListener(){
+    private fun registerListener() {
         binding.fabCurLocation.setOnClickListener {
             binding.fabCurLocation.isEnabled = false
-            locationProviderController.getCurrnetLocation {task ->
-                if (!task.isCanceled){
+            locationProviderController.getCurrnetLocation { task ->
+                if (!task.isCanceled) {
                     if (task.isSuccessful) {
                         task.result.also {
                             val latLng = LatLng(it)
@@ -175,20 +195,23 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         }
     }
 
-    private fun registerObserver(){
-        viewModel.markerResult.observe(viewLifecycleOwner){ result ->
+    private fun registerObserver() {
+        viewModel.markerResult.observe(viewLifecycleOwner) { result ->
             Log.d(TAG, "registerObserver: ${result.getOrNull()?.size}")
-            if (result.isSuccess){
+            if (result.isSuccess) {
                 result.getOrNull()?.let {
-                    it.forEach{
+                    it.forEach {
                         Log.d(TAG, "registerObserver: ${it.stopCoordinate}")
                         Marker().apply {
-                            position =  it.stopCoordinate.toLatLng()
+                            position = it.stopCoordinate.toLatLng()
                             map = naverMap
                             icon = OverlayImage.fromResource(R.drawable.ic_marker)
-                            iconTintColor = if (it.isPath) resources.getColor(R.color.sage_green_dark) else resources.getColor(R.color.sage_brown)
+                            iconTintColor =
+                                if (it.isPath) resources.getColor(R.color.sage_green_dark) else resources.getColor(
+                                    R.color.sage_brown
+                                )
                             tag = it.projectId.toString()
-                            setOnClickListener {marker ->
+                            setOnClickListener { marker ->
                                 if (it.isPath)
                                     viewModel.getPathRelayInfo(this.tag.toString().toLong())
                                 else
@@ -198,9 +221,9 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                         }
                     }
                 }
-            }else{
+            } else {
                 result.exceptionOrNull()?.let {
-                    if (it is RelplException){
+                    if (it is RelplException) {
                         showSnackBar(it.message)
                     } else {
                         showSnackBar(resources.getString(R.string.all_net_err))
@@ -209,11 +232,11 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             }
         }
 
-        viewModel.isExistDistanceResult.observe(viewLifecycleOwner){ result ->
-            if (result.isSuccess){
+        viewModel.isExistDistanceResult.observe(viewLifecycleOwner) { result ->
+            if (result.isSuccess) {
                 result.getOrNull()?.let {
                     //존재하므로 생성 막아야함
-                    if (it.isExit){
+                    if (it.isExit) {
                         val latLng = it.projectCoordinate.toLatLng()
                         naverMap.moveCamera(
                             CameraUpdate.scrollTo(latLng).animate(CameraAnimation.Easing)
@@ -227,16 +250,16 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                         naverMap.locationOverlay.isVisible = true
                         naverMap.locationOverlay.position = latLng
                         showCannotCreateDistanceProjectDialog()
-                    }else{
+                    } else {
                         // 거리 릴레이 생성 다이얼로그
                         val dialog = CreateDistanceRelayDialog(this)
                         dialog.isCancelable = false
                         dialog.show(this.childFragmentManager, "")
                     }
                 }
-            }else{
+            } else {
                 result.exceptionOrNull()?.let {
-                    if (it is RelplException){
+                    if (it is RelplException) {
                         showSnackBar(it.message)
                     } else {
                         showSnackBar(resources.getString(R.string.all_net_err))
@@ -245,15 +268,17 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             }
         }
 
-        viewModel.distanceRelayInfoResult.observe(viewLifecycleOwner){ result ->
-            if (result.isSuccess){
+        viewModel.distanceRelayInfoResult.observe(viewLifecycleOwner) { result ->
+            removeAllOverlay()
+            if (result.isSuccess) {
                 result.getOrNull()?.let {
                     initDistanceBottomSheetInfo(it)
                     naverMap.moveCamera(
-                        CameraUpdate.scrollTo(it.stopCoordinate.toLatLng()).animate(CameraAnimation.Easing)
+                        CameraUpdate.scrollTo(it.stopCoordinate.toLatLng())
+                            .animate(CameraAnimation.Easing)
                             .finishCallback {
                                 naverMap.moveCamera(
-                                    CameraUpdate.zoomTo(16.0)
+                                    CameraUpdate.zoomTo(15.0)
                                         .animate(CameraAnimation.Easing)
                                 )
                             }
@@ -262,9 +287,9 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                     bottomSheetDialog.show()
 
                 }
-            }else{
+            } else {
                 result.exceptionOrNull()?.let {
-                    if (it is RelplException){
+                    if (it is RelplException) {
                         showSnackBar(it.message)
                     } else {
                         showSnackBar(resources.getString(R.string.all_net_err))
@@ -273,27 +298,26 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             }
         }
 
-        viewModel.pathRelayInfoResult.observe(viewLifecycleOwner){ result ->
-            if (result.isSuccess){
+        viewModel.pathRelayInfoResult.observe(viewLifecycleOwner) { result ->
+            removeAllOverlay()
+            if (result.isSuccess) {
                 result.getOrNull()?.let {
                     initPathBottomSheetInfo(it)
                     naverMap.moveCamera(
-                        CameraUpdate.scrollTo(it.stopCoordinate.toLatLng()).animate(CameraAnimation.Easing)
+                        CameraUpdate.scrollTo(it.stopCoordinate.toLatLng())
+                            .animate(CameraAnimation.Easing)
                             .finishCallback {
                                 naverMap.moveCamera(
-                                    CameraUpdate.zoomTo(16.0)
+                                    CameraUpdate.zoomTo(15.0)
                                         .animate(CameraAnimation.Easing)
                                 )
                             }
                     )
 
-                    bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    bottomSheetDialog.show()
-
                 }
-            }else{
+            } else {
                 result.exceptionOrNull()?.let {
-                    if (it is RelplException){
+                    if (it is RelplException) {
                         showSnackBar(it.message)
                     } else {
                         showSnackBar(resources.getString(R.string.all_net_err))
@@ -302,18 +326,35 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             }
         }
 
-        viewModel.joinRelayResult.observe(viewLifecycleOwner){ result ->
-            //화면 전환
+        /**
+         * 여기입니다
+         */
+        viewModel.joinRelayResult.observe(viewLifecycleOwner) { result ->
+            //참여 성공했으면 화면 전환
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    //여기서 화면 전환
+                    showToast("$it 번 프로젝트 참여 성공")
+                }
+            } else {
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException) {
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
         }
 
-        viewModel.createDistanceRelayResult.observe(viewLifecycleOwner){ result ->
-            if (result.isSuccess){
+        viewModel.createDistanceRelayResult.observe(viewLifecycleOwner) { result ->
+            if (result.isSuccess) {
                 result.getOrNull()?.let {
                     viewModel.joinRelay(it)
                 }
-            }else{
+            } else {
                 result.exceptionOrNull()?.let {
-                    if (it is RelplException){
+                    if (it is RelplException) {
                         showSnackBar(it.message)
                     } else {
                         showSnackBar(resources.getString(R.string.all_net_err))
@@ -323,41 +364,95 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         }
     }
 
-    private fun initDistanceBottomSheetInfo(data: DistanceRelayInfo){
+    private fun removeAllOverlay() {
+        passedPath.map = null
+        remainPath.map = null
+        destinationMarker.map = null
+        bottomSheetDialog.dismiss()
+    }
+
+    private fun initDistanceBottomSheetInfo(data: DistanceRelayInfo) {
         bottomSheetDialog.findViewById<TextView>(R.id.tv_relay_name)?.text = data.projectName
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text = data.totalContributor.toString()
-        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress = data.progress
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text = "현재 ${data.progress}% 진행됐습니다"
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text =
+            data.totalContributor.toString()
+        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress =
+            data.progress
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text =
+            "현재 ${data.progress}% 진행됐습니다"
         bottomSheetDialog.findViewById<TextView>(R.id.tv_total_distance)?.text = data.totalDistance
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_remain_distance)?.text = data.remainDistance
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_remain_distance)?.text =
+            data.remainDistance
         bottomSheetDialog.findViewById<TextView>(R.id.tv_start_date)?.text = data.createDate
         bottomSheetDialog.findViewById<TextView>(R.id.tv_end_date)?.text = data.endDate
         bottomSheetDialog.findViewById<TextView>(R.id.tv_memo)?.text = data.memo
 
         bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
-            viewModel.joinRelay(data.projectId)
+            locationProviderController.getCurrnetLocation { task ->
+                if (!task.isCanceled) {
+                    if (task.isSuccessful) {
+                        task.result.also {
+                            val cur = LatLng(it)
+                            Log.d(TAG, "initDistanceBottomSheetInfo: ${data.stopCoordinate.toLatLng().distanceTo(cur)}")
+                            if (data.stopCoordinate.toLatLng().distanceTo(cur) <= 5) {
+                                viewModel.joinRelay(data.projectId)
+                            }else{
+                                showToast("릴레이 시작 지점과 5m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
+                            }
+                        }
+                    }else{
+                        showSnackBar("위치정보 호출에 실패했습니다.")
+                    }
+                } else {
+                    showSnackBar("위치정보 호출에 실패했습니다.")
+                }
+            }
         }
     }
 
-    private fun initPathBottomSheetInfo(data: PathRelayInfo){
+    private fun initPathBottomSheetInfo(data: PathRelayInfo) {
         bottomSheetDialog.findViewById<TextView>(R.id.tv_relay_name)?.text = data.projectName
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text = data.totalContributor.toString()
-        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress = data.progress
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text = "현재 ${data.progress}% 진행됐습니다"
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text =
+            data.totalContributor.toString()
+        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress =
+            data.progress
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text =
+            "현재 ${data.progress}% 진행됐습니다"
         bottomSheetDialog.findViewById<TextView>(R.id.tv_total_distance)?.text = data.totalDistance
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_remain_distance)?.text = data.remainDistance
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_remain_distance)?.text =
+            data.remainDistance
         bottomSheetDialog.findViewById<TextView>(R.id.tv_start_date)?.text = data.createDate
         bottomSheetDialog.findViewById<TextView>(R.id.tv_end_date)?.text = data.endDate
         bottomSheetDialog.findViewById<TextView>(R.id.tv_memo)?.text = data.memo
 
         bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
-            viewModel.joinRelay(data.projectId)
+            locationProviderController.getCurrnetLocation { task ->
+                if (!task.isCanceled) {
+                    if (task.isSuccessful) {
+                        task.result.also {
+                            val cur = LatLng(it)
+                            if (data.stopCoordinate.toLatLng().distanceTo(cur) <= 5) {
+                                viewModel.joinRelay(data.projectId)
+                            }else{
+                                showToast("릴레이 시작 지점과 5m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
+                            }
+                        }
+                    }else{
+                        showSnackBar("위치정보 호출에 실패했습니다.")
+                    }
+                } else {
+                    showSnackBar("위치정보 호출에 실패했습니다.")
+                }
+            }
         }
+
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog.show()
 
         drawPassedPath(data.route.map { it.toLatLng() }, data.stopCoordinate.toLatLng())
     }
 
-    private fun drawPassedPath(path: List<LatLng>, point: LatLng){
+
+    private fun drawPassedPath(path: List<LatLng>, point: LatLng) {
         val route = path.splitWhen {
             point.latitude == it.latitude && point.longitude == it.longitude
         }
@@ -365,36 +460,47 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         passedPath.apply {
             map = null
             coords = route[0]
-            color = resources.getColor(R.color.text_gray)
-            width = 25
-            outlineWidth = 1
-            map = naverMap
-        }
-
-        remainPath.apply {
-            map = null
-            coords = route[1]
             color = resources.getColor(R.color.sage_green)
-            width = 25
+            width = 20
             outlineWidth = 1
             map = naverMap
         }
 
+        destinationMarker.apply {
+            map = null
+            position = route[0].last()
+            icon = OverlayImage.fromResource(R.drawable.ic_marker)
+            iconTintColor = resources.getColor(R.color.sage_orange)
+            map = naverMap
+        }
+
+        if (route.size != 1) {
+            remainPath.apply {
+                map = null
+                coords = route[1]
+                color = resources.getColor(R.color.text_gray)
+                width = 20
+                outlineWidth = 1
+                map = naverMap
+            }
+        }
     }
 
-    private fun showCannotCreateDistanceProjectDialog(){
+    private fun showCannotCreateDistanceProjectDialog() {
         MaterialAlertDialogBuilder(mainActivity)
             .setTitle("잠시만요!")
-            .setMessage("반경 50m 이내에 이어할 수 있는 거리 기반 릴레이가 존재합니다. \n" +
-                    "릴레이를 이어 받아 완성해주세요!")
+            .setMessage(
+                "반경 50m 이내에 이어할 수 있는 거리 기반 릴레이가 존재합니다. \n" +
+                        "릴레이를 이어 받아 완성해주세요!"
+            )
             .setPositiveButton("확인") { _, _ -> }
             .show()
     }
 
     @SuppressLint("MissingPermission")
     override fun onCreateButtonClick(name: String, distance: Int, endDate: String) {
-        locationProviderController.getCurrnetLocation {task ->
-            if (!task.isCanceled){
+        locationProviderController.getCurrnetLocation { task ->
+            if (!task.isCanceled) {
                 if (task.isSuccessful) {
                     task.result.also {
                         val latLng = LatLng(it)
@@ -438,9 +544,11 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             .show()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             if (!locationSource.isActivated) { // 권한 거부됨
                 naverMap.locationTrackingMode = LocationTrackingMode.None
@@ -476,9 +584,10 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                         .addToBackStack(null)
                         .commit()
                 }
+
                 R.id.fab_create_distance -> {
-                    locationProviderController.getCurrnetLocation {task ->
-                        if (!task.isCanceled){
+                    locationProviderController.getCurrnetLocation { task ->
+                        if (!task.isCanceled) {
                             if (task.isSuccessful) {
                                 task.result.also {
                                     val latLng = LatLng(it)
@@ -502,5 +611,5 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
-    // endregion
+// endregion
 }

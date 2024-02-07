@@ -37,8 +37,10 @@ class ProjectRemoteDataSourceImpl @Inject constructor(
         return projectService.getPathProjectInfo(ProjectIdRequest(projectId)).toNonDefault()
     }
 
-    override suspend fun joinProject(projectId: Long): Result<Boolean> {
-        return projectService.joinProject(ProjectIdRequest(projectId)).toNonDefault()
+    override suspend fun joinProject(projectId: Long): Result<Long> {
+        return projectService.joinProject(ProjectIdRequest(projectId)).toNonDefault().map {
+            it.projectId
+        }
     }
 
     override suspend fun createDistanceRelay(

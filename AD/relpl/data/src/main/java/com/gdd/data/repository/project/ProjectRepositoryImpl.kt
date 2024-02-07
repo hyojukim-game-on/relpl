@@ -45,7 +45,7 @@ class ProjectRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun joinRelay(projectId: Long): Result<Boolean> {
+    override suspend fun joinRelay(projectId: Long): Result<Long> {
         return projectRemoteDataSource.joinProject(projectId)
     }
 

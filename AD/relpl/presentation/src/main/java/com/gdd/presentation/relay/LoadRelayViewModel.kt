@@ -51,8 +51,8 @@ class LoadRelayViewModel @Inject constructor(
     val pathRelayInfoResult: LiveData<Result<PathRelayInfo>>
         get() = _pathRelayInfoResult
 
-    private val _joinRelayResult = MutableLiveData<Result<Boolean>>()
-    val joinRelayResult : LiveData<Result<Boolean>>
+    private val _joinRelayResult = MutableLiveData<Result<Long>>()
+    val joinRelayResult : LiveData<Result<Long>>
         get() = _joinRelayResult
 
 

@@ -38,10 +38,10 @@ interface ProjectService {
         @Body projectIdRequest: ProjectIdRequest
     ): Result<DefaultResponse<PathProjectResponse>>
 
-    @PUT("project/join")
+    @POST("project/join")
     suspend fun joinProject(
         @Body projectIdRequest: ProjectIdRequest
-    ): Result<DefaultResponse<Boolean>>
+    ): Result<DefaultResponse<ProjectIdRequest>>
 
     @POST("project/create/distance")
     suspend fun createDistanceRelay(

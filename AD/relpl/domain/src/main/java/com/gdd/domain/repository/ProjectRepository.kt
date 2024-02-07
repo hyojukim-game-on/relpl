@@ -16,7 +16,7 @@ interface ProjectRepository {
 
     suspend fun getPathProjectInfo(projectId: Long): Result<PathRelayInfo>
 
-    suspend fun joinRelay(projectId: Long): Result<Boolean>
+    suspend fun joinRelay(projectId: Long): Result<Long>
 
     suspend fun createDistanceRelay(userId: Long, projectName: String, projectCreateDate: String, projectEndDate: String, projectTotalDistance: Int, projectStartCoordinate: Point): Result<Long>
 

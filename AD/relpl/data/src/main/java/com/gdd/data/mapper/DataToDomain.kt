@@ -133,8 +133,8 @@ fun DistanceProjectResponse.toDistanceRelayInfo(): DistanceRelayInfo{
         this.projectTotalContributer,
         this.projectTotalDistance.toStringDistance(),
         this.projectRemainingDistance.toStringDistance(),
-        this.projectCreateDate.toKoreanDateFormat(),
-        this.projectEndDate.toKoreanDateFormat(),
+        this.projectCreateDate.toShortKoreanFormat(),
+        this.projectEndDate.toShortKoreanFormat(),
         this.projectIsPath,
         this.projectStopCoordinate.toPoint(),
         this.progress,
@@ -149,8 +149,8 @@ fun PathProjectResponse.toPathRelayInfo(): PathRelayInfo{
         this.projectTotalContributer,
         this.projectTotalDistance.toStringDistance(),
         this.projectRemainingDistance.toStringDistance(),
-        this.projectCreateDate.toKoreanDateFormat(),
-        this.projectEndDate.toKoreanDateFormat(),
+        this.projectCreateDate.toShortKoreanFormat(),
+        this.projectEndDate.toShortKoreanFormat(),
         this.projectIsPath,
         this.projectStopCoordinate.toPoint(),
         this.projectProgress,
@@ -225,13 +225,20 @@ fun String.toHistoryDetailStartDate(): String{
 }
 
 fun Int.toStringDistance(): String{
-    val km = if (this / 1000 > 0) "${this/100}km" else ""
+    val km = if (this / 1000 > 0) "${this/1000}km" else ""
     val m = "${this%1000}m"
     return "$km $m"
 }
 
 fun String.toKoreanDateFormat(): String{
     val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+    val date = simpleDateFormat.parse(this)
+    val koreanFormatter = SimpleDateFormat("yyyy년 M월 dd일")
+    return koreanFormatter.format(date)
+}
+
+fun String.toShortKoreanFormat(): String{
+    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     val date = simpleDateFormat.parse(this)
     val koreanFormatter = SimpleDateFormat("yyyy년 M월 dd일")
     return koreanFormatter.format(date)

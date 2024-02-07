@@ -29,8 +29,8 @@ class CreatePathRelayViewModel @Inject constructor(
     val createPathRelayResult: LiveData<Result<Long>>
         get() = _createPathRelayResult
 
-    private val _joinRelayResult = MutableLiveData<Result<Boolean>>()
-    val joinRelayResult: LiveData<Result<Boolean>>
+    private val _joinRelayResult = MutableLiveData<Result<Long>>()
+    val joinRelayResult: LiveData<Result<Long>>
         get() = _joinRelayResult
 
     var isRecommendedPathSelected = true
