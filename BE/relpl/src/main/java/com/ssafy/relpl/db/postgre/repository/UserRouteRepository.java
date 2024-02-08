@@ -19,17 +19,11 @@ public interface UserRouteRepository extends JpaRepository<UserRoute, Long> {
     @Query("SELECT COALESCE(SUM(ur.userMoveDistance), 0) FROM UserRoute ur WHERE ur.userId = :userId")
     int sumUserMoveTimeByUserId(Long userId);
 
-
-    UserRoute findLatestUserRouteByUserIdAndProjectId(Long userId, Long projectId);
-
-    UserRoute findTopByUserIdAndProjectIdAndUserMoveEnd(Long userId, Long projectId, String userMoveEnd);
-
     List<UserRoute> findByProjectId(Long projectId);
-//    List<Long> findDistinctUserIdsByProjectId(Long projectId);
     List<UserRoute> findByUserId(Long userId);
-
     List<UserRoute> findByUserIdAndProjectIdOrderByUserMoveIdDesc(Long userId, Long projectId);
 
     // projectId로 조회할 때 중복 없이 userId 조회
     List<Long> findDistinctUserIdByProjectId(Long projectId);
+
 }

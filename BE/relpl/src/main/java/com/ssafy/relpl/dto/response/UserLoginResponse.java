@@ -20,14 +20,14 @@ public class UserLoginResponse {
     private String accessToken;
     private String refreshToken;
 
-    public static UserLoginResponse createUserLoginResponse(User user, String accessToken, String refreshToken) {
+    public static UserLoginResponse createUserLoginResponse(User user, String accessToken, String refreshToken, int userTotalCoin, int userTotalDistance, int userTotalReport) {
         return UserLoginResponse.builder()
                 .userId(user.getUserId())
                 .userNickname(user.getUserNickname())
-                .userTotalCoin(1000)
-                .userTotalDistance(2000)
+                .userTotalCoin(userTotalCoin)
+                .userTotalDistance(userTotalDistance)
                 .userPhone(user.getUserPhone())
-                .userTotalReport(10)
+                .userTotalReport(userTotalReport)
                 .userImage(user.getUserImage())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

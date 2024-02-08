@@ -7,13 +7,9 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.relpl.config.AWSS3Config;
 import com.ssafy.relpl.db.mongo.entity.UserRouteDetail;
 import com.ssafy.relpl.db.mongo.repository.UserRouteDetailRepository;
+import com.ssafy.relpl.db.postgre.entity.*;
 import com.ssafy.relpl.db.postgre.entity.Project;
-import com.ssafy.relpl.db.postgre.entity.Project;
-import com.ssafy.relpl.db.postgre.entity.User;
-import com.ssafy.relpl.db.postgre.entity.UserRoute;
-import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
-import com.ssafy.relpl.db.postgre.repository.UserRepository;
-import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
+import com.ssafy.relpl.db.postgre.repository.*;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.dto.response.*;
 import com.ssafy.relpl.service.result.CommonResult;
@@ -34,6 +30,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -56,10 +53,12 @@ import java.util.stream.Collectors;
 public class UserService {
 
 
-    private final UserRouteDetailRepository userRouteDetailRepository;
-    private final UserRouteRepository userRouteRepository;
-    private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final UserRouteRepository userRouteRepository;
+    private final UserRouteDetailRepository userRouteDetailRepository;
+    private final ProjectRepository projectRepository;
+    private final CoinRepository coinRepository;
+    private final ReportRepository reportRepository;
     private final PasswordEncoder passwordEncoder;
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -97,27 +96,30 @@ public class UserService {
         return ResponseEntity.ok(responseService.getSingleResult(UserSignupResponse.createUserSignupResponse(saved), "회원가입 성공", 200));
     }
 
-    ;
-
     public ResponseEntity<CommonResult> login(UserLoginRequest request) {
         log.info("start");
-        Optional<User> user = userRepository.findByUserUid(request.getUserUid());
+        Optional<User> userOptional = userRepository.findByUserUid(request.getUserUid());
 
         //유저 아이디가 존재하고, 유저 아이디와 비밀번호가 일치하는 경우
-        if (user.isPresent() && passwordEncoder.matches(request.getUserPassword(), user.get().getUserPassword())) {
-            //totalCoin 조회 필요
-            //totalDistance 조회 필요
-            //totalReport 조회 필요
+        if (userOptional.isPresent() && passwordEncoder.matches(request.getUserPassword(), userOptional.get().getUserPassword())) {
+            User user = userOptional.get();
+
+            //총 포인트, 총 이동거리, 총 제보횟수 집계
+            int totalCoin = coinRepository.sumCoinAmountByUserId(user.getUserId());
+            int totalDistance = userRouteRepository.sumUserMoveDistanceByUserId(user.getUserId());
+            int totalReport = reportRepository.countByUser(user);
+            log.info("totalCoin: " + totalCoin + ", totalDistance: " + totalDistance + ", totalReport: " + totalReport);
+
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(String.valueOf(user.get().getUserId()), request.getUserPassword())
+                    new UsernamePasswordAuthenticationToken(String.valueOf(user.getUserId()), request.getUserPassword())
             );
             log.info("Userservice login authentication: " + authentication);
 
             //토큰 생성
-            String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, user.get().getUserId());
+            String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, user.getUserId());
             String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, authentication.getName());
 
-            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), accessToken, refreshToken), "로그인 성공", 200));
+            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user, accessToken, refreshToken, totalCoin, totalDistance, totalReport), "로그인 성공", 200));
         }
 
         //유저 아이디가 존재하지 않거나, 비밀번호가 일치하지 않는 경우
@@ -125,57 +127,65 @@ public class UserService {
     }
 
     public ResponseEntity<CommonResult> autologin(UserAutoLoginRequest request) {
-        Optional<User> user = userRepository.findById(request.getUserId());
-        if (user.isPresent()) {
-            if (user.get().isUserIsActive()) {
-                //totalCoin 조회 필요
-                //totalDistance 조회 필요
-                //totalReport 조회 필요
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (user.isUserIsActive()) {
+                //총 포인트, 총 이동거리, 총 제보횟수 집계
+                int totalCoin = coinRepository.sumCoinAmountByUserId(user.getUserId());
+                int totalDistance = userRouteRepository.sumUserMoveDistanceByUserId(user.getUserId());
+                int totalReport = reportRepository.countByUser(user);
+                log.info("totalCoin: " + totalCoin + ", totalDistance: " + totalDistance + ", totalReport: " + totalReport);
 
                 //유저가 존재하고, 회원탈퇴를 하지 않은 경우
-                return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user.get(), "accessToken", "refreshToken"), "로그인 성공", 200));
+                return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user, "accessToken", "refreshToken", totalCoin, totalDistance, totalReport), "로그인 성공", 200));
             }
-            log.info("isUserIsActive: " + user.get().isUserIsActive());
+
             //유저가 존재하고, 회원탈퇴를 한 경우
+            log.info("isUserIsActive: " + user.isUserIsActive());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "로그인 실패"));
         }
-        log.info("isPresent: " + user.isPresent());
+
         //유저가 존재하지 않은 경우
+        log.info("isPresent: " + userOptional.isPresent());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "로그인 실패"));
     }
+
 
     public ResponseEntity<CommonResult> reissue(UserReissueRequest request) {
         Optional<User> user = userRepository.findById(request.getUserId());
         if (!(user.isPresent() && user.get().isUserIsActive())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "존재하지 않는 유저입니다."));
+            return unauthorizedResponse("존재하지 않는 유저입니다.");
         }
-        try {
-            // JWT 토큰이 존재하고 유효한 경우
-            if (!request.getRefreshToken().isEmpty() && jwtTokenProvider.validateToken(request.getRefreshToken())) {
-                //refreshToken 의 name 으로 조회했을 때 존재하고, refreshToken 과 일치하는지 확인
-                String savedToken = (String) redisTemplate.opsForValue().get("token_" + request.getUserId());
-                log.info("saved refreshToken: " + savedToken);
-                if (request.getRefreshToken().equals(savedToken)) {
-                    //재발급
-                    String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, request.getUserId());
-                    String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, String.valueOf(request.getUserId()));
 
-                    log.info("reissue success");
-                    return ResponseEntity.ok(responseService.getSingleResult(UserReissueResponse.createUserReissueResponse(accessToken, refreshToken), "재발급 성공", 200));
-                }
-                log.info("reissue 401 error : refresh token 이 일치하지 않습니다.");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "refresh token 이 일치하지 않습니다."));
+        try {
+            if (request.getRefreshToken().isEmpty() || !jwtTokenProvider.validateToken(request.getRefreshToken())) {
+                return unauthorizedResponse("refresh token 이 일치하지 않거나 존재하지 않습니다.");
             }
-            log.info("reissue 401 error : 재발급 실패");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
+
+            String savedToken = (String) redisTemplate.opsForValue().get("token_" + request.getUserId());
+            if (!request.getRefreshToken().equals(savedToken)) {
+                return unauthorizedResponse("refresh token 이 일치하지 않습니다.");
+            }
+
+            String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, request.getUserId());
+            String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, String.valueOf(request.getUserId()));
+
+            log.info("토큰 재발급 성공");
+            return ResponseEntity.ok(responseService.getSingleResult(UserReissueResponse.createUserReissueResponse(accessToken, refreshToken), "재발급 성공", HttpStatus.OK.value()));
         } catch (BaseException e) {
-            log.info("reissue 401 error : 만료된 토큰입니다. 다시 로그인하세요.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "만료된 토큰입니다. 다시 로그인하세요."));
+            log.info("만료된 토큰입니다. 다시 로그인하세요.");
+            return unauthorizedResponse("만료된 토큰입니다. 다시 로그인하세요.");
         } catch (Exception e) {
-            log.info("reissue 401 error : 재발급 실패");
-            log.info("error 5 : " + e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(401, "재발급 실패"));
+            log.error("재발급 실패", e);
+            return unauthorizedResponse("재발급 실패");
         }
+    }
+
+    private ResponseEntity<CommonResult> unauthorizedResponse(String message) {
+        log.info("401 Unauthorized 오류: {}", message);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseService.getFailResult(HttpStatus.UNAUTHORIZED.value(), message));
     }
 
     public ResponseEntity<CommonResult> duplicateNickname(String nickname) {
@@ -213,12 +223,14 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            //totalCoin 조회 필요
-            //totalDistance 조회 필요
-            //totalReport 조회 필요
+            //총 포인트, 총 이동거리, 총 제보횟수 집계
+            int totalCoin = coinRepository.sumCoinAmountByUserId(user.getUserId());
+            int totalDistance = userRouteRepository.sumUserMoveDistanceByUserId(user.getUserId());
+            int totalReport = reportRepository.countByUser(user);
+            log.info("totalCoin: " + totalCoin + ", totalDistance: " + totalDistance + ", totalReport: " + totalReport);
 
             //유저가 존재하고, 회원탈퇴를 하지 않은 경우
-            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user, "accessToken", "refreshToken"), "로그인 성공", 200));
+            return ResponseEntity.ok(responseService.getSingleResult(UserLoginResponse.createUserLoginResponse(user, "accessToken", "refreshToken", totalCoin, totalDistance, totalReport), "로그인 성공", 200));
         }
         // 기존 유저가 없음
         log.info("유저 조회 실패");
