@@ -79,8 +79,8 @@ public class Project {
                 .projectRemainingDistance(request.getProjectTotalDistance())
                 .projectTotalDistance(request.getProjectTotalDistance())
                 .projectIsDone(false)
-                .projectIsPlogging(true)
-                .projectTotalContributer(1)
+                .projectIsPlogging(false)
+                .projectTotalContributer(0)
                 .build();
     }
 
@@ -98,8 +98,8 @@ public class Project {
                 .projectTotalDistance(request.getProjectSelectedTotalDistance())
                 .projectCoordinateTotalSize(request.getProjectSelectedCoordinateTotalSize())
                 .projectIsDone(false)
-                .projectIsPlogging(true)
-                .projectTotalContributer(1)
+                .projectIsPlogging(false)
+                .projectTotalContributer(0)
                 .build();
 
     }

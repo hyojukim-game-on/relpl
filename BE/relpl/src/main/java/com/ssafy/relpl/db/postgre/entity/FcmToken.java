@@ -21,8 +21,6 @@ public class FcmToken {
     @Column(name = "fcm_token")
     private String fcmToken; //토큰
 
-    // 외래키
-    @ManyToOne(fetch = FetchType.EAGER) // 다대일(N:1) 관계를 표시
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 }
