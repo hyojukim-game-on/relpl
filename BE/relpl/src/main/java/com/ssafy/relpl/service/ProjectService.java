@@ -55,6 +55,7 @@ public class ProjectService {
     private final TmapService tmapService;
     private final ResponseService responseService;
     private final FcmTokenService fcmTokenService;
+    private final RankingService rankingService;
     private final RedisTemplate<String, String> redisTemplate;
     private final GeomFactoryConfig geomFactoryConfig;
     private final AmazonS3Client amazonS3Client;
@@ -400,6 +401,9 @@ public class ProjectService {
                     project.setProjectCoordinateTotalSize(request.getProjectCoordinateCurrentSize()); // 프로젝트 진행율을 위한 진행된 경로 정점 개수
                     log.info("프로젝트 수정");
 
+                    // 랭킹 업데이트
+                    rankingService.addOrUpdateRanking(user.getUserNickname(), request.getMoveDistance());
+
                     // 프로젝트 완료
                     if(project.isProjectIsPath()) {
                         if(project.getProjectCoordinateCurrentSize() >= project.getProjectCoordinateTotalSize()) {
@@ -426,18 +430,26 @@ public class ProjectService {
     }
 
     private void sendFCM(Long projectId) {
-        // fcm 알림
-        List<Long> userIdList = userRouteRepository.findDistinctUserIdByProjectId(projectId);  //해당 플로깅 참여한 유저 조회
+        // 해당 플로깅 참여한 유저 조회
+        List<Long> userIdList = userRouteRepository.findDistinctUserIdByProjectId(projectId);
 
-        // 토큰 조회
-        List<FcmToken> tokenList = new ArrayList<>();
+        // 토큰 수집
+        fcmTokenService.clearTokens();
         for(Long userId : userIdList) {
-            Optional<FcmToken> selectedTokens = fcmTokenRepository.findByUserId(userId);    //유저 토큰 조회
-            tokenList.add(selectedTokens.get());
+            //유저 토큰 조회
+            Optional<FcmToken> selectedTokens = fcmTokenRepository.findByUserId(userId);
+            if(selectedTokens.isPresent()) {
+                fcmTokenService.addTokens(selectedTokens.get().getFcmToken());
+            } else {
+                log.info("해당 유저의 fcm token 이 존재하지 않습니다.");
+            }
         }
+
         // 메세지 전송
-        for(FcmToken fcmToken : tokenList) {
-            fcmTokenService.sendMessage(fcmToken);
+        try {
+            fcmTokenService.broadCastDataMessage("title", "body");
+        } catch (Exception e) {
+            log.info("FCM 메시지 전송 실패");
         }
     }
 
