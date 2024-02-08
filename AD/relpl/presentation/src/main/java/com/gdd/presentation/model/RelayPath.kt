@@ -4,5 +4,6 @@ import com.naver.maps.geometry.LatLng
 
 data class RelayPath(
     val latLng: LatLng,
-    val visit: Boolean
+    val myVisit: Boolean,
+    val beforeVisit: Boolean
 )

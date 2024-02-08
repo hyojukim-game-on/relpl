@@ -7,9 +7,9 @@ import javax.inject.Inject
 class ChangeVisitStateRelayPathPoint @Inject constructor(
     private val locationTrackingRepository: LocationTrackingRepository
 ) {
-    suspend operator fun invoke(latitude: Double, longitude: Double, visit: Boolean){
+    suspend operator fun invoke(latitude: Double, longitude: Double, myVisit: Boolean, beforeVisit:Boolean){
         locationTrackingRepository.updateRelayPathPoint(RelayPathData(
-            latitude, longitude, visit
+            latitude, longitude, myVisit,beforeVisit
         ))
     }
 }

@@ -1,5 +1,6 @@
 package com.gdd.relpl.module
 
+import com.gdd.data.repository.project.local.ProjectLocalDataSource
 import com.gdd.data.repository.project.local.ProjectLocalDataSourceImpl
 import com.gdd.data.repository.project.remote.ProjectRemoteDataSource
 import com.gdd.data.repository.project.remote.ProjectRemoteDataSourceImpl
@@ -43,5 +44,5 @@ abstract class DataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindProjectLocalDataSource(projectLocalDataSourceImpl: ProjectLocalDataSourceImpl): ProjectRemoteDataSource
+    abstract fun bindProjectLocalDataSource(projectLocalDataSourceImpl: ProjectLocalDataSourceImpl): ProjectLocalDataSource
 }

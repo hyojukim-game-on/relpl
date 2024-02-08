@@ -27,7 +27,7 @@ fun TrackingData.toTrackingPoint(): TrackingPoint {
 fun RelayPathData.toRelayPath(): RelayPath{
     return RelayPath(
         LatLng(latitude, longitude),
-        visit
+        myVisit,beforeVisit
     )
 }
 

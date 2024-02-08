@@ -198,7 +198,7 @@ fun LocationTrackingEntity.toTrackData(): TrackingData {
 }
 
 fun RelayPathEntity.toRelayPathData(): RelayPathData{
-    return RelayPathData(latitude, longitude, visit)
+    return RelayPathData(latitude, longitude, myVisit, beforeVisit)
 }
 
 fun RecommendPathResponse.toRecommendedPath(): RecommendedPath{
