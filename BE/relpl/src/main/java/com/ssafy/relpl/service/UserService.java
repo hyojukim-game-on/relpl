@@ -424,15 +424,18 @@ public class UserService {
     }
 
     private UserHistoryDetailResponse createUserHistoryDetailResponse(Project project, List<UserHistoryDetailEntry> detailList) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime createDateTime = LocalDateTime.parse(project.getProjectCreateDate(), formatter);
-        LocalDateTime endDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
-        long projectTime = ChronoUnit.MINUTES.between(createDateTime, endDateTime);
-
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//        LocalDateTime createDateTime = LocalDateTime.parse(project.getProjectCreateDate(), formatter);
+//        LocalDateTime endDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
+//        long projectTime = ChronoUnit.MINUTES.between(createDateTime, endDateTime);
+        int timeSum = 0;
+        for (UserHistoryDetailEntry entry : detailList) {
+            timeSum += Integer.parseInt(entry.getMoveTime());
+        }
         return UserHistoryDetailResponse.builder()
                 .projectName(project.getProjectName())
                 .projectDistance(project.getProjectTotalDistance())
-                .projectTime((int) projectTime)
+                .projectTime(timeSum)
                 .projectPeople(project.getProjectTotalContributer())
                 .detailList(detailList)
                 .build();
