@@ -1,6 +1,7 @@
 package com.gdd.data.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.gdd.data.model.project.ProjectInfoEntity
@@ -8,7 +9,7 @@ import javax.inject.Inject
 
 @Dao
 abstract class ProjectInfoDao {
-    @Inject
+    @Insert
     abstract suspend fun insertProjectInfo(projectInfoEntity: ProjectInfoEntity)
 
     @Query("DELETE FROM project_info_table")
@@ -18,7 +19,7 @@ abstract class ProjectInfoDao {
     abstract suspend fun getProjectInfo(): ProjectInfoEntity
 
     @Transaction
-    suspend fun saveProjectInfo(projectInfoEntity: ProjectInfoEntity){
+    open suspend fun saveProjectInfo(projectInfoEntity: ProjectInfoEntity){
         deleteProjectInfo()
         insertProjectInfo(projectInfoEntity)
     }

@@ -6,5 +6,6 @@ import androidx.room.Entity
 data class RelayPathEntity(
     val latitude: Double,
     val longitude: Double,
-    val visit: Boolean
+    val myVisit: Boolean,
+    val beforeVisit: Boolean,
 )

@@ -12,7 +12,7 @@ fun Point.toPointResponse(): PointResponse{
 }
 
 fun RelayPathData.toRelayPathEntity(): RelayPathEntity{
-    return RelayPathEntity(latitude, longitude, visit)
+    return RelayPathEntity(latitude, longitude, myVisit, beforeVisit)
 }
 
 fun RelayInfoData.toProjectInfoEntity(): ProjectInfoEntity{

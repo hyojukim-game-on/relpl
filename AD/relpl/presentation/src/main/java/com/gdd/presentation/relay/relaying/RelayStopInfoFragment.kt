@@ -11,6 +11,9 @@ import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentRelayStopInfoBinding
+import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -102,6 +105,9 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         binding.tvDistance.text =  relayStopInfoViewModel.locationTrackingPointList.value!!.zipWithNext().sumOf {
             it.first.latLng.distanceTo(it.second.latLng)
         }.toInt().toString() + "m"
+        naverMap.moveCamera(CameraUpdate.fitBounds(
+            LatLngBounds.from(pathOverlay.coords)
+        ).animate(CameraAnimation.Easing))
     }
 
     private fun setUiPath(){

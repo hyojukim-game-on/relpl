@@ -7,6 +7,6 @@ fun RelayPath.toRelayPathData(): RelayPathData{
     return RelayPathData(
         latLng.latitude,
         latLng.longitude,
-        visit
+        myVisit, beforeVisit
     )
 }

@@ -1,60 +1,99 @@
 package com.gdd.presentation.relay.relaying
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
+import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.databinding.FragmentRelayStopPicMenoBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
+    FragmentRelayStopPicMenoBinding::bind, R.layout.fragment_relay_stop_pic_meno
+) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RelayStopPicMenoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RelayStopPicMenoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val mainViewModel: MainViewModel by activityViewModels()
+    private val relayStopInfoViewModel: RelayStopInfoViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        registerListener()
+    }
+
+    private fun registerListener() {
+        binding.ivPloggingImage.setOnClickListener {
+            showPicOrGalDialog()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_relay_stop_pic_meno, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RelayStopPicMenoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RelayStopPicMenoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun showPicOrGalDialog() {
+        MaterialAlertDialogBuilder(_activity)
+            .setNeutralButton("취소") { _, _ -> }
+            .setNegativeButton("갤러리") { _, _ ->
+                getImageFromGallery()
+            }
+            .setPositiveButton("사진찍기") { _, _ ->
+                getImageFromPicture()
             }
     }
+
+
+    private fun getRealPathFromURI(uri: Uri): String {
+        val buildName = Build.MANUFACTURER
+        if (buildName == "Xiomi") return uri.path!!
+
+        var columnIndex = 0
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = _activity.contentResolver.query(uri, proj, null, null, null)
+        if (cursor!!.moveToFirst()) {
+            columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        }
+        val result = cursor.getString(columnIndex)
+        cursor.close()
+        return result
+    }
+
+    private fun getImageFromGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.setDataAndType(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*"
+        )
+        galleryResult.launch(intent)
+    }
+
+    private fun getImageFromPicture() {
+
+    }
+
+
+    private lateinit var profilePhotoFile: File
+    private val galleryResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val imgUri = result.data?.data
+                imgUri.let {
+                    profilePhotoFile = File(getRealPathFromURI(it!!))
+                    Glide.with(this)
+                        .load(imgUri)
+                        .fitCenter()
+                        .apply(RequestOptions().circleCrop())
+                        .into(binding.ivPloggingImage)
+                }
+            }
+        }
 }
