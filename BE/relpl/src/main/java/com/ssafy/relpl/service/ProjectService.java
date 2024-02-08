@@ -9,9 +9,11 @@ import com.ssafy.relpl.db.mongo.entity.RecommendProject;
 import com.ssafy.relpl.db.mongo.repository.RecommendProjectRepository;
 import com.ssafy.relpl.db.mongo.entity.UserRouteDetail;
 import com.ssafy.relpl.db.mongo.repository.UserRouteDetailRepository;
+import com.ssafy.relpl.db.postgre.entity.FcmToken;
 import com.ssafy.relpl.db.postgre.entity.Project;
 import com.ssafy.relpl.db.postgre.entity.UserRoute;
 import com.ssafy.relpl.db.postgre.entity.User;
+import com.ssafy.relpl.db.postgre.repository.FcmTokenRepository;
 import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
@@ -49,8 +51,11 @@ public class ProjectService {
     private final UserRouteRepository userRouteRepository;
     private final UserRouteDetailRepository userRouteDetailRepository;
     private final RecommendProjectRepository recommendProjectRepository;
+    private final FcmTokenRepository fcmTokenRepository;
     private final TmapService tmapService;
     private final ResponseService responseService;
+    private final FcmTokenService fcmTokenService;
+    private final RankingService rankingService;
     private final RedisTemplate<String, String> redisTemplate;
     private final GeomFactoryConfig geomFactoryConfig;
     private final AmazonS3Client amazonS3Client;
@@ -351,21 +356,25 @@ public class ProjectService {
                     project.setProjectCoordinateTotalSize(request.getProjectCoordinateCurrentSize()); // 프로젝트 진행율을 위한 진행된 경로 정점 개수
                     log.info("프로젝트 수정");
 
+                    // 랭킹 업데이트
+                    rankingService.addOrUpdateRanking(user.getUserNickname(), request.getMoveDistance());
+
                     // 프로젝트 완료
                     if(project.isProjectIsPath()) {
                         if(project.getProjectCoordinateCurrentSize() >= project.getProjectCoordinateTotalSize()) {
                             log.info("경로 기반 프로젝트 완료");
                             project.setProjectEndDate((new Date()).toString());
                             project.setProjectIsDone(true);
+                            sendFCM(project.getProjectId());    //FCM
                         }
                     } else {
                         if(project.getProjectRemainingDistance() <= 0) {
                             log.info("거리 기반 프로젝트 완료");
                             project.setProjectEndDate((new Date()).toString());
                             project.setProjectIsDone(true);
+                            sendFCM(project.getProjectId());    //FCM
                         }
                     }
-
                     return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 중단 성공", 200));
                 }
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 이미 종료되거나, 플로깅 중이지 않음"));
@@ -373,6 +382,30 @@ public class ProjectService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 존재하지 않음"));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 유저가 존재하지 않음"));
+    }
+
+    private void sendFCM(Long projectId) {
+        // 해당 플로깅 참여한 유저 조회
+        List<Long> userIdList = userRouteRepository.findDistinctUserIdByProjectId(projectId);
+
+        // 토큰 수집
+        fcmTokenService.clearTokens();
+        for(Long userId : userIdList) {
+            //유저 토큰 조회
+            Optional<FcmToken> selectedTokens = fcmTokenRepository.findByUserId(userId);
+            if(selectedTokens.isPresent()) {
+                fcmTokenService.addTokens(selectedTokens.get().getFcmToken());
+            } else {
+                log.info("해당 유저의 fcm token 이 존재하지 않습니다.");
+            }
+        }
+
+        // 메세지 전송
+        try {
+            fcmTokenService.broadCastDataMessage("title", "body");
+        } catch (Exception e) {
+            log.info("FCM 메시지 전송 실패");
+        }
     }
 
 
