@@ -13,7 +13,7 @@ public interface CoinRepository extends JpaRepository<Coin, Long> {
     List<Coin> findAllByUserUserId(Long userId);
 
     // 사용자 ID를 기준으로 코인 합산
-    @Query("SELECT SUM(c.coinAmount) FROM Coin c WHERE c.user.userId = :userId")
+    @Query(value = "SELECT COALESCE(SUM(c.coin_amount), 0) FROM Coin c WHERE c.user_id = :userId", nativeQuery = true)
     int sumCoinAmountByUserId(Long userId);
 
 }
