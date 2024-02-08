@@ -1,6 +1,7 @@
 package com.gdd.data.model.project
 
 import com.gdd.data.model.PointResponse
+import com.squareup.moshi.Json
 
 data class PathProjectResponse(
     val projectId: Long, // 프로젝트 pk
@@ -12,6 +13,7 @@ data class PathProjectResponse(
     val projectEndDate: String, // 프로젝트 종료한 날짜
     val projectIsPath: Boolean, // 경로-true , 거리 -false
     val projectStopCoordinate: PointResponse, // 중단점 좌표
+    @Json(name = "progress")
     val projectProgress: Int, //진행률 서버 계산 필요
     val userMoveMemo: String?,
     val userMoveImage: String?,
