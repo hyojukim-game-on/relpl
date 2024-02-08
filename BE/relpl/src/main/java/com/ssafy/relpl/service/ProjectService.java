@@ -109,10 +109,12 @@ public class ProjectService {
 
             //프로젝트가 종료되지 않고, 누군가 참여중이지 않는지 확인
             if (project.isProjectIsDone() == false && project.isProjectIsPlogging() == false) {
+                log.info("프로젝트 참여 완료");
                 project.setProjectIsPlogging(true);
-                return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 참여 성공", 200));
+                return ResponseEntity.ok(responseService.getSingleResult(ProjectJoinResponse.createProjectJoinResponse(project.getProjectId()), "프로젝트 참여 성공", 200));
             }
         }
+        log.info("프로젝트 참여 실패");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 참여 실패"));
     }
 
