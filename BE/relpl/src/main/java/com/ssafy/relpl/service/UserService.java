@@ -333,7 +333,7 @@ public class UserService {
             int userTotalTime = 0;
             List<Map<String, Object>> detailList = new ArrayList<>();
 
-            if (totalProjects == 0) {
+            if (totalProjects != 0) {
                 userTotalDistance = userRouteRepository.sumUserMoveDistanceByUserId(request.getUserId());
                 userTotalTime = userRouteRepository.sumUserMoveTimeByUserId(request.getUserId());
 
