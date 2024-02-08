@@ -424,7 +424,7 @@ public class UserService {
     }
 
     private UserHistoryDetailResponse createUserHistoryDetailResponse(Project project, List<UserHistoryDetailEntry> detailList) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime createDateTime = LocalDateTime.parse(project.getProjectCreateDate(), formatter);
         LocalDateTime endDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
         long projectTime = ChronoUnit.MINUTES.between(createDateTime, endDateTime);

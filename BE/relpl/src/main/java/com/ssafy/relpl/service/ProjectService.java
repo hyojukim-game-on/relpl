@@ -32,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -358,19 +359,19 @@ public class ProjectService {
 
                     // 랭킹 업데이트
                     rankingService.addOrUpdateRanking(user.getUserNickname(), request.getMoveDistance());
-
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     // 프로젝트 완료
                     if(project.isProjectIsPath()) {
                         if(project.getProjectCoordinateCurrentSize() >= project.getProjectCoordinateTotalSize()) {
                             log.info("경로 기반 프로젝트 완료");
-                            project.setProjectEndDate((new Date()).toString());
+                            project.setProjectEndDate(simpleDateFormat.format(new Date()));
                             project.setProjectIsDone(true);
                             sendFCM(project.getProjectId());    //FCM
                         }
                     } else {
                         if(project.getProjectRemainingDistance() <= 0) {
                             log.info("거리 기반 프로젝트 완료");
-                            project.setProjectEndDate((new Date()).toString());
+                            project.setProjectEndDate(simpleDateFormat.format(new Date()));
                             project.setProjectIsDone(true);
                             sendFCM(project.getProjectId());    //FCM
                         }
