@@ -125,7 +125,7 @@ public class ProjectService {
             List<Project> projectList = projectRepository.findAll();
             List<ProjectAllResponse> response = new ArrayList<>();
             for (Project project : projectList) {
-                if (project.isProjectIsDone()) continue;
+                if (project.isProjectIsDone() || project.isProjectIsPlogging()) continue;
                 response.add(ProjectAllResponse.createProjectAllResponse(project));
             }
             return ResponseEntity.ok(responseService.getSingleResult(response, "프로젝트 전체 조회 성공", 200));
