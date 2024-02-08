@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.geo.Point;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -399,10 +400,12 @@ public class UserService {
     }
 
     private UserHistoryDetailEntry createUserHistoryDetailEntry(UserRoute userRoute, Project project) {
-        List<UserRouteDetail> userRouteDetailList = userRouteDetailRepository.findByProjectId(userRoute.getProjectId());
-        List<Point> movePath = userRouteDetailList.stream()
-                .map(detail -> detail.getUserRouteCoordinate().getCoordinates().get(0))
-                .collect(Collectors.toList());
+        Optional<UserRouteDetail> userRouteDetailList = userRouteDetailRepository.findById(userRoute.getUserMovePath());    //mongoDB
+        List<Point> movePath = new ArrayList<>();
+
+        if(userRouteDetailList.isPresent()) {
+            movePath = GeoJsonLineStringToPoints(userRouteDetailList.get());
+        }
 
         int moveContribution = calculateMoveContribution(userRoute.getUserMoveDistance(), project.getProjectTotalDistance());
 
@@ -417,6 +420,14 @@ public class UserService {
                 .moveContribution(moveContribution)
                 .moveImage(userRoute.getUserMoveImage())
                 .build();
+    }
+
+    private List<Point> GeoJsonLineStringToPoints(UserRouteDetail userRouteDetail) {
+        List<Point> points = new ArrayList<>();
+        for(Point point : userRouteDetail.getUserRouteCoordinate().getCoordinates()) {
+            points.add(new Point(point.getX(), point.getY()));
+        }
+        return points;
     }
 
     private int calculateMoveContribution(double userMoveDistance, double projectTotalDistance) {
