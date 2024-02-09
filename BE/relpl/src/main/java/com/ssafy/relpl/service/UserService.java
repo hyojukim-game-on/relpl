@@ -97,7 +97,7 @@ public class UserService {
     }
 
     public ResponseEntity<CommonResult> login(UserLoginRequest request) {
-        log.info("start");
+        log.info("user login");
         Optional<User> userOptional = userRepository.findByUserUid(request.getUserUid());
 
         //유저 아이디가 존재하고, 유저 아이디와 비밀번호가 일치하는 경우
@@ -127,7 +127,9 @@ public class UserService {
     }
 
     public ResponseEntity<CommonResult> autologin(UserAutoLoginRequest request) {
+        log.info("user autologin");
         Optional<User> userOptional = userRepository.findById(request.getUserId());
+
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
@@ -154,7 +156,9 @@ public class UserService {
 
 
     public ResponseEntity<CommonResult> reissue(UserReissueRequest request) {
+        log.info("user reissue");
         Optional<User> user = userRepository.findById(request.getUserId());
+
         if (!(user.isPresent() && user.get().isUserIsActive())) {
             return unauthorizedResponse("존재하지 않는 유저입니다.");
         }

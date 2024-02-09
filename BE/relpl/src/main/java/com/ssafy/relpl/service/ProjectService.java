@@ -9,14 +9,8 @@ import com.ssafy.relpl.db.mongo.entity.RecommendProject;
 import com.ssafy.relpl.db.mongo.repository.RecommendProjectRepository;
 import com.ssafy.relpl.db.mongo.entity.UserRouteDetail;
 import com.ssafy.relpl.db.mongo.repository.UserRouteDetailRepository;
-import com.ssafy.relpl.db.postgre.entity.FcmToken;
-import com.ssafy.relpl.db.postgre.entity.Project;
-import com.ssafy.relpl.db.postgre.entity.UserRoute;
-import com.ssafy.relpl.db.postgre.entity.User;
-import com.ssafy.relpl.db.postgre.repository.FcmTokenRepository;
-import com.ssafy.relpl.db.postgre.repository.ProjectRepository;
-import com.ssafy.relpl.db.postgre.repository.UserRepository;
-import com.ssafy.relpl.db.postgre.repository.UserRouteRepository;
+import com.ssafy.relpl.db.postgre.entity.*;
+import com.ssafy.relpl.db.postgre.repository.*;
 import com.ssafy.relpl.dto.request.*;
 import com.ssafy.relpl.dto.response.*;
 import jakarta.transaction.Transactional;
@@ -52,6 +46,7 @@ public class ProjectService {
     private final UserRouteRepository userRouteRepository;
     private final UserRouteDetailRepository userRouteDetailRepository;
     private final RecommendProjectRepository recommendProjectRepository;
+    private final CoinRepository coinRepository;
     private final FcmTokenRepository fcmTokenRepository;
     private final TmapService tmapService;
     private final ResponseService responseService;
@@ -360,6 +355,10 @@ public class ProjectService {
                     // 랭킹 업데이트
                     rankingService.addOrUpdateRanking(user.getUserNickname(), request.getMoveDistance());
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                    // 코인 지급
+                    payCoin(request, user, 10, "프로젝트 참여 포인트 지급");
+
                     // 프로젝트 완료
                     if(project.isProjectIsPath()) {
                         if(project.getProjectCoordinateCurrentSize() >= project.getProjectCoordinateTotalSize()) {
@@ -367,6 +366,7 @@ public class ProjectService {
                             project.setProjectEndDate(simpleDateFormat.format(new Date()));
                             project.setProjectIsDone(true);
                             sendFCM(project.getProjectId());    //FCM
+                            payCoin(request, user, 20, "프로젝트 완료 포인트 지급"); //코인 지급
                         }
                     } else {
                         if(project.getProjectRemainingDistance() <= 0) {
@@ -374,6 +374,7 @@ public class ProjectService {
                             project.setProjectEndDate(simpleDateFormat.format(new Date()));
                             project.setProjectIsDone(true);
                             sendFCM(project.getProjectId());    //FCM
+                            payCoin(request, user, 20, "프로젝트 완료 포인트 지급"); //코인 지급
                         }
                     }
                     return ResponseEntity.ok(responseService.getSingleResult(true, "프로젝트 중단 성공", 200));
@@ -383,6 +384,19 @@ public class ProjectService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 프로젝트가 존재하지 않음"));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 중단 실패: 유저가 존재하지 않음"));
+    }
+
+    private void payCoin(ProjectStopRouteRequest request, User user, int standard, String eventDetail) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Coin coin = Coin.builder()
+                .coinEventDate(simpleDateFormat.format(new Date()))
+                .coinAmount(request.getMoveDistance() / standard)
+                .coinEventDetail(eventDetail)
+                .user(user)
+                .build();
+
+        coinRepository.save(coin);
     }
 
     private void sendFCM(Long projectId) {
