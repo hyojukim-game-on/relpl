@@ -103,8 +103,10 @@ fun HistoryDetailResponse.toHistoryDetail(): HistoryDetail{
         this.movePath.map {
             it.toPoint()
         },
-        this.moveStart.toHistoryDetailStartDate(),
-        this.moveEnd.toHistoryDetailStartDate(),
+//        this.moveStart.toHistoryDetailStartDate(),
+//        this.moveEnd.toHistoryDetailStartDate(),
+        this.moveStart,
+        this.moveEnd,
         this.moveDistance,
         this.moveTime,
         this.moveMemo,

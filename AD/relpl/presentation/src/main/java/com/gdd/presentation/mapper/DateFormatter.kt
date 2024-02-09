@@ -7,6 +7,8 @@ object DateFormatter {
     private val longDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
     private val koreanDateFormat = SimpleDateFormat("yyyy년MM월dd일", Locale.KOREA)
     private val shortDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+    private val historyDateFormat = SimpleDateFormat("yyyy.MM.dd.", Locale.KOREA)
+    private val timeFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
 
     /**
      * @param dateString "yyyy-MM-dd HH:mm"
@@ -40,4 +42,19 @@ object DateFormatter {
         return shortDateFormat.format(System.currentTimeMillis())
     }
 
+    fun longToHistoryFormat(longFormat: String): String{
+        return try {
+            historyDateFormat.format(longDateFormat.parse(longFormat)!!)
+        }catch (t: Throwable){
+            longFormat
+        }
+    }
+
+    fun longToTimeFormat(long: String): String{
+        return  try {
+            timeFormat.format(longDateFormat.parse(long)!!)
+        }catch (t: Throwable){
+            long
+        }
+    }
 }

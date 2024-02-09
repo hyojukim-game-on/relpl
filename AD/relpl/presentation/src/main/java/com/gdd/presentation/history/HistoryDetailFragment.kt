@@ -44,6 +44,7 @@ class HistoryDetailFragment : BaseFragment<FragmentHistoryDetailBinding>(
         fragmentList.add(HistoryDetailMapFragment())
 
         viewPager.adapter = HistoryViewPagerAdapter(fragmentList, mainActivity)
+        viewPager.isUserInputEnabled = false
 
         val iconList = ArrayList<Drawable?>()
         iconList.add(ContextCompat.getDrawable(mainActivity, R.drawable.ic_calendar))

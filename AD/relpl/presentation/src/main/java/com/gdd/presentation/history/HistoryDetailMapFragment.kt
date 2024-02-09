@@ -46,12 +46,7 @@ class HistoryDetailMapFragment : BaseFragment<FragmentHistoryDetailMapBinding>(
     private lateinit var naverMap: NaverMap
     private lateinit var locationProviderController: LocationProviderController
 
-    private val colorList = listOf<Int>(
-        resources.getColor(R.color.sage_green),
-        resources.getColor(R.color.sage_blue),
-        resources.getColor(R.color.sage_orange),
-        resources.getColor(R.color.sage_brown_dark)
-    )
+    private lateinit var colorList: List<Int>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,8 +55,14 @@ class HistoryDetailMapFragment : BaseFragment<FragmentHistoryDetailMapBinding>(
         //위치권한 확인
         checkLocationPermission()
 
+        colorList = listOf<Int>(
+            resources.getColor(R.color.sage_green),
+            resources.getColor(R.color.sage_blue),
+            resources.getColor(R.color.sage_orange),
+            resources.getColor(R.color.sage_brown_dark)
+        )
+
         registerListener()
-        registerObserver()
     }
 
     private fun registerListener() {
@@ -138,7 +139,7 @@ class HistoryDetailMapFragment : BaseFragment<FragmentHistoryDetailMapBinding>(
         }
 
         Marker().apply {
-            position = firstPath.movePath.last().toLatLng()
+            position = lastPath.movePath.last().toLatLng()
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.ic_marker)
             iconTintColor =  colorList[data.detailList.size % colorList.size]
@@ -154,7 +155,18 @@ class HistoryDetailMapFragment : BaseFragment<FragmentHistoryDetailMapBinding>(
             isTiltGesturesEnabled = false
             isRotateGesturesEnabled = false
         }
-        binding.fabCurLocation.performClick()
+
+        naverMap.moveCamera(
+            CameraUpdate.scrollTo(LatLng(36.106947, 128.421853)).animate(CameraAnimation.Easing)
+                .finishCallback {
+                    naverMap.moveCamera(
+                        CameraUpdate.zoomTo(14.0)
+                            .animate(CameraAnimation.Easing)
+                    )
+                }
+        )
+
+        registerObserver()
     }
 
     private fun checkLocationPermission() {
