@@ -5,10 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.Point
+import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RecommendedPath
+import com.gdd.domain.model.tracking.RelayPathData
 import com.gdd.domain.usecase.relay.CreatePathRelayUseCase
+import com.gdd.domain.usecase.relay.GetPathRelayInfoUseCase
 import com.gdd.domain.usecase.relay.JoinRelayUseCase
 import com.gdd.domain.usecase.relay.RecommendPathUseCase
+import com.gdd.domain.usecase.relay.SaveRelayInfoUseCase
+import com.gdd.domain.usecase.relay.tracking.SaveRelayPathDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,7 +23,10 @@ import javax.inject.Inject
 class CreatePathRelayViewModel @Inject constructor(
     private val recommendPathUseCase: RecommendPathUseCase,
     private val createPathRelayUseCase: CreatePathRelayUseCase,
-    private val joinRelayUseCase: JoinRelayUseCase
+    private val joinRelayUseCase: JoinRelayUseCase,
+    private val getPathRelayInfoUseCase: GetPathRelayInfoUseCase,
+    private val saveRelayInfoToLocalUseCase: SaveRelayInfoUseCase,
+    private val saveRelayPathDataUseCase: SaveRelayPathDataUseCase
 ): ViewModel() {
 
     private val _recommendedPathResult = MutableLiveData<Result<RecommendedPath>>()
@@ -32,6 +40,10 @@ class CreatePathRelayViewModel @Inject constructor(
     private val _joinRelayResult = MutableLiveData<Result<Long>>()
     val joinRelayResult: LiveData<Result<Long>>
         get() = _joinRelayResult
+
+    private val _pathRelayInfoResult = MutableLiveData<Result<PathRelayInfo>>()
+    val pathRelayInfoResult: LiveData<Result<PathRelayInfo>>
+        get() = _pathRelayInfoResult
 
     var isRecommendedPathSelected = true
     var selectedPathId = ""
@@ -82,5 +94,43 @@ class CreatePathRelayViewModel @Inject constructor(
                 _joinRelayResult.postValue(it)
             }
         }
+    }
+
+    fun getPathRelayInfo(projectId: Long){
+        viewModelScope.launch {
+            getPathRelayInfoUseCase(projectId).let {
+                _pathRelayInfoResult.postValue(it)
+            }
+        }
+    }
+
+    suspend fun saveRelayInfoToLocal(
+        id: Long,
+        name: String,
+        totalContributer: Int,
+        totalDistance: Int,
+        remainDistance: Int,
+        createDate: String,
+        endDate: String,
+        isPath: Boolean,
+        endLatitude: Double,
+        endLongitude: Double
+    ) {
+        saveRelayInfoToLocalUseCase(
+            id,
+            name,
+            totalContributer,
+            totalDistance,
+            remainDistance,
+            createDate,
+            endDate,
+            isPath,
+            endLatitude,
+            endLongitude
+        )
+    }
+
+    suspend fun saveRelayPathData(list: List<RelayPathData>){
+        saveRelayPathDataUseCase(list)
     }
 }

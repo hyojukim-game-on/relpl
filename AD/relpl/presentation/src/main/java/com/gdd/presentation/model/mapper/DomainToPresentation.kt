@@ -47,3 +47,11 @@ fun RelayInfoData.toRelayInfo(): RelayInfo{
         )
     )
 }
+
+
+
+fun Int.toStringDistance(): String{
+    val km = if (this / 1000 > 0) "${this/1000}km" else ""
+    val m = "${this%1000}m"
+    return "$km $m"
+}

@@ -7,7 +7,10 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.gdd.domain.model.Point
+import com.gdd.domain.model.relay.PathRelayInfo
+import com.gdd.domain.model.tracking.RelayPathData
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.PrefManager
@@ -18,6 +21,7 @@ import com.gdd.presentation.base.location.LocationProviderController
 import com.gdd.presentation.base.toLatLng
 import com.gdd.presentation.databinding.FragmentCreatePathRelayBinding
 import com.gdd.presentation.mapper.DateFormatter
+import com.gdd.presentation.relay.relaying.PathRelayingFragment
 import com.gdd.retrofit_adapter.RelplException
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
@@ -30,6 +34,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "CreatePathRelayFragment_Genseong"
@@ -287,7 +292,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     showSnackBar(it.toString())
-//                  viewModel.joinRelay(it)
+                  viewModel.joinRelay(it)
                 }
             }else {
                 result.exceptionOrNull()?.let {
@@ -308,6 +313,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             if (result.isSuccess) {
                 result.getOrNull()?.let {
                     //여기서 화면 전환
+                    viewModel.getPathRelayInfo(it)
                     showToast("$it 번 프로젝트 참여 성공")
                 }
             } else {
@@ -320,7 +326,53 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                 }
             }
         }
+
+        viewModel.pathRelayInfoResult.observe(viewLifecycleOwner) { result ->
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                        joinToPathRelay(it)
+                }
+            } else {
+                result.exceptionOrNull()?.let {
+                    if (it is RelplException) {
+                        showSnackBar(it.message)
+                    } else {
+                        showSnackBar(resources.getString(R.string.all_net_err))
+                    }
+                }
+            }
+        }
     }
+
+    private fun joinToPathRelay(relayInfo: PathRelayInfo){
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.saveRelayInfoToLocal(
+                relayInfo.projectId,
+                relayInfo.projectName,
+                relayInfo.totalContributor,
+                relayInfo.totalDistance,
+                relayInfo.remainDistance,
+                relayInfo.createDate,
+                relayInfo.endDate,
+                relayInfo.isPath,
+                relayInfo.stopCoordinate.y,
+                relayInfo.stopCoordinate.x
+            )
+            var flagIndex = relayInfo.route.indexOfFirst {
+                it.x == relayInfo.stopCoordinate.x && it.y == relayInfo.stopCoordinate.y
+            }
+            viewModel.saveRelayPathData(
+                relayInfo.route.mapIndexed{ index, it ->
+                    RelayPathData(it.y, it.x, false, index <= flagIndex)
+                }
+            )
+            prefManager.setRelayingMode(PrefManager.RELAYING_MODE.PATH)
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.layout_main_fragment, PathRelayingFragment())
+                .commit()
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private val mapReadyCallback = OnMapReadyCallback { map ->
         naverMap = map
