@@ -16,6 +16,7 @@ import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentHistoryDetailTimeLineBinding
+import com.gdd.presentation.mapper.DateFormatter
 import com.gdd.retrofit_adapter.RelplException
 import dagger.hilt.android.AndroidEntryPoint
 import xyz.sangcomz.stickytimelineview.callback.SectionCallback
@@ -38,7 +39,7 @@ class HistoryDetailTimeLineFragment : BaseFragment<FragmentHistoryDetailTimeLine
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: 생성!")
 
-        initRecyclerView()
+//        initRecyclerView()
         registerObserver()
     }
 
@@ -65,6 +66,7 @@ class HistoryDetailTimeLineFragment : BaseFragment<FragmentHistoryDetailTimeLine
 
     private fun initRecyclerView(){
         binding.rvDetailTimeLine.adapter = HistoryDetailAdapter(
+            requireContext(),
             layoutInflater,
             historyDetailList,
             R.layout.item_history_detail,
@@ -81,13 +83,13 @@ class HistoryDetailTimeLineFragment : BaseFragment<FragmentHistoryDetailTimeLine
         return object : SectionCallback {
             //In your data, implement a method to determine if this is a section.
             override fun isSection(position: Int): Boolean =
-                historyDetailList[position].moveStart != historyDetailList[position - 1].moveStart
+                DateFormatter.longToHistoryFormat(historyDetailList[position].moveStart) != DateFormatter.longToHistoryFormat(historyDetailList[position - 1].moveStart.substring(0, 10))
 
             //Implement a method that returns a SectionHeader.
             override fun getSectionHeader(position: Int): SectionInfo? {
                 val relay = historyDetailList[position]
                 val dot: Drawable? = icon
-                return SectionInfo(relay.moveStart.toFormattedDate(), dotDrawable = dot)
+                return SectionInfo(DateFormatter.longToHistoryFormat(relay.moveStart), dotDrawable = dot)
             }
 
         }

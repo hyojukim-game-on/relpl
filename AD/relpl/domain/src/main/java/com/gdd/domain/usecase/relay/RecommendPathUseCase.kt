@@ -10,12 +10,17 @@ class RecommendPathUseCase @Inject constructor(
 ){
     suspend operator fun invoke(startCoordinate: Point, endCoordinate: Point): Result<RecommendedPath>{
         val res = projectRepository.recommendPath(startCoordinate, endCoordinate)
+        /*
         res.getOrNull()?.let {
-            it.recommendPath.forEachIndexed{ idx, p ->
-                println("$idx ${p.y} ${p.x}")
+            it.shortestPath.forEachIndexed{ idx, p ->
+                println("{" +
+                        "   x: ${p.x}, " +
+                        "   y: ${p.y}" +
+                        "},")
             }
 
         }
+         */
         return res
     }
 }

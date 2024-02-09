@@ -182,8 +182,7 @@
             app:sectionBackgroundColor="@color/white"
             app:sectionTitleTextColor="@color/black"
             app:timeLineColor="@color/divider_gray"
-            app:timeLineWidth="2dp"
-            android:layout_marginStart="10dp"/>
+            app:timeLineWidth="2dp"/>
 
         <TextView
             android:id="@+id/tv_load_fail"
