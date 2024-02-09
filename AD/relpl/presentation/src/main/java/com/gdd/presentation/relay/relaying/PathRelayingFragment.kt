@@ -117,8 +117,11 @@ class PathRelayingFragment : RelayingFragment() {
                             it.first.latLng.distanceTo(it.second.latLng)
                         }.toInt()
                     }
+                    // 남은 거리
                     binding.tvRemainDistance.text = remainDistance.toStringDistance()
+                    // 진행 거리
                     binding.tvProgressDistance.text = myDistance.toStringDistance()
+                    // 진행률
                     val progress = (totalDistance-remainDistance)/totalDistance
                     binding.pgCurrent.progress = progress
                     binding.tvProgress.text = "현재 ${progress}% 진행됐습니다."

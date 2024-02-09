@@ -1,6 +1,7 @@
 package com.gdd.presentation.relay.relaying
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -11,11 +12,13 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.gdd.presentation.MainActivity
+import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
@@ -35,12 +38,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val TAG = "RelayingFragment_Genseong"
-
+@SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 abstract class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
     FragmentRelayingBinding::bind, R.layout.fragment_relaying
 ) {
     private lateinit var mainActivity: MainActivity
+    protected val mainViewModel: MainViewModel by activityViewModels()
     protected val relayingViewModel: RelayingViewModel by viewModels()
 
 
@@ -59,6 +63,10 @@ abstract class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
                     parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,0)
                 }
             })
+
+        try {
+            binding.tvProgressNickname.text = "${mainViewModel.user.nickname}님이 함께한 거리"
+        } catch (t: Throwable){}
 
         checkPermissions()
     }

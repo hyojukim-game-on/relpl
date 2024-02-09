@@ -43,7 +43,7 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-
+                    showToast("릴레이 종료 등록을 마무리 해주세요!\n정상적인 등록이 되지 않을 수 있습니다.")
                 }
             })
 
@@ -112,6 +112,30 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
 
     private fun setUiPath(){
         setUiCommon()
+        // 경로선 그리기
+        val list = relayStopInfoViewModel.relayPathList.value!!
+        var beforePathOverlay = PathOverlay().apply { color = _activity.getColor(R.color.sage_blue) }
+        var myPathOverlay = PathOverlay().apply { color = _activity.getColor(R.color.sage_green) }
+        var afterPathOverlay = PathOverlay().apply { color = _activity.getColor(R.color.divider_gray) }
+        val beforeVisitList = list.filter { it.beforeVisit }
+        val myVisitedList = list.filter { it.myVisit }.toMutableList().apply {
+            add(0,beforeVisitList.last())
+        }
+        val afterVisitList = list.filter { !it.beforeVisit && !it.myVisit }.toMutableList().apply {
+            add(0,myVisitedList.last())
+        }
+        if (beforeVisitList.size > 2){
+            beforePathOverlay.coords = beforeVisitList.map { it.latLng }
+            beforePathOverlay.map = naverMap
+        }
+        if (myVisitedList.size > 2){
+            myPathOverlay.coords = myVisitedList.map { it.latLng }
+            myPathOverlay.map = naverMap
+        }
+        if (afterVisitList.size > 2){
+            afterPathOverlay.coords = afterVisitList.map { it.latLng }
+            afterPathOverlay.map = naverMap
+        }
     }
 
 
