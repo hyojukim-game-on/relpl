@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
+import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.distanceFormat
@@ -21,9 +22,11 @@ import com.gdd.presentation.profile.ProfileFragment
 import com.gdd.presentation.rank.RankFragment
 import com.gdd.presentation.relay.LoadRelayFragment
 import com.gdd.presentation.relay.relaying.DistanceRelayingFragment
+import com.gdd.presentation.relay.relaying.PathRelayingFragment
 import com.gdd.presentation.report.ReportFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment: BaseFragment<FragmentHomeBinding>(
@@ -35,10 +38,12 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
 
     private var backPressedTime = 0L
 
+    @Inject
+    lateinit var prefManager: PrefManager
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
-
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -50,6 +55,13 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
                    }
                 }
             })
+
+        if (prefManager.getRelayingMode() != PrefManager.RELAYING_MODE.NONE){
+            MaterialAlertDialogBuilder(_activity)
+                .setMessage("릴레이가 진행중입니다.\n플로깅 시작 버튼을 누르면\n진행중인 릴레이 정보를 확인 할 수 있습니다.")
+                .setPositiveButton("확인"){_,_->}
+                .show()
+        }
 
         initView()
         registerObserver()
@@ -94,10 +106,27 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         }
 
         binding.cvStartRelay.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.layout_main_fragment, LoadRelayFragment())
-                .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
-                .commit()
+            when(prefManager.getRelayingMode()){
+                PrefManager.RELAYING_MODE.DISTANCE->{
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.layout_main_fragment, DistanceRelayingFragment())
+                        .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
+                        .commit()
+                }
+                PrefManager.RELAYING_MODE.PATH->{
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.layout_main_fragment, PathRelayingFragment())
+                        .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
+                        .commit()
+                }
+                PrefManager.RELAYING_MODE.NONE->{
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.layout_main_fragment, LoadRelayFragment())
+                        .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
+                        .commit()
+                }
+            }
+
         }
 
         binding.rankCard.setOnClickListener {

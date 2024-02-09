@@ -56,7 +56,7 @@ class DistanceRelayingFragment : RelayingFragment() {
         // relay info
         relayingViewModel.relayInfo.observe(viewLifecycleOwner){
             binding.tvRelayName.text = it.name
-            binding.tvPeople.text = it.totalContributer.toString()
+            binding.tvPeople.text = (it.totalContributer+1).toString()
         }
 
         // trackingStateFlow
