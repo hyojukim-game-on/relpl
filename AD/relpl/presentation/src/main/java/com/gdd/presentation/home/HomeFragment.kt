@@ -21,6 +21,7 @@ import com.gdd.presentation.profile.ProfileFragment
 import com.gdd.presentation.rank.RankFragment
 import com.gdd.presentation.relay.LoadRelayFragment
 import com.gdd.presentation.relay.relaying.DistanceRelayingFragment
+import com.gdd.presentation.report.ReportFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -87,29 +88,29 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
 
         binding.reportCard.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.layout_main_fragment,DistanceRelayingFragment())
-                .addToBackStack(null)
+                .replace(R.id.layout_main_fragment,ReportFragment())
+                .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
                 .commit()
         }
 
         binding.cvStartRelay.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, LoadRelayFragment())
-                .addToBackStack("start_plogging")
+                .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
                 .commit()
         }
 
         binding.rankCard.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, RankFragment())
-                .addToBackStack(null)
+                .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
                 .commit()
         }
 
         binding.recordCard.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, HistoryFragment())
-                .addToBackStack(null)
+                .addToBackStack(HOME_FRAGMENT_BACKSTACK_NAME)
                 .commit()
         }
     }
@@ -126,5 +127,9 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
                 .apply(RequestOptions().circleCrop())
                 .into(binding.ivProfile)
         }
+    }
+
+    companion object{
+        const val HOME_FRAGMENT_BACKSTACK_NAME = "home_fragment_stack"
     }
 }

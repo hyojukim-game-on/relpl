@@ -10,12 +10,15 @@ import com.gdd.domain.model.relay.DistanceRelayInfo
 import com.gdd.domain.model.relay.IsExistDistanceRelay
 import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.relay.RelayMarker
+import com.gdd.domain.model.tracking.RelayPathData
 import com.gdd.domain.usecase.relay.CreateDistanceRelayUseCase
 import com.gdd.domain.usecase.relay.GetAllRelayMarkerUseCase
 import com.gdd.domain.usecase.relay.GetDistanceRelayInfoUseCase
 import com.gdd.domain.usecase.relay.GetPathRelayInfoUseCase
 import com.gdd.domain.usecase.relay.IsExistDistanceRelayUseCase
 import com.gdd.domain.usecase.relay.JoinRelayUseCase
+import com.gdd.domain.usecase.relay.SaveRelayInfoUseCase
+import com.gdd.domain.usecase.relay.tracking.SaveRelayPathDataUseCase
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -31,7 +34,9 @@ class LoadRelayViewModel @Inject constructor(
     private val getPathRelayInfoUseCase: GetPathRelayInfoUseCase,
     private val isExistDistanceRelayUseCase: IsExistDistanceRelayUseCase,
     private val joinRelayUseCase: JoinRelayUseCase,
-    private val createDistanceRelayUseCase: CreateDistanceRelayUseCase
+    private val createDistanceRelayUseCase: CreateDistanceRelayUseCase,
+    private val saveRelayInfoToLocalUseCase: SaveRelayInfoUseCase,
+    private val saveRelayPathDataUseCase: SaveRelayPathDataUseCase
 ) : ViewModel() {
 
     private val _markerResult = MutableLiveData<Result<List<RelayMarker>>>()
@@ -123,6 +128,35 @@ class LoadRelayViewModel @Inject constructor(
         }
     }
 
+    suspend fun saveRelayInfoToLocal(
+        id: Long,
+        name: String,
+        totalContributer: Int,
+        totalDistance: Int,
+        remainDistance: Int,
+        createDate: String,
+        endDate: String,
+        isPath: Boolean,
+        endLatitude: Double,
+        endLongitude: Double
+    ) {
+        saveRelayInfoToLocalUseCase(
+            id,
+            name,
+            totalContributer,
+            totalDistance,
+            remainDistance,
+            createDate,
+            endDate,
+            isPath,
+            endLatitude,
+            endLongitude
+        )
+    }
+
+    suspend fun saveRelayPathData(list: List<RelayPathData>){
+        saveRelayPathDataUseCase(list)
+    }
 
 
 
@@ -145,8 +179,8 @@ class LoadRelayViewModel @Inject constructor(
             2,
             "진평동 플로깅 합시다 제발~",
             3,
-            "2km 230m",
-            "1km 10m",
+            2230,
+            1010,
             "2024년 1월 31일",
             "2024년 2월 5일",
             false,

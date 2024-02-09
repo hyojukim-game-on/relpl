@@ -46,11 +46,7 @@ class RelayingViewModel @Inject constructor(
     val relayInfo: LiveData<RelayInfo>
         get() = _relayInfo
 
-    init {
-        getRelayInfo()
-    }
-
-    private fun getRelayInfo(){
+    fun getRelayInfo(){
         viewModelScope.launch {
             getRelayInfoUseCase().let {
                 _relayInfo.postValue(it.toRelayInfo())

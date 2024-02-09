@@ -20,6 +20,7 @@ import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.databinding.FragmentRelayingBinding
+import com.gdd.presentation.home.HomeFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.naver.maps.map.CameraAnimation
@@ -55,7 +56,7 @@ abstract class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     showToast("릴레이 중단은 \"그만하기\" 버튼을 눌러주세요")
-                    parentFragmentManager.popBackStack()
+                    parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,0)
                 }
             })
 
