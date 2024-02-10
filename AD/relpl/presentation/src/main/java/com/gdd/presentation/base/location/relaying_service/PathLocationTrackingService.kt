@@ -37,7 +37,7 @@ class PathLocationTrackingService : LocationTrackingService() {
             relayPath =
                 locationTrackingRepository
                     .getAllRelayPathDataOnce()
-                    .filter { !it.beforeVisit }
+                    .filter { !it.beforeVisit && !it.myVisit }
                     .map { it.toRelayPath() }
                     .toMutableList()
         }

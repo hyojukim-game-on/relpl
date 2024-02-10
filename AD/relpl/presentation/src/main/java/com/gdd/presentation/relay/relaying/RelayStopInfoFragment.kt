@@ -1,16 +1,20 @@
 package com.gdd.presentation.relay.relaying
 
 import android.annotation.SuppressLint
+import android.graphics.PixelFormat
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.gdd.presentation.MainActivity
+import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentRelayStopInfoBinding
+import com.gdd.presentation.model.mapper.toStringDistance
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
@@ -23,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 
+private const val TAG = "RelayStopInfoFragment_Genseong"
 @AndroidEntryPoint
 class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
     FragmentRelayStopInfoBinding::bind, R.layout.fragment_relay_stop_info
@@ -31,6 +36,7 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
     lateinit var prefManager: PrefManager
 
     private lateinit var mainActivity: MainActivity
+    private val mainViewModel: MainViewModel by activityViewModels()
     private val relayStopInfoViewModel: RelayStopInfoViewModel by activityViewModels()
 
     private lateinit var naverMap: NaverMap
@@ -65,26 +71,58 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
 
 
     private fun registerObserve(){
-        relayStopInfoViewModel.callCount.observe(viewLifecycleOwner){count ->
-            if (count >=3){
-                binding.btnNext.isEnabled = true
-                when(prefManager.getRelayingMode()){
-                    PrefManager.RELAYING_MODE.DISTANCE->{
-                        setUiDistance()
-                    }
-                    PrefManager.RELAYING_MODE.PATH->{
-                        setUiPath()
-                    }
-                    PrefManager.RELAYING_MODE.NONE->{
+        relayStopInfoViewModel.relayInfo.observe(viewLifecycleOwner){
+            Log.d(TAG, "registerObserve: relayInfo")
+            setUI()
+        }
 
-                    }
+        relayStopInfoViewModel.locationTrackingPointList.observe(viewLifecycleOwner){
+            Log.d(TAG, "registerObserve: tracking")
+            setUI()
+        }
+
+        relayStopInfoViewModel.relayPathList.observe(viewLifecycleOwner){
+            Log.d(TAG, "registerObserve: path")
+            setUI()
+        }
+    }
+
+    private fun setUI(){
+        when(prefManager.getRelayingMode()){
+            PrefManager.RELAYING_MODE.PATH -> {
+                if (
+                    relayStopInfoViewModel.relayInfo.value != null
+                    && relayStopInfoViewModel.locationTrackingPointList.value != null
+                    && relayStopInfoViewModel.relayPathList.value != null
+                ){
+                    setUiPath()
                 }
             }
+            PrefManager.RELAYING_MODE.DISTANCE -> {
+                if (
+                    relayStopInfoViewModel.relayInfo.value != null
+                    && relayStopInfoViewModel.locationTrackingPointList.value != null
+                ){
+                    setUiDistance()
+                }
+            }
+            PrefManager.RELAYING_MODE.NONE -> {
+
+            }
+        }
+        if (
+            relayStopInfoViewModel.relayInfo.value != null
+            && relayStopInfoViewModel.locationTrackingPointList.value != null
+            && relayStopInfoViewModel.relayPathList.value != null
+        ){
+            Log.d(TAG, "setUI: not null")
+
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun setUiCommon(){
+        kotlin.runCatching { binding.tvNickname.text = "${mainViewModel.user.nickname}님" }
         val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm", Locale.KOREA)
         val startMillis = relayStopInfoViewModel.locationTrackingPointList.value!!.first().timeMillis
         val endMillis = relayStopInfoViewModel.locationTrackingPointList.value!!.last().timeMillis
@@ -108,6 +146,7 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         naverMap.moveCamera(CameraUpdate.fitBounds(
             LatLngBounds.from(pathOverlay.coords)
         ).animate(CameraAnimation.Easing))
+        binding.btnNext.isEnabled = true
     }
 
     private fun setUiPath(){
@@ -131,17 +170,30 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         if (myVisitedList.size > 2){
             myPathOverlay.coords = myVisitedList.map { it.latLng }
             myPathOverlay.map = naverMap
+            binding.tvDistance.text = myVisitedList.zipWithNext().sumOf {
+                it.first.latLng.distanceTo(it.second.latLng)
+            }.toInt().toStringDistance()
         }
         if (afterVisitList.size > 2){
             afterPathOverlay.coords = afterVisitList.map { it.latLng }
             afterPathOverlay.map = naverMap
         }
+        naverMap.moveCamera(CameraUpdate.fitBounds(
+            LatLngBounds.from(list.map { it.latLng })
+        ).animate(CameraAnimation.Easing))
+        binding.btnNext.isEnabled = true
     }
 
 
     private val mapCallBack = OnMapReadyCallback{map ->
         naverMap = map
+        val dp_20_px = dpToPx(20f)
+        naverMap.setContentPadding(dp_20_px,dp_20_px,dp_20_px,dp_20_px)
         registerObserve()
         registerListener()
+    }
+
+    private fun dpToPx(dp: Float): Int {
+        return (dp * _activity.resources.displayMetrics.density + 0.5f).toInt()
     }
 }

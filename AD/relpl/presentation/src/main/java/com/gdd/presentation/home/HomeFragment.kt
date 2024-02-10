@@ -2,6 +2,7 @@ package com.gdd.presentation.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
@@ -28,6 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+private const val TAG = "HomeFragment_Genseong"
 @AndroidEntryPoint
 class HomeFragment: BaseFragment<FragmentHomeBinding>(
     FragmentHomeBinding::bind, R.layout.fragment_home
@@ -66,6 +68,10 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
         initView()
         registerObserver()
         registerListener()
+
+        for (i in 0 until parentFragmentManager.backStackEntryCount){
+            Log.d(TAG, "popstack: ${parentFragmentManager.getBackStackEntryAt(i)}")
+        }
     }
 
     private fun registerObserver(){

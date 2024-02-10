@@ -7,8 +7,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+    <uses-permission android:name="android.permission.CAMERA" />
+    
     <application android:theme="@style/Theme.Relpl">
+        <provider
+            android:authorities="com.gdd.relpl.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
         <service
             android:name=".base.location.relaying_service.DistanceLocationTrackingService"
             android:exported="false"

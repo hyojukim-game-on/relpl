@@ -5,44 +5,77 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.gdd.presentation.MainViewModel
+import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentRelayStopPicMenoBinding
+import com.gdd.presentation.home.HomeFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
+import java.text.SimpleDateFormat
+import javax.inject.Inject
 
 class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
     FragmentRelayStopPicMenoBinding::bind, R.layout.fragment_relay_stop_pic_meno
 ) {
+    @Inject
+    lateinit var prefManager: PrefManager
 
     private val mainViewModel: MainViewModel by activityViewModels()
     private val relayStopInfoViewModel: RelayStopInfoViewModel by activityViewModels()
+
+    private var photoFile: File? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         registerListener()
+        registerObserve()
     }
 
     private fun registerListener() {
         binding.ivPloggingImage.setOnClickListener {
             showPicOrGalDialog()
         }
+
+        binding.btnSubmit.setOnClickListener {
+            if (photoFile != null){
+                stopRelay()
+            } else {
+                showSnackBar("인증 사진을 반드시 등록해주세요!")
+            }
+        }
+    }
+
+    private fun registerObserve(){
+        relayStopInfoViewModel.stopRelayResult.observe(viewLifecycleOwner){
+            if (it.isSuccess){
+                showToast("릴레이 종료에 성공했습니다.")
+                relayStopInfoViewModel.clearRelayingData()
+            } else {
+                showToast(it.exceptionOrNull()?.message ?: "네트워트 에러")
+            }
+        }
+
+        relayStopInfoViewModel.clearRelayingDataResult.observe(viewLifecycleOwner){
+            it.getContentIfNotHandled()?.let {
+                parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
     }
 
     private fun showPicOrGalDialog() {
         MaterialAlertDialogBuilder(_activity)
+            .setTitle("어느 곳에서 사진을 가져올까요?")
             .setNeutralButton("취소") { _, _ -> }
             .setNegativeButton("갤러리") { _, _ ->
                 getImageFromGallery()
@@ -50,6 +83,7 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
             .setPositiveButton("사진찍기") { _, _ ->
                 getImageFromPicture()
             }
+            .show()
     }
 
 
@@ -78,23 +112,64 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
     }
 
     private fun getImageFromPicture() {
-
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        photoFile = createImageFile()
+        var photoUri =
+            FileProvider.getUriForFile(_activity, "com.gdd.relpl.fileprovider", photoFile!!)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+        requestPicture.launch(intent)
     }
 
+    val requestPicture =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                Glide.with(this)
+                    .load(Uri.fromFile(photoFile))
+                    .centerCrop()
+                    .into(binding.ivPloggingImage)
+            }
+        }
 
-    private lateinit var profilePhotoFile: File
+    private var currnetPhotoPath: String? = null
+    private fun createImageFile(): File {
+        val timeString = SimpleDateFormat("yyyy-MM-dd HH:mm ").format(System.currentTimeMillis())
+        val imageNamePrefix = "relay_stop_pic"
+        val storageDir = _activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+
+        return File.createTempFile(
+            timeString + imageNamePrefix,
+            ".jpg",
+            storageDir
+        ).apply { currnetPhotoPath = absolutePath }
+    }
+
     private val galleryResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val imgUri = result.data?.data
                 imgUri.let {
-                    profilePhotoFile = File(getRealPathFromURI(it!!))
+                    photoFile = File(getRealPathFromURI(it!!))
                     Glide.with(this)
                         .load(imgUri)
-                        .fitCenter()
-                        .apply(RequestOptions().circleCrop())
+                        .centerCrop()
                         .into(binding.ivPloggingImage)
                 }
             }
         }
+
+    /**
+     * use after photoFile null check
+     */
+    private fun stopRelay(){
+        try {
+            relayStopInfoViewModel.stopRelay(
+                mainViewModel.user.id,
+                mainViewModel.user.nickname,
+                binding.tilMemo.editText!!.text.toString().trim(),
+                photoFile!!
+            )
+        }catch (e: Exception){
+            showToast("릴레이 중단 중에 에러가 발생했습니다.")
+        }
+    }
 }

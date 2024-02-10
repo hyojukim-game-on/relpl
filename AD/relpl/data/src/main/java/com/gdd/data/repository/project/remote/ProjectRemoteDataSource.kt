@@ -8,8 +8,16 @@ import com.gdd.data.model.project.IsExistDistanceResponse
 import com.gdd.data.model.project.MarkerResponse
 import com.gdd.data.model.project.PathProjectResponse
 import com.gdd.data.model.project.RecommendPathResponse
+import com.gdd.data.model.project.StopRelayingRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Path
+import java.io.File
 
 interface ProjectRemoteDataSource {
     suspend fun isExistProject(lat: Double, lng: Double): Result<IsExistDistanceResponse>
@@ -36,4 +44,24 @@ interface ProjectRemoteDataSource {
                                 projectStartPoint: PointResponse,
                                 projectEndPoint: PointResponse
     ): Result<Long>
+
+    suspend fun stopProject(
+        userId: Long,
+        projectId: Int,
+        userNickname: String, //  VARCHAR(30)
+        projectName: String,// VARCHAR(30)
+        moveStart: String, // VARCHAR(30) yyyy-MM-dd HH:mm
+        moveEnd: String, // VARCHAR(30) yyyy-MM-dd HH:mm
+        moveDistance: Int, // m단위,
+        moveTime: Int, // 플로깅 실시한 시간, 분 단위
+        movePath: List<PointResponse>, // 이동 경로
+        moveMemo: String, // nullable, VARCHAR(30)
+        projectCoordinateCurrentSize: Int  // 지나간 경로 정점의 개수, 거리 기반일 때는 무시
+    ): Result<Boolean>
+
+    suspend fun stopProjectPic(
+        file: File,
+        userId: Long,
+        projectId: Int
+    ): Result<Boolean>
 }

@@ -12,6 +12,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -60,7 +61,7 @@ abstract class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     showToast("릴레이 중단은 \"그만하기\" 버튼을 눌러주세요")
-                    parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,0)
+                    parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
             })
 

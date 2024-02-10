@@ -17,6 +17,7 @@ import com.gdd.domain.model.relay.RecommendedPath
 import com.gdd.domain.model.relay.RelayInfoData
 import com.gdd.domain.model.relay.RelayMarker
 import com.gdd.domain.repository.ProjectRepository
+import java.io.File
 import javax.inject.Inject
 
 class ProjectRepositoryImpl @Inject constructor(
@@ -135,5 +136,41 @@ class ProjectRepositoryImpl @Inject constructor(
 
     override suspend fun getProjectInfo(): RelayInfoData {
         return projectLocalDataSource.getProjectInfo().toRelayInfoData()
+    }
+
+    override suspend fun stopProject(
+        userId: Long,
+        projectId: Int,
+        userNickname: String,
+        projectName: String,
+        moveStart: String,
+        moveEnd: String,
+        moveDistance: Int,
+        moveTime: Int,
+        movePath: List<Point>,
+        moveMemo: String,
+        projectCoordinateCurrentSize: Int
+    ): Result<Boolean> {
+        return projectRemoteDataSource.stopProject(
+            userId,
+            projectId,
+            userNickname,
+            projectName,
+            moveStart,
+            moveEnd,
+            moveDistance,
+            moveTime,
+            movePath.map { it.toPointResponse() },
+            moveMemo,
+            projectCoordinateCurrentSize
+        )
+    }
+
+    override suspend fun stopProjectPic(
+        file: File,
+        userId: Long,
+        projectId: Int
+    ): Result<Boolean> {
+        return projectRemoteDataSource.stopProjectPic(file, userId, projectId)
     }
 }

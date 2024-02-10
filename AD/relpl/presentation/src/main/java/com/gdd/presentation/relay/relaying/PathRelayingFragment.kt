@@ -26,6 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val TAG = "PathRelayingFragment_Genseong"
 @AndroidEntryPoint
 class PathRelayingFragment : RelayingFragment() {
     private val pathRelayingViewModel: PathRelayingViewModel by viewModels()
@@ -122,7 +123,8 @@ class PathRelayingFragment : RelayingFragment() {
                     // 진행 거리
                     binding.tvProgressDistance.text = myDistance.toStringDistance()
                     // 진행률
-                    val progress = (totalDistance-remainDistance)/totalDistance
+                    Log.d(TAG, "progress: $totalDistance - $remainDistance / $totalDistance")
+                    val progress = (((totalDistance-remainDistance)/totalDistance.toDouble())*100).toInt()
                     binding.pgCurrent.progress = progress
                     binding.tvProgress.text = "현재 ${progress}% 진행됐습니다."
                 }
