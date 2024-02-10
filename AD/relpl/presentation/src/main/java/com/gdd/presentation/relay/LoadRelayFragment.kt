@@ -392,6 +392,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             prefManager.setRelayingMode(PrefManager.RELAYING_MODE.DISTANCE)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment,DistanceRelayingFragment())
+                .addToBackStack(null)
                 .commit()
         }
     }
@@ -421,6 +422,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             prefManager.setRelayingMode(PrefManager.RELAYING_MODE.PATH)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment,PathRelayingFragment())
+                .addToBackStack(null)
                 .commit()
         }
     }

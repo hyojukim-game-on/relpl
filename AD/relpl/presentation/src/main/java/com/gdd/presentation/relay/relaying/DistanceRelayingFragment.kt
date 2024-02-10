@@ -106,13 +106,15 @@ class DistanceRelayingFragment : RelayingFragment() {
                     }.toInt()
                     binding.tvProgressDistance.text = "${progressDistance}M"
                     binding.tvRemainDistance.text = relayingViewModel.relayInfo.value?.let {
-                        "${it.remainDistance - progressDistance}"
+                        "${it.remainDistance - progressDistance}M"
                     } ?: "측정중..."
                     //진행률
+                    Log.d(TAG, "registerUiObserve: ${relayingViewModel.relayInfo.value}")
                     val progressPercent = relayingViewModel.relayInfo.value?.let {
-                        (it.remainDistance - progressDistance)/it.totalDistance
+                        (((it.totalDistance - it.remainDistance + progressDistance)/it.totalDistance.toDouble())*100.0).toInt()
                     } ?: 0
-                    binding.pgCurrent.progress = progressDistance
+                    Log.d(TAG, "registerUiObserve: $progressPercent")
+                    binding.pgCurrent.progress = progressPercent
                     binding.tvProgress.text = "현재 ${progressPercent}% 진행됐습니다."
                 }
             }

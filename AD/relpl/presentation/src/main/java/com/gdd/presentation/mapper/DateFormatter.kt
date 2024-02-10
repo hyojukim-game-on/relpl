@@ -27,10 +27,6 @@ object DateFormatter {
         return shortDateFormat.format(curMillis)
     }
 
-    fun msToShotFormat(){
-
-    }
-
     fun koreanToShortFormat(korean: String): String{
         return try {
             shortDateFormat.format(koreanDateFormat.parse(korean)!!)
@@ -61,5 +57,9 @@ object DateFormatter {
         }catch (t: Throwable){
             long
         }
+    }
+
+    fun millisToLongFormat(millis: Long): String {
+        return longDateFormat.format(millis)
     }
 }
