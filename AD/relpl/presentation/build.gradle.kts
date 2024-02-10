@@ -84,4 +84,7 @@ dependencies {
 
     //Speed Dial
     implementation(libs.dial)
+
+    // fcm
+    implementation(libs.fcm)
 }

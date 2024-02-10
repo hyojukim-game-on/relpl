@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.user.User
+import com.gdd.domain.usecase.fcm.RegistFcmUseCase
 import com.gdd.domain.usecase.user.SignInUseCase
 import com.gdd.presentation.Event
 import com.gdd.presentation.PrefManager
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: SignInUseCase,
-    private val prefManager: PrefManager
+    private val prefManager: PrefManager,
+    private val getFcmUseCase: RegistFcmUseCase
 ): ViewModel() {
     var _id = MutableLiveData<String>()
     var _password = MutableLiveData<String>()
@@ -27,6 +29,10 @@ class LoginViewModel @Inject constructor(
     private var _inputErrorString = MutableLiveData<Event<Boolean>>()
     val inputErrorString: LiveData<Event<Boolean>>
         get() = _inputErrorString
+
+    private val _fcmResult = MutableLiveData<Result<Boolean>>()
+    val fcmResult: LiveData<Result<Boolean>>
+        get() = _fcmResult
 
     fun login(){
         viewModelScope.launch {
@@ -57,6 +63,14 @@ class LoginViewModel @Inject constructor(
         } else {
             _inputErrorString.value = Event(false)
             false
+        }
+    }
+
+    fun registFcmToken(fcmToken: String){
+        viewModelScope.launch {
+            getFcmUseCase(prefManager.getUserId(), fcmToken).let {
+                _fcmResult.postValue(it)
+            }
         }
     }
 }

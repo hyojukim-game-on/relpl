@@ -1,5 +1,7 @@
 package com.gdd.relpl.module
 
+import com.gdd.data.repository.fcm.remote.FcmRemoteDataSource
+import com.gdd.data.repository.fcm.remote.FcmRemoteDataSourceImpl
 import com.gdd.data.repository.project.remote.ProjectRemoteDataSource
 import com.gdd.data.repository.project.remote.ProjectRemoteDataSourceImpl
 import com.gdd.data.repository.rank.remote.RankRemoteDataSource
@@ -8,7 +10,6 @@ import com.gdd.data.repository.report.remote.ReportRemoteDataSource
 import com.gdd.data.repository.report.remote.ReportRemoteDataSourceImpl
 import com.gdd.data.repository.tracking.local.LocationTrackingLocalDataSource
 import com.gdd.data.repository.tracking.local.LocationTrackingLocalDataSourceImpl
-import com.gdd.data.repository.user.UserRepositoryImpl
 import com.gdd.data.repository.user.remote.UserRemoteDataSource
 import com.gdd.data.repository.user.remote.UserRemoteDataSourceImpl
 import dagger.Binds
@@ -39,4 +40,8 @@ abstract class DataSourceModule {
     @Singleton
     @Binds
     abstract fun bindLocationTrackingLocalDataSource(locationTrackingLocalDataSourceImpl: LocationTrackingLocalDataSourceImpl): LocationTrackingLocalDataSource
+
+    @Singleton
+    @Binds
+    abstract fun bindFcmRemoteDataSource(fcmRemoteDataSourceImpl: FcmRemoteDataSourceImpl): FcmRemoteDataSource
 }
