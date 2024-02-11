@@ -72,11 +72,11 @@ class RankAdapter() : ListAdapter<RankItem, RankAdapter.RankViewHolder>(diffUtil
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<RankItem>() {
             override fun areItemsTheSame(oldItem: RankItem, newItem: RankItem): Boolean {
-                return oldItem.nickname == newItem.nickname && oldItem.distance == newItem.distance
+                return oldItem.nickname == newItem.nickname
             }
 
             override fun areContentsTheSame(oldItem: RankItem, newItem: RankItem): Boolean {
-                return oldItem.nickname == newItem.nickname && oldItem.distance == newItem.distance
+                return false
             }
         }
     }
