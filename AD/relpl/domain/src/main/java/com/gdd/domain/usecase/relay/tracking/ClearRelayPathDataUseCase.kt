@@ -7,6 +7,6 @@ class ClearRelayPathDataUseCase @Inject constructor(
     private val locationTrackingRepository: LocationTrackingRepository
 ) {
     suspend operator fun invoke(){
-        locationTrackingRepository.deleteAllLocationTrackingData()
+        locationTrackingRepository.deleteAllRelayPathData()
     }
 }
