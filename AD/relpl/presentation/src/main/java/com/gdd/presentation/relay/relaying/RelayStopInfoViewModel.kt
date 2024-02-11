@@ -151,7 +151,7 @@ class RelayStopInfoViewModel @Inject constructor(
 
     private fun getMovePointCount(): Int{
         return if(prefManager.getRelayingMode() == PrefManager.RELAYING_MODE.PATH){
-            _relayPathList.value!!.count { it.myVisit }
+            _relayPathList.value!!.count { it.myVisit || it.beforeVisit }
         } else {
             0
         }
