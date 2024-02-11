@@ -92,8 +92,8 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
             PrefManager.RELAYING_MODE.PATH -> {
                 if (
                     relayStopInfoViewModel.relayInfo.value != null
-                    && relayStopInfoViewModel.locationTrackingPointList.value != null
-                    && relayStopInfoViewModel.relayPathList.value != null
+                    && !relayStopInfoViewModel.locationTrackingPointList.value.isNullOrEmpty()
+                    && !relayStopInfoViewModel.relayPathList.value.isNullOrEmpty()
                 ){
                     setUiPath()
                 }
@@ -101,7 +101,7 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
             PrefManager.RELAYING_MODE.DISTANCE -> {
                 if (
                     relayStopInfoViewModel.relayInfo.value != null
-                    && relayStopInfoViewModel.locationTrackingPointList.value != null
+                    && !relayStopInfoViewModel.locationTrackingPointList.value.isNullOrEmpty()
                 ){
                     setUiDistance()
                 }
