@@ -37,7 +37,7 @@ public class ProjectRecommendBusiness {
 
     /**
      * 경로 추천 방법
-     * 1. 입력된 시작점, 끝 점으로 부터 가장 가까운 시작점과 끝 점을 RoadHash DB에서 검색
+     * 1. 입력된 시작점, 끝 점으로 부터 가장 가까운 시작점과 끝 점을 PointHash DB에서 검색
      * 2. PointHash DB에서 도로에 사용하는 모든 정점의 개수 가져오기 select count(*) from pointhash
      * 3. RoadInfo DB에서 정점(도로의 시작점 & 끝점)과 길이(최단경로) 가져오고, 가중치(추천경로)도 계산
      * 4. 해당 점을 가지고 다익스트라 알고리즘 진행 => 결과값은 시작 점으로부터 모든 점 까지의 최단거리
