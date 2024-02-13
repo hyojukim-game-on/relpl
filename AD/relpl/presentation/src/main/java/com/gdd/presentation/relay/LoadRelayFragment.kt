@@ -515,20 +515,17 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             point.latitude == it.latitude && point.longitude == it.longitude
         }
 
+        if (route.size != 1){
+            val tmp = route[0] as MutableList
+            tmp.add(route[1].first())
+        }
+
         passedPath.apply {
             map = null
             coords = route[0]
-            color = resources.getColor(R.color.sage_green)
+            color = resources.getColor(R.color.text_gray)
             width = 20
             outlineWidth = 1
-            map = naverMap
-        }
-
-        destinationMarker.apply {
-            map = null
-            position = route[0].last()
-            icon = OverlayImage.fromResource(R.drawable.ic_marker)
-            iconTintColor = resources.getColor(R.color.sage_orange)
             map = naverMap
         }
 
@@ -536,10 +533,21 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             remainPath.apply {
                 map = null
                 coords = route[1]
-                color = resources.getColor(R.color.text_gray)
+                color = resources.getColor(R.color.sage_green)
                 width = 20
                 outlineWidth = 1
                 map = naverMap
+                patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
+                patternInterval = 60
+            }
+
+            destinationMarker.apply {
+                map = null
+                position = route[1].last()
+                icon = OverlayImage.fromResource(R.drawable.ic_marker)
+                iconTintColor = resources.getColor(R.color.sage_orange)
+                map = naverMap
+                captionText = "목적지"
             }
         }
     }
