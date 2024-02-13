@@ -1,7 +1,7 @@
 package com.gdd.relpl
 
 import android.util.Log
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

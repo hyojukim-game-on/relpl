@@ -3,8 +3,7 @@ package com.gdd.relpl
 import android.util.Log
 import com.gdd.data.api.UserService
 import com.gdd.data.model.token.ReissueRequest
-import com.gdd.data.toNonDefault
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.gdd.relpl.module.NetworkModule
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator

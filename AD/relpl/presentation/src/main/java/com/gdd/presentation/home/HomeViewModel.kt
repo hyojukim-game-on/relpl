@@ -1,7 +1,7 @@
 package com.gdd.presentation.home
 
 import androidx.lifecycle.ViewModel
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

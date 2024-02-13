@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gdd.domain.usecase.fcm.RegistFcmUseCase
 import com.gdd.presentation.MainActivity
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,12 +26,6 @@ private const val TAG = "RelplFirebaseMessageService_ksh"
 
 @AndroidEntryPoint
 class RelplFirebaseMessageService : FirebaseMessagingService() {
-
-    private var scope = CoroutineScope(Dispatchers.IO)
-
-    @Inject
-    lateinit var getFcmUseCase: RegistFcmUseCase
-
     lateinit var builder: NotificationCompat.Builder
 
     @Inject
@@ -41,17 +35,7 @@ class RelplFirebaseMessageService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         Log.d(TAG, "onNewToken: $token")
         super.onNewToken(token)
-        scope.launch {
-            getFcmUseCase(prefManager.getUserId(), token).let {
-                withContext(Dispatchers.Main) {
-                    if (it.isSuccess) {
-                        Toast.makeText(applicationContext, "!", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(applicationContext, "@", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
+        prefManager.setFcmToken(token)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -60,7 +44,7 @@ class RelplFirebaseMessageService : FirebaseMessagingService() {
             message?.let {
                 val messageTitle = it.title
                 val messageContent = it.body
-                var data = remoteMessage.data
+                val data = remoteMessage.data
                 Log.d(TAG, "data.messageTitle: ${messageTitle.toString()}")
                 Log.d(TAG, "data.messageContent: ${messageContent.toString()}")
                 Log.d(TAG, "data.message: ${data.toString()}")
@@ -88,8 +72,4 @@ class RelplFirebaseMessageService : FirebaseMessagingService() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        scope.cancel()
-    }
 }

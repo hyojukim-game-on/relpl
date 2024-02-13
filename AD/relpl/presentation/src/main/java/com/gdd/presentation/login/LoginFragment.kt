@@ -2,24 +2,20 @@ package com.gdd.presentation.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.PathInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionManager
-import com.gdd.domain.model.user.User
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentLoginBinding
 import com.gdd.retrofit_adapter.RelplException
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.transition.MaterialFade
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

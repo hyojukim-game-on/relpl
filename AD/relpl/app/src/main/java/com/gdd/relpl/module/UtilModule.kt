@@ -1,7 +1,7 @@
 package com.gdd.relpl.module
 
 import android.content.Context
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ object UtilModule {
     @Singleton
     fun providePrefManager(
         @ApplicationContext context: Context
-    ): PrefManager{
+    ): PrefManager {
         return PrefManager(context)
     }
 }

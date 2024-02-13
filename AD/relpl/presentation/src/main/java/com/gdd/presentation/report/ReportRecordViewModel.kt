@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.usecase.report.GetReportRecordListUseCase
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.model.ReportRecordPoint
 import com.gdd.presentation.model.mapper.toReportRecordPoint
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -1,4 +1,4 @@
-package com.gdd.presentation
+package com.gdd.presentation.base
 
 import android.app.Activity
 import android.content.Context
@@ -73,9 +73,21 @@ class PrefManager(context: Context) {
         return pref.getBoolean(PREF_AUTOLOGIN,false)
     }
 
+    fun setFcmToken(fcmToken: String){
+        pref.edit().apply {
+            putString(FCM_TOKEN, fcmToken)
+            apply()
+        }
+    }
+
+    fun getFcmToken(): String?{
+        return pref.getString(FCM_TOKEN, null)
+    }
     fun deleteAll(){
+        val fcm = getFcmToken()
         pref.edit().let {
             it.clear()
+            it.putString(FCM_TOKEN, fcm)
             it.commit()
         }
     }
@@ -85,5 +97,7 @@ class PrefManager(context: Context) {
         private const val PREF_AUTOLOGIN = "auto_login"
         private const val PREF_ACCESSTOKEN = "access_token"
         private const val PREF_REFRESHTOKEN = "refresh_token"
+        private const val FCM_TOKEN = "fcm_token"
+        private const val FCM_NEW_TOKEN = "fcm_new_token"
     }
 }
