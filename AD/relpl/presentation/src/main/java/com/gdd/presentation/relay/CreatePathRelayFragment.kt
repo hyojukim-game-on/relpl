@@ -369,6 +369,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
             prefManager.setRelayingMode(PrefManager.RELAYING_MODE.PATH)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.layout_main_fragment, PathRelayingFragment())
+                .addToBackStack(null)
                 .commit()
         }
     }
