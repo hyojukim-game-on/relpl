@@ -50,6 +50,8 @@ class ReportRecordFragment : BaseFragment<FragmentReportRecordBinding>(
 
     private val mapReadyCallback = OnMapReadyCallback { map ->
         naverMap = map
+        val paddingSize = dpToPx(40f)
+        naverMap.setContentPadding(paddingSize,paddingSize,paddingSize,paddingSize)
     }
 
     private fun registerObserve() {
@@ -91,5 +93,9 @@ class ReportRecordFragment : BaseFragment<FragmentReportRecordBinding>(
         return LatLngBounds.from(
             list.map { it.latLng }
         )
+    }
+
+    private fun dpToPx(dp: Float): Int {
+        return (dp * _activity.resources.displayMetrics.density + 0.5f).toInt()
     }
 }
