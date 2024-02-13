@@ -47,7 +47,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:text="@{pointRecordViewModel.totalPoint > -1 ? pointRecordViewModel.totalPoint.toString() : `-` + `P`}"
+            android:text="@{(pointRecordViewModel.totalPoint > -1 ? pointRecordViewModel.totalPoint.toString() : `-`) + `P`}"
             app:layout_constraintBaseline_toBaselineOf="@id/tv_point_des"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="1210P" />
