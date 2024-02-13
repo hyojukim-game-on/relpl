@@ -68,6 +68,7 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
 
         relayStopInfoViewModel.clearRelayingDataResult.observe(viewLifecycleOwner){
             it.getContentIfNotHandled()?.let {
+                mainViewModel.reloadUserInfo(prefManager.getUserId())
                 parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
