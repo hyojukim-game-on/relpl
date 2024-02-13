@@ -166,18 +166,18 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         val afterVisitList = list.filter { !it.beforeVisit && !it.myVisit }.toMutableList().apply {
             add(0,myVisitedList.last())
         }
-        if (beforeVisitList.size > 2){
+        if (beforeVisitList.size >= 2){
             beforePathOverlay.coords = beforeVisitList.map { it.latLng }
             beforePathOverlay.map = naverMap
         }
-        if (myVisitedList.size > 2){
+        if (myVisitedList.size >= 2){
             myPathOverlay.coords = myVisitedList.map { it.latLng }
             myPathOverlay.map = naverMap
             binding.tvDistance.text = myVisitedList.zipWithNext().sumOf {
                 it.first.latLng.distanceTo(it.second.latLng)
             }.toInt().toStringDistance()
         }
-        if (afterVisitList.size > 2){
+        if (afterVisitList.size >= 2){
             afterPathOverlay.coords = afterVisitList.map { it.latLng }
             afterPathOverlay.map = naverMap
         }
