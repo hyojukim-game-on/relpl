@@ -414,13 +414,13 @@ public class ProjectService {
 
     private void sendFCM(Long projectId) {
         // 해당 플로깅 참여한 유저 조회
-        List<Long> userIdList = userRouteRepository.findDistinctUserIdByProjectId(projectId);
+        List<UserRoute> userIdList = userRouteRepository.findDistinctUserIdByProjectId(projectId);
 
         // 토큰 수집
         fcmTokenService.clearTokens();
-        for(Long userId : userIdList) {
+        for(UserRoute userRoute : userIdList) {
             //유저 토큰 조회
-            Optional<FcmToken> selectedTokens = fcmTokenRepository.findByUserId(userId);
+            Optional<FcmToken> selectedTokens = fcmTokenRepository.findByUserId(userRoute.getUserId());
             if(selectedTokens.isPresent()) {
                 fcmTokenService.addTokens(selectedTokens.get().getFcmToken());
             } else {
