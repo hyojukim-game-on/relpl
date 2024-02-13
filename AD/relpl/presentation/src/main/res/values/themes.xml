@@ -4,7 +4,7 @@
         <!-- Customize your light theme here. -->
          <item name="colorPrimary">@color/sage_green_dark</item>
         <item name="colorOnPrimary">@color/sage_green_bright</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="colorSurfaceContainerHigh">@color/sage_cream</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:colorBackground">@color/white</item>
