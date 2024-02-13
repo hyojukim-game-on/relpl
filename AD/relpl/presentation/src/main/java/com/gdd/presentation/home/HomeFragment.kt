@@ -12,9 +12,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.gdd.presentation.LoginActivity
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
-import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.base.distanceFormat
 import com.gdd.presentation.base.pointFormat
 import com.gdd.presentation.databinding.FragmentHomeBinding

@@ -10,9 +10,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
-import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.databinding.FragmentRelayStopInfoBinding
 import com.gdd.presentation.model.mapper.toStringDistance
 import com.naver.maps.geometry.LatLngBounds

@@ -12,7 +12,7 @@ import com.gdd.domain.usecase.relay.tracking.ClearTrackingDataUseCase
 import com.gdd.domain.usecase.relay.tracking.GetLocationTrackingDataUseCase
 import com.gdd.domain.usecase.relay.tracking.GetRelayPathDataUseCase
 import com.gdd.presentation.Event
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.mapper.DateFormatter
 import com.gdd.presentation.model.RelayInfo
 import com.gdd.presentation.model.RelayPath
