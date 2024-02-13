@@ -136,7 +136,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                 this, permissionList.toTypedArray(),
                 locationPermissionGrantedListener,
                 locationPermissionDeniedListener
-                )
+            )
         } else {
             locationPermissionGrantedListener()
         }

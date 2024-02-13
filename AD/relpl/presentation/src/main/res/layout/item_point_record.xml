@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:fontFamily="@font/font_wanted_sans_medium"
+        android:textColor="@color/text_gray"
         tools:text="2024년01월24일" />
 
     <TextView
@@ -27,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:fontFamily="@font/font_wanted_sans_medium"
+        android:textColor="@color/text_gray"
         tools:text="플로깅 리워드" />
 
 </FrameLayout>
