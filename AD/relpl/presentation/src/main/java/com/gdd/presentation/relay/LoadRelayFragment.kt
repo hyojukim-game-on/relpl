@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -116,17 +117,26 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     }
 
     private fun checkLocationPermission() {
-        if (!PermissionHelper.checkPermission(
-                mainActivity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        ) {
-            PermissionHelper.requestPermission_fragment(
-                this,
+
+        val permissionList =
+            mutableListOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                grantedListener = locationPermissionGrantedListener,
-                deniedListener = locationPermissionDeniedListener
-            )
+                Manifest.permission.CAMERA,
+            ).apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    add(Manifest.permission.POST_NOTIFICATIONS)
+                    add(Manifest.permission.READ_MEDIA_IMAGES)
+                } else {
+                    add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+            }
+
+        if (PermissionHelper.checkPermissionList(_activity,permissionList).isNotEmpty()) {
+            PermissionHelper.requestPermissionList_fragment(
+                this, permissionList.toTypedArray(),
+                locationPermissionGrantedListener,
+                locationPermissionDeniedListener
+                )
         } else {
             locationPermissionGrantedListener()
         }
@@ -583,8 +593,8 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     // region 권한 및 fab
     private val locationPermissionDeniedListener: () -> Unit = {
         MaterialAlertDialogBuilder(mainActivity)
-            .setTitle("정확한 위치 권한 허용이 필요합니다")
-            .setMessage("정확한 위치 권한을 허용하지 않을 경우 해당 기능을 이용할 수 없습니다. 설정으로 이동하시겠습니까?")
+            .setTitle("릴플과 함께하려면 다음의 권한이 필요해요")
+            .setMessage("- 알람\n- 정확한 위치\n- 갤러리 접근\n- 카메라\n\n위의 권한이 없으면 해당 기능을 이용할 수 없습니다. 설정으로 이동할까요?")
             .setNegativeButton("취소") { _, _ ->
                 parentFragmentManager.popBackStack()
             }

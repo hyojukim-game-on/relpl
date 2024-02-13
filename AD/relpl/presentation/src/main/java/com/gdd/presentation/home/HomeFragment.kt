@@ -1,7 +1,11 @@
 package com.gdd.presentation.home
 
+import android.Manifest
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -15,6 +19,7 @@ import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.base.distanceFormat
 import com.gdd.presentation.base.pointFormat
 import com.gdd.presentation.databinding.FragmentHomeBinding
@@ -65,6 +70,7 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
                 .show()
         }
 
+        checkPermission()
         initView()
         registerObserver()
         registerListener()
@@ -162,6 +168,47 @@ class HomeFragment: BaseFragment<FragmentHomeBinding>(
                 .apply(RequestOptions().circleCrop())
                 .into(binding.ivProfile)
         }
+    }
+
+    private fun checkPermission() {
+        val permissionList =
+            mutableListOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA,
+            ).apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    add(Manifest.permission.POST_NOTIFICATIONS)
+                    add(Manifest.permission.READ_MEDIA_IMAGES)
+                } else {
+                    add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+            }
+
+        if (PermissionHelper.checkPermissionList(_activity,permissionList).isNotEmpty()) {
+            PermissionHelper.requestPermissionList_fragment(this, permissionList.toTypedArray(),
+                deniedListener = {
+                    showPermissionDialog()
+                })
+        }
+    }
+
+    private fun showPermissionDialog(){
+        MaterialAlertDialogBuilder(_activity)
+            .setTitle("릴플과 함께하려면 다음의 권한이 필요해요")
+            .setMessage("- 알람\n- 정확한 위치\n- 갤러리 접근\n- 카메라\n\n위의 권한이 없으면 많은 기능들을 이용하지 못합니다. 설정으로 이동할까요?")
+            .setNegativeButton("취소") { _, _ -> }
+            .setPositiveButton("확인") { _, _ ->
+                startActivity(
+                    Intent(
+                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.parse("package:${_activity.packageName}")
+                    ).apply {
+                        addCategory(Intent.CATEGORY_DEFAULT)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                )
+            }
+            .show()
     }
 
     companion object{
