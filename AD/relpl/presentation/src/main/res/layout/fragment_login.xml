@@ -40,7 +40,8 @@
 
         <TextView
             android:id="@+id/tv_slogan"
-            style="@style/Relpl.Text"
+            style="@style/Relpl.Text.M.16"
+            android:letterSpacing="0.16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="136dp"
