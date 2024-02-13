@@ -165,7 +165,7 @@ public class ProjectRecommendBusiness {
             int report = roadInfo.getRoadInfoReport(); // n
             if (report ==0) report++;
 
-            double totalReport = Math.log(roadInfo.getRoadInfoTotalReport()) + 0.5; // m
+            double totalReport = Math.log(roadInfo.getRoadInfoTotalReport()) + 1; // m
             if (totalReport == 0) totalReport++;
 
             double weight = Math.sqrt(len) / totalReport * 5 / report + 1; // 5/n * ln(d) / ln(m) + b
