@@ -30,9 +30,7 @@ class LoginViewModel @Inject constructor(
     val inputErrorString: LiveData<Event<Boolean>>
         get() = _inputErrorString
 
-    private val _fcmResult = MutableLiveData<Result<Boolean>>()
-    val fcmResult: LiveData<Result<Boolean>>
-        get() = _fcmResult
+
 
     fun login(){
         viewModelScope.launch {
@@ -66,11 +64,4 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun registFcmToken(fcmToken: String){
-        viewModelScope.launch {
-            getFcmUseCase(prefManager.getUserId(), fcmToken).let {
-                _fcmResult.postValue(it)
-            }
-        }
-    }
 }

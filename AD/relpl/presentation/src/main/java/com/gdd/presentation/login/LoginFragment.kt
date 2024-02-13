@@ -80,7 +80,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     private fun registerObserve(){
         loginViewModel.loginResult.observe(viewLifecycleOwner){ result ->
             result?.let {
-                initFirebase(it.getOrNull())
+//                initFirebase(it.getOrNull())
             }
             if (result.isSuccess){
                 showSnackBar("로그인에 성공했습니다.")
@@ -129,22 +129,22 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     }
 
     // firebase push 관련
-    private fun initFirebase(user: User?) {
-
-        if (user == null) return
-
-        // FCM 토큰 수신
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "FCM 토큰 얻기에 실패하였습니다.", task.exception)
-                return@OnCompleteListener
-            }
-            // token log 남기기
-            Log.d(TAG, "token: ${task.result?:"task.result is null"}")
-            task.result?.let {
-                loginViewModel.registFcmToken(it)
-            }
-        })
-    }
+//    private fun initFirebase(user: User?) {
+//
+//        if (user == null) return
+//
+//        // FCM 토큰 수신
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w(TAG, "FCM 토큰 얻기에 실패하였습니다.", task.exception)
+//                return@OnCompleteListener
+//            }
+//            // token log 남기기
+//            Log.d(TAG, "token: ${task.result?:"task.result is null"}")
+//            task.result?.let {
+//                loginViewModel.registFcmToken(it)
+//            }
+//        })
+//    }
 
 }
