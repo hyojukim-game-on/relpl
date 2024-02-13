@@ -19,16 +19,18 @@ class PathLocationTrackingService : LocationTrackingService() {
     override var distanceStandard = 1
 
     private var relayPath = mutableListOf<RelayPath>()
+    private var beforePathPoint: RelayPath? = null
 
     override var locationUpdateListener = { location: Location ->
         if (relayPath.isNotEmpty()) {
-            if (relayPath.first().latLng.distanceTo(LatLng(location)) < 5) {
+            // 다음 정점에 가까워 지면 방문 체크
+            if (relayPath.first().latLng.distanceTo(LatLng(location)) < 10) {
                 ioScope.launch {
-                    locationTrackingRepository.updateRelayPathPoint(
-                        relayPath.removeFirst().copy(myVisit = true).toRelayPathData()
-                    )
+                    checkVisit(relayPath.removeFirst())
                 }
             }
+            // TODO 경로 이탈 경고 로직
+            
         }
     }
 
@@ -45,5 +47,11 @@ class PathLocationTrackingService : LocationTrackingService() {
 
     override fun stopTracking() {
         ioScope.cancel()
+    }
+
+    private suspend fun checkVisit(relayPathPoint: RelayPath) {
+        locationTrackingRepository.updateRelayPathPoint(
+            relayPathPoint.copy(myVisit = true).toRelayPathData()
+        )
     }
 }
