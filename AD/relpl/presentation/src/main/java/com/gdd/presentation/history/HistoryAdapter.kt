@@ -23,8 +23,7 @@ class HistoryAdapter(private val layoutInflater: LayoutInflater,
 
             binding.tvTitle.text = item.projectName
             binding.tvDateFrom.text = "${item.createDate.toFormattedDate()} 부터"
-//            binding.tvDateTo.text = "${item.endDate.toFormattedDate()} 까지"
-            binding.tvDateTo.text = "${item.endDate} 까지"
+            binding.tvDateTo.text = "${item.endDate.toFormattedDate()} 까지"
             binding.tvDistance.text = item.totalDistance.toRelayDistance()
             binding.tvContributor.text = item.totalContributor.toKoreanNumber()
 
