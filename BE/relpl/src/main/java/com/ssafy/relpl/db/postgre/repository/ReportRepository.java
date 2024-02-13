@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long>{
-
-
     List<Report> findByUser(User user);
+    int countByUser(User user);
+
 }

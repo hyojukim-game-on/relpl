@@ -1,8 +1,10 @@
 package com.ssafy.relpl.service;
 
+import com.ssafy.relpl.db.postgre.entity.Coin;
 import com.ssafy.relpl.db.postgre.entity.Report;
 import com.ssafy.relpl.db.postgre.entity.RoadInfo;
 import com.ssafy.relpl.db.postgre.entity.User;
+import com.ssafy.relpl.db.postgre.repository.CoinRepository;
 import com.ssafy.relpl.db.postgre.repository.ReportRepository;
 import com.ssafy.relpl.db.postgre.repository.UserRepository;
 import com.ssafy.relpl.dto.request.ReportRegistRequest;
@@ -21,10 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -33,6 +33,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
+    private final CoinRepository coinRepository;
     private final ResponseService responseService;
     private final RoadInfoService roadInfoService;
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
@@ -71,19 +72,19 @@ public class ReportService {
             User existingUser = userRepository.findById(userId).orElse(null);
             if (existingUser != null) {
                 // 등록되어 존재하는 유저인 경우
-                Report dummyReport = createDummyReport(existingUser, reportRegistRequest);
+                Report report = createDummyReport(existingUser, reportRegistRequest);
 
                 // TmapService를 통해 TmapApiResponse를 받아옴
-                double longitude = dummyReport.getReportCoordinate().getX();
-                double latitude = dummyReport.getReportCoordinate().getY();
+                double longitude = report.getReportCoordinate().getX();
+                double latitude = report.getReportCoordinate().getY();
                 TmapApiResponse tmapApiResponse = tmapService.callTmapApi(longitude, latitude);
                 if (tmapApiResponse != null && tmapApiResponse.getResultData() != null) {
                     TmapApiResponse.Header header = tmapApiResponse.getResultData().getHeader();
                     if (header != null) {
                         // TmapApiResponse의 linkId를 tmapId로 저장
 
-                        dummyReport.setTmapId(header.getLinkId());
-                        dummyReport = reportRepository.save(dummyReport);
+                        report.setTmapId(header.getLinkId());
+                        report = reportRepository.save(report);
 
                         Optional<RoadInfo> queryResult = roadInfoService.findByRoadHashId(header.getLinkId());
                         if (queryResult.isPresent()) {
@@ -95,10 +96,23 @@ public class ReportService {
                             return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보 등록 실패, 근처 도로 존재하지 않음"));
                         }
 
-                        if (dummyReport.getUser() != null) {
+                        // 보유 코인 조회
+                        int sumCoin = coinRepository.sumCoinAmountByUserId(userId);
+                        if (sumCoin >= 100) {
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                            Coin coin = Coin.builder()
+                                    .coinEventDate(simpleDateFormat.format(new Date()))
+                                    .coinAmount(-100)
+                                    .coinEventDetail("제보 등록")
+                                    .user(report.getUser())
+                                    .build();
+
+                            coinRepository.save(coin);
+
                             return ResponseEntity.ok(responseService.getSingleResult(true, "제보 등록 성공", 200));
                         } else {
-                            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보 등록 실패"));
+                            return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보 등록 실패. 코인이 부족합니다."));
                         }
                     } else {
                         return ResponseEntity.badRequest().body(responseService.getFailResult(400, "제보 등록 실패. TmapApiResponse의 Header가 null입니다."));
