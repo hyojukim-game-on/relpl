@@ -22,6 +22,7 @@ import com.ssafy.relpl.dto.response.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -32,6 +33,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -129,8 +133,15 @@ public class ProjectService {
         try {
             List<Project> projectList = projectRepository.findAll();
             List<ProjectAllResponse> response = new ArrayList<>();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime now = LocalDateTime.now();
+
             for (Project project : projectList) {
                 if (project.isProjectIsDone() || project.isProjectIsPlogging()) continue;
+                LocalDateTime projectEndDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
+                if (now.isAfter(projectEndDateTime)) continue;
+
                 response.add(ProjectAllResponse.createProjectAllResponse(project));
             }
             return ResponseEntity.ok(responseService.getSingleResult(response, "프로젝트 전체 조회 성공", 200));

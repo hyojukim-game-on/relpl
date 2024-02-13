@@ -165,10 +165,10 @@ public class ProjectRecommendBusiness {
             int report = roadInfo.getRoadInfoReport(); // n
             if (report ==0) report++;
 
-            int totalReport = (int)(Math.log(roadInfo.getRoadInfoTotalReport()) + 0.5); // m
+            double totalReport = Math.log(roadInfo.getRoadInfoTotalReport()) + 0.5; // m
             if (totalReport == 0) totalReport++;
 
-            int weight = (int)((Math.log(len) + 0.5) / totalReport * 5 / report) + 1; // 5/n * ln(d) / ln(m) + b
+            double weight = Math.sqrt(len) / totalReport * 5 / report + 1; // 5/n * ln(d) / ln(m) + b
             if (cleanRoadSet.contains("road_"+roadInfos))weight += 25; // b
 
             edges[start].add(new Edge(end, len, roadInfo.getRoadHashId(), weight));
