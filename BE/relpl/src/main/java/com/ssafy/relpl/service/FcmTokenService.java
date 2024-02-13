@@ -55,6 +55,11 @@ public class FcmTokenService {
         log.info("FCM Token 등록");
 
         try {
+            // 해당 토큰으로 등록된 레코드 삭제
+            Optional<FcmToken> tokenOptional = fcmTokenRepository.findByFcmToken(request.getFcmToken());
+            if(tokenOptional.isPresent()) {
+                fcmTokenRepository.delete(tokenOptional.get());
+            }
             // userId에 해당하는 사용자가 이미 db에 FcmToken이 등록되어 있는지 확인하는 로직
             Optional<FcmToken> fcmTokenOptional = fcmTokenRepository.findByUserId(request.getUserId());
 
