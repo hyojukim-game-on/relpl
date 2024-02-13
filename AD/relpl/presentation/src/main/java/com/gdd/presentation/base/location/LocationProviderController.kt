@@ -73,7 +73,7 @@ class LocationProviderController(
             locationListener = listener
             fusedLocationProviderClient
                 .requestLocationUpdates(
-                    LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build(),
+                    LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500).build(),
                     locationCallback,
                     Looper.getMainLooper()
                 )
