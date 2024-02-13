@@ -111,7 +111,7 @@ class ProfileChangeFragment : BaseFragment<FragmentProfileChangeBinding>(
 
     private fun registerListener(){
         binding.btnSendCode.setOnClickListener {
-            if (binding.btnPhonneDup.isEnabled){
+            if (!binding.btnPhonneDup.isEnabled){
                 sendVerificationCode()
             }else{
                 showSnackBar(resources.getString(R.string.profile_change_please_nickname_dup))

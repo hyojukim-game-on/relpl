@@ -75,7 +75,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:progressMode="true"
-            app:selectedDotColor="@color/sage_green_text" />
+            app:selectedDotColor="@color/sage_green_text"
+            app:dotsClickable="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
