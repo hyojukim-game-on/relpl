@@ -1,13 +1,8 @@
 package com.gdd.presentation.history
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -18,7 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.gdd.domain.model.history.History
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentHistoryBinding

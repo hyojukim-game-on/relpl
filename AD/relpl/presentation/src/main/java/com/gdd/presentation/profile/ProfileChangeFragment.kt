@@ -8,10 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -19,10 +16,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
-import com.gdd.presentation.databinding.FragmentProfileBinding
 import com.gdd.presentation.databinding.FragmentProfileChangeBinding
 import com.gdd.retrofit_adapter.RelplException
 import com.google.android.material.transition.MaterialContainerTransform

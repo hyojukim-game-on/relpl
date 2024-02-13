@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.point.PointRecordListItem
 import com.gdd.domain.usecase.point.GetPointRecordUseCase
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

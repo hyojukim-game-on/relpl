@@ -8,7 +8,7 @@ import com.gdd.domain.model.user.User
 import com.gdd.domain.usecase.fcm.RegistFcmUseCase
 import com.gdd.domain.usecase.user.SignInUseCase
 import com.gdd.presentation.Event
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

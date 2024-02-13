@@ -9,6 +9,7 @@ import com.gdd.domain.model.user.User
 import com.gdd.domain.usecase.fcm.RegistFcmUseCase
 import com.gdd.domain.usecase.history.GetHistoryDetailUseCase
 import com.gdd.domain.usecase.user.ReloadUserInfoUseCase
+import com.gdd.presentation.base.PrefManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -57,9 +58,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun registFcmToken(fcmToken: String, userId: Long){
+    fun registFcmToken(userId: Long, fcmToken: String){
         viewModelScope.launch {
-            getFcmUseCase(prefManager.getUserId(), fcmToken).let {
+            getFcmUseCase(userId, fcmToken).let {
                 _fcmResult.postValue(it)
             }
         }

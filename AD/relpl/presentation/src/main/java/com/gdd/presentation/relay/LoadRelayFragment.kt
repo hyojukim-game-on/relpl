@@ -19,7 +19,7 @@ import com.gdd.domain.model.relay.PathRelayInfo
 import com.gdd.domain.model.tracking.RelayPathData
 import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
-import com.gdd.presentation.PrefManager
+import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
