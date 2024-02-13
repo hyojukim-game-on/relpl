@@ -1,0 +1,6 @@
+<<<<<<< Updated upstream
+git rev-parse --git-dir/hooks/commit-msg
+=======
+git rev-parse --git-dir/hooks/commit-msg
+>>>>>>> Stashed changes
+AD/relpl/.idea/deploymentTargetDropDown.xml
