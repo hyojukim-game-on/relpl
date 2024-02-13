@@ -51,7 +51,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel.loadHistory(prefManager.getUserId())
 
-        if(mainViewModel.user.imageUri != null){
+        if (mainViewModel.user.imageUri != null) {
             Glide.with(this)
                 .load(mainViewModel.user.imageUri)
                 .fitCenter()
@@ -59,27 +59,28 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
                 .into(binding.ivProfilePhoto)
         }
 
-        binding.tvUserNickname.text = resources.getString(R.string.history_user_nickname, mainViewModel.user.nickname)
+        binding.tvUserNickname.text =
+            resources.getString(R.string.history_user_nickname, mainViewModel.user.nickname)
         // 프로필 이미지 띄우기
 
         registerListener()
         registerObserver()
     }
 
-    private fun registerListener(){
+    private fun registerListener() {
 
     }
 
-    private fun registerObserver(){
-        viewModel.historyResult.observe(viewLifecycleOwner){ result ->
-            if (result.isSuccess){
-                result.getOrNull()?.let{
+    private fun registerObserver() {
+        viewModel.historyResult.observe(viewLifecycleOwner) { result ->
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
 
-                    if (it.totalProject == 0){
+                    if (it.totalProject == 0) {
                         binding.tvNoDataSummery.visibility = View.VISIBLE
                         binding.tvNoData.visibility = View.VISIBLE
                         binding.llInfoSummery.visibility = View.GONE
-                    }else{
+                    } else {
                         binding.tvNoDataSummery.visibility = View.GONE
                         binding.tvNoData.visibility = View.GONE
 
@@ -87,8 +88,8 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
                         binding.tvTotalDistanceKm.text = (it.userTotalDistance / 1000).toString()
                         binding.tvTotalDistanceM.text = (it.userTotalDistance % 1000).toString()
                         val day = it.userTotalTime / (60 * 24)
-                        val hour = (it.userTotalTime - (60*24*day)) / 60
-                        val min = (it.userTotalTime - (60*24*day)) % 60
+                        val hour = (it.userTotalTime - (60 * 24 * day)) / 60
+                        val min = (it.userTotalTime - (60 * 24 * day)) % 60
 
                         binding.tvTotalTimeDay.text = day.toString()
                         binding.tvTotalTimeHour.text = hour.toString()
@@ -98,9 +99,9 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
                         initRecyclerView()
                     }
                 }
-            }else{
+            } else {
                 result.exceptionOrNull()?.let {
-                    if (it is RelplException){
+                    if (it is RelplException) {
                         showSnackBar(it.message)
                     } else {
                         showSnackBar(resources.getString(R.string.all_net_err))
@@ -111,7 +112,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
         }
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         binding.rvTimeLine.adapter = HistoryAdapter(
             layoutInflater,
             historyList,
@@ -143,18 +144,11 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(
         }
     }
 
-    private var relayClickListener : (History) -> Unit = { history ->
-        if (!history.projectIsDone){
-            showSnackBar("완료 되지 않은 릴레이입니다")
-        }else{
-            mainViewModel.historySelectedProjectId = history.projectId
-            parentFragmentManager.beginTransaction().
-                    replace(R.id.layout_main_fragment, HistoryDetailFragment()).
-                    addToBackStack(null).
-                    commit()
-            /**
-             * 디테일 프래그먼트로 넘어가기
-             */
-        }
+    private var relayClickListener: (History) -> Unit = { history ->
+        mainViewModel.historySelectedProjectId = history.projectId
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.layout_main_fragment, HistoryDetailFragment()).addToBackStack(null)
+            .commit()
+
     }
 }

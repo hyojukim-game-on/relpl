@@ -3,12 +3,16 @@ package com.gdd.presentation.history
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gdd.domain.model.history.HistoryDetail
+import com.gdd.presentation.R
+import com.gdd.presentation.base.collapse
+import com.gdd.presentation.base.expand
 import com.gdd.presentation.databinding.ItemHistoryDetailBinding
 import com.gdd.presentation.mapper.DateFormatter
 
@@ -25,10 +29,25 @@ class HistoryDetailAdapter( private val context: Context,
                 .load(item.moveImage)
                 .fitCenter()
                 .into(binding.ivPhoto)
-            binding.tvDate.text = "${DateFormatter.longToTimeFormat(item.moveStart)} ~ ${DateFormatter.longToTimeFormat(item.moveEnd.format())}"
+            binding.tvNickname.text = item.userNickname
+            binding.tvDate.text = "${DateFormatter.longToTimeFormat(item.moveStart)} ~ ${DateFormatter.longToTimeFormat(item.moveEnd)}"
             binding.tvDistance.text = item.moveDistance.toDetailDistance()
             binding.tvCont.text = "${item.moveContribution}%"
-            binding.tvMemo.text = item.moveMemo
+            binding.tvMemo.text = if(item.moveMemo.isNullOrEmpty()) "메모가 없습니다" else item.moveMemo
+
+            binding.llMemo.setOnClickListener {
+                if (binding.tvMemo.visibility == View.GONE) {
+                    binding.tvMemo.expand()
+                    binding.ivMemoArrow.setImageResource(
+                        R.drawable.ic_drop_up
+                    )
+                } else if (binding.tvMemo.visibility == View.VISIBLE) {
+                    binding.tvMemo.collapse()
+                    binding.ivMemoArrow.setImageResource(
+                        R.drawable.ic_drop_down
+                    )
+                }
+            }
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryDetailAdapter.ViewHolder {

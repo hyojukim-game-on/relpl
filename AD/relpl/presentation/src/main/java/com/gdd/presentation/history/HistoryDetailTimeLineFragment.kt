@@ -83,7 +83,7 @@ class HistoryDetailTimeLineFragment : BaseFragment<FragmentHistoryDetailTimeLine
         return object : SectionCallback {
             //In your data, implement a method to determine if this is a section.
             override fun isSection(position: Int): Boolean =
-                DateFormatter.longToHistoryFormat(historyDetailList[position].moveStart) != DateFormatter.longToHistoryFormat(historyDetailList[position - 1].moveStart.substring(0, 10))
+                DateFormatter.longToHistoryFormat(historyDetailList[position].moveStart.substring(0, 10)) != DateFormatter.longToHistoryFormat(historyDetailList[position - 1].moveStart.substring(0, 10))
 
             //Implement a method that returns a SectionHeader.
             override fun getSectionHeader(position: Int): SectionInfo? {
