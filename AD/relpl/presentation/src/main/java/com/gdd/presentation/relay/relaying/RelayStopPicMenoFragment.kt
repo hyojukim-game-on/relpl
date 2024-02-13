@@ -20,10 +20,12 @@ import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.databinding.FragmentRelayStopPicMenoBinding
 import com.gdd.presentation.home.HomeFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
     FragmentRelayStopPicMenoBinding::bind, R.layout.fragment_relay_stop_pic_meno
 ) {
