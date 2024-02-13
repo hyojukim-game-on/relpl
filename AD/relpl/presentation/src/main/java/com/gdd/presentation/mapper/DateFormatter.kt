@@ -17,7 +17,7 @@ object DateFormatter {
      */
     fun recordResponseFormatToUi(dateString: String): String{
         return try {
-            koreanDateFormat.format(longDateFormat.parse(dateString)!!)
+            koreanDateFormat.format(shortDateFormat.parse(dateString)!!)
         } catch (t: Throwable){
             ""
         }

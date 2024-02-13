@@ -10,8 +10,10 @@ import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.gdd.presentation.MainActivity
+import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.base.PermissionHelper
@@ -30,6 +32,7 @@ import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
 
 private const val TAG = "ReportFragment_Genseong"
 
@@ -38,6 +41,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
     FragmentReportBinding::bind, R.layout.fragment_report
 ) {
     private lateinit var mainActivity: MainActivity
+    private val mainViewModel: MainViewModel by activityViewModels()
     private val reportViewModel: ReportViewModel by viewModels()
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -64,6 +68,14 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
                     }
                 }
             })
+
+        try {
+            binding.tvTotalPoint.text = mainViewModel.user.totalCoin.toString() + " P"
+        } catch (e: Exception){
+            binding.tvTotalPoint.text = "- P"
+        }
+
+
 
         //위치권한 확인
         checkLocationPermission()
