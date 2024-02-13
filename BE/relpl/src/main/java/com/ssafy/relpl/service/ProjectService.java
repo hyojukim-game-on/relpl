@@ -131,17 +131,18 @@ public class ProjectService {
             List<ProjectAllResponse> response = new ArrayList<>();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime now = LocalDateTime.now();
+            LocalDate now = LocalDate.now();
              // 안되면 취소하기
             for (Project project : projectList) {
                 if (project.isProjectIsDone() || project.isProjectIsPlogging()) continue;
-                LocalDateTime projectEndDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
+                LocalDate projectEndDateTime = LocalDate.parse(project.getProjectEndDate(), formatter);
                 if (now.isAfter(projectEndDateTime)) continue;
 
                 response.add(ProjectAllResponse.createProjectAllResponse(project));
             }
             return ResponseEntity.ok(responseService.getSingleResult(response, "프로젝트 전체 조회 성공", 200));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 전체 조회 실패 실패"));
         }
     }
