@@ -430,7 +430,7 @@ public class ProjectService {
 
         // 메세지 전송
         try {
-            fcmTokenService.broadCastDataMessage("title", "body");
+            fcmTokenService.broadCastDataMessage("참여하신 플로깅이 완료되었습니다.", "projectId: " + projectId);
         } catch (Exception e) {
             log.info("FCM 메시지 전송 실패");
         }
