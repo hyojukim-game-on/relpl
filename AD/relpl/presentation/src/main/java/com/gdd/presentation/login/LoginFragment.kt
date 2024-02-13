@@ -2,6 +2,7 @@ package com.gdd.presentation.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.PathInterpolator
 import androidx.activity.OnBackPressedCallback
@@ -16,12 +17,13 @@ import com.gdd.presentation.SignupActivity
 import com.gdd.presentation.base.BaseFragment
 import com.gdd.presentation.databinding.FragmentLoginBinding
 import com.gdd.retrofit_adapter.RelplException
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.transition.MaterialFade
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.math.log
 
+private const val TAG = "LoginFragment_ksh"
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(
     FragmentLoginBinding::bind, R.layout.fragment_login
@@ -77,6 +79,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 
     private fun registerObserve(){
         loginViewModel.loginResult.observe(viewLifecycleOwner){ result ->
+            result?.let {
+//                initFirebase(it.getOrNull())
+            }
             if (result.isSuccess){
                 showSnackBar("로그인에 성공했습니다.")
                 startActivity(Intent(_activity,MainActivity::class.java).apply {
@@ -122,4 +127,24 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         TransitionManager.beginDelayedTransition(binding.layoutRoot, materialFade)
         binding.layoutLoginInputs.visibility = View.GONE
     }
+
+    // firebase push 관련
+//    private fun initFirebase(user: User?) {
+//
+//        if (user == null) return
+//
+//        // FCM 토큰 수신
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w(TAG, "FCM 토큰 얻기에 실패하였습니다.", task.exception)
+//                return@OnCompleteListener
+//            }
+//            // token log 남기기
+//            Log.d(TAG, "token: ${task.result?:"task.result is null"}")
+//            task.result?.let {
+//                loginViewModel.registFcmToken(it)
+//            }
+//        })
+//    }
+
 }

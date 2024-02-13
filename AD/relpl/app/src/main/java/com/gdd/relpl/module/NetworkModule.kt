@@ -1,6 +1,7 @@
 package com.gdd.relpl.module
 
 import com.gdd.data.api.ApiClient.BASE_URL
+import com.gdd.data.api.FcmService
 import com.gdd.data.api.ProjectService
 import com.gdd.data.api.RankService
 import com.gdd.data.api.ReportService
@@ -116,5 +117,11 @@ object NetworkModule {
     @Singleton
     fun provideRankService(retrofit: Retrofit): RankService {
         return retrofit.create(RankService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseService(retrofit: Retrofit): FcmService {
+        return retrofit.create(FcmService::class.java)
     }
 }

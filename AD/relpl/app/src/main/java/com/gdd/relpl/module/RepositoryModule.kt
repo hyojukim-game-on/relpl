@@ -1,10 +1,12 @@
 package com.gdd.relpl.module
 
+import com.gdd.data.repository.fcm.FcmRepositoryImpl
 import com.gdd.data.repository.project.ProjectRepositoryImpl
 import com.gdd.data.repository.rank.RankRepositoryImpl
 import com.gdd.data.repository.report.ReportRepositoryImpl
 import com.gdd.data.repository.tracking.LocationTrackingRepositoryImpl
 import com.gdd.data.repository.user.UserRepositoryImpl
+import com.gdd.domain.repository.FcmRepository
 import com.gdd.domain.repository.LocationTrackingRepository
 import com.gdd.domain.repository.ProjectRepository
 import com.gdd.domain.repository.RankRepository
@@ -38,4 +40,9 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindLocationTrackingRepository(locationTrackingRepositoryImpl: LocationTrackingRepositoryImpl): LocationTrackingRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindFcmRepository(fcmRepositoryImpl: FcmRepositoryImpl): FcmRepository
+
 }

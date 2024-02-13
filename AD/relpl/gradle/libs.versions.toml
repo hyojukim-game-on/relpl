@@ -102,6 +102,8 @@ dial = {group = "com.leinardi.android", name = "speed-dial", version = "3.3.0"}
 # Google Location
 google-location = {group="com.google.android.gms", name = "play-services-location", version="21.1.0"}
 
+# fcm
+fcm =  {group = "com.google.firebase", name = "firebase-messaging-ktx"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version = "8.1.3" }

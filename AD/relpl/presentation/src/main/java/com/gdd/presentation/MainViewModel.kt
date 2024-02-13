@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gdd.domain.model.history.HistoryDetailInfo
 import com.gdd.domain.model.user.User
+import com.gdd.domain.usecase.fcm.RegistFcmUseCase
 import com.gdd.domain.usecase.history.GetHistoryDetailUseCase
 import com.gdd.domain.usecase.user.ReloadUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,10 +16,18 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getHistoryDetailUseCase: GetHistoryDetailUseCase,
-    private val reloadUserInfoUseCase: ReloadUserInfoUseCase
+    private val reloadUserInfoUseCase: ReloadUserInfoUseCase,
+    private val getFcmUseCase: RegistFcmUseCase
 ): ViewModel() {
     lateinit var user: User
     var historySelectedProjectId = -1L
+
+    private val _fcmResult = MutableLiveData<Result<Boolean>>()
+    val fcmResult: LiveData<Result<Boolean>>
+        get() = _fcmResult
+
+    @Inject
+    lateinit var prefManager: PrefManager
 
     private val _historyDetailResult = MutableLiveData<Result<HistoryDetailInfo>?>()
     val historyDetailResult: LiveData<Result<HistoryDetailInfo>?>
@@ -46,6 +55,13 @@ class MainViewModel @Inject constructor(
                 _userInfoResult.postValue(it)
             }
         }
+    }
 
+    fun registFcmToken(fcmToken: String, userId: Long){
+        viewModelScope.launch {
+            getFcmUseCase(prefManager.getUserId(), fcmToken).let {
+                _fcmResult.postValue(it)
+            }
+        }
     }
 }
