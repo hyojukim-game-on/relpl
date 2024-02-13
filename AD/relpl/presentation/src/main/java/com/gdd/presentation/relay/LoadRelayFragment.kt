@@ -459,7 +459,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                         task.result.also {
                             val cur = LatLng(it)
                             Log.d(TAG, "initDistanceBottomSheetInfo: ${data.stopCoordinate.toLatLng().distanceTo(cur)}")
-                            if (data.stopCoordinate.toLatLng().distanceTo(cur) <= 5) {
+                            if (data.stopCoordinate.toLatLng().distanceTo(cur) <= 10) {
                                 isDistanceSelected = true // 참여하려는 릴레이 종류 저장
                                 viewModel.joinRelay(data.projectId)
                             }else{
@@ -497,7 +497,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                     if (task.isSuccessful) {
                         task.result.also {
                             val cur = LatLng(it)
-                            if (data.stopCoordinate.toLatLng().distanceTo(cur) <= 5) {
+                            if (data.stopCoordinate.toLatLng().distanceTo(cur) <= 10) {
                                 isPathSelected = true // 참여하려는 릴레이 종류 저장
                                 viewModel.joinRelay(data.projectId)
                             }else{
