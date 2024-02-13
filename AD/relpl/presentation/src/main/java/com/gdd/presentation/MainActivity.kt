@@ -28,7 +28,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
         super.onCreate(savedInstanceState)
         viewModel.user = intent.intentSerializable("user", User::class.java)!!
 
-        supportFragmentManager.beginTransaction().replace(R.id.layout_main_fragment, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.layout_main_fragment, HomeFragment())
+            .addToBackStack(null)
+            .commit()
 
         Log.d(TAG, "onCreate: ${prefManager.getFcmToken()}")
         prefManager.getFcmToken()?.let {
