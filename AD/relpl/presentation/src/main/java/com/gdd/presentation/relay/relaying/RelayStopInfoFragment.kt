@@ -138,13 +138,16 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         val pathOverlay = PathOverlay().apply {
             color = _activity.getColor(R.color.sage_green)
         }
-        pathOverlay.coords = relayStopInfoViewModel.locationTrackingPointList.value!!.map { it.latLng }
-        pathOverlay.map = naverMap
+        val moveList = relayStopInfoViewModel.locationTrackingPointList.value!!.map { it.latLng }
+        if (moveList.size >= 2) {
+            pathOverlay.coords = moveList
+            pathOverlay.map = naverMap
+        }
         binding.tvDistance.text =  relayStopInfoViewModel.locationTrackingPointList.value!!.zipWithNext().sumOf {
             it.first.latLng.distanceTo(it.second.latLng)
         }.toInt().toString() + "m"
         naverMap.moveCamera(CameraUpdate.fitBounds(
-            LatLngBounds.from(pathOverlay.coords)
+            LatLngBounds.from(moveList)
         ).animate(CameraAnimation.Easing))
         binding.btnNext.isEnabled = true
     }
