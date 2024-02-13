@@ -130,9 +130,9 @@ public class ProjectService {
             List<Project> projectList = projectRepository.findAll();
             List<ProjectAllResponse> response = new ArrayList<>();
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDateTime now = LocalDateTime.now();
-
+             // 안되면 취소하기
             for (Project project : projectList) {
                 if (project.isProjectIsDone() || project.isProjectIsPlogging()) continue;
                 LocalDateTime projectEndDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
