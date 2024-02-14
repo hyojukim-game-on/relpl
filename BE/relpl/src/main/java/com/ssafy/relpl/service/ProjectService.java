@@ -124,6 +124,7 @@ public class ProjectService {
     }
 
 
+    @Transactional
     public ResponseEntity<?> getAllProjectList() {
 
         try {
@@ -136,8 +137,10 @@ public class ProjectService {
             for (Project project : projectList) {
                 if (project.isProjectIsDone() || project.isProjectIsPlogging()) continue;
                 LocalDate projectEndDateTime = LocalDate.parse(project.getProjectEndDate(), formatter);
-                if (now.isAfter(projectEndDateTime)) continue;
-
+                if (now.isAfter(projectEndDateTime)) {
+                    project.setProjectCoordinateCurrentSize(-1);
+                    continue;
+                }
                 response.add(ProjectAllResponse.createProjectAllResponse(project));
             }
             return ResponseEntity.ok(responseService.getSingleResult(response, "프로젝트 전체 조회 성공", 200));
