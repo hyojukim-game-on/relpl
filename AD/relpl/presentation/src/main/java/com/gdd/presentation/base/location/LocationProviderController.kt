@@ -7,6 +7,8 @@ import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -59,7 +61,7 @@ class LocationProviderController(
         completeListener: (task: Task<Location>) -> Unit
     ) {
         fusedLocationProviderClient
-            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token)
+            .getCurrentLocation(currentLocationRequest, cancellationToken.token)
             .addOnCompleteListener(completeListener)
     }
 
@@ -99,4 +101,12 @@ class LocationProviderController(
         stopTracking()
         cancellationToken.cancel()
     }
+
+    private val currentLocationRequest =
+        CurrentLocationRequest.Builder()
+            .setDurationMillis(5000)
+            .setGranularity(Granularity.GRANULARITY_FINE)
+            .setMaxUpdateAgeMillis(1000)
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .build()
 }
