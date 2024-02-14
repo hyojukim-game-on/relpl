@@ -34,7 +34,7 @@ import java.util.*;
 public class FcmTokenService {
 
 
-    private final String API_URL = "https://fcm.googleapis.com/v1/projects/myfinalpannelrace/messages:send";
+    private final String API_URL = "https://fcm.googleapis.com/v1/projects/relpl-1b1f9/messages:send";
     private final FcmTokenRepository fcmTokenRepository;
     private final ResponseService responseService;
     private final ObjectMapper objectMapper;
