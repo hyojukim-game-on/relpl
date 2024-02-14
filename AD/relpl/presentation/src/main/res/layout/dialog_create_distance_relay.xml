@@ -54,9 +54,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="5dp"
                 android:text="@string/dlg_create_distance_relay_distance"
                 android:textAppearance="@style/Relpl.Text.SB.18" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Relpl.Text.R.16"
+                android:textColor="@color/text_gray"
+                android:text="1km ~ 10km 범위 내에서 설정 가능합니다"
+
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="20dp"/>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"

@@ -21,9 +21,9 @@ private const val TAG = "CreateDistanceRelayDial_Genseong"
 
 class CreateDistanceRelayDialog(
     dialogClickInterface: DialogClickInterface
-) : DialogFragment(){
+) : DialogFragment() {
     private val _createDistanceRelayDist = MutableLiveData<Int>(1000)
-    val createDistanceRelayDist : LiveData<Int>
+    val createDistanceRelayDist: LiveData<Int>
         get() = _createDistanceRelayDist
 
     private var _binding: DialogCreateDistanceRelayBinding? = null
@@ -44,7 +44,12 @@ class CreateDistanceRelayDialog(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.dialog_create_distance_relay, container, false)
+        _binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.dialog_create_distance_relay,
+            container,
+            false
+        )
 
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -91,36 +96,44 @@ class CreateDistanceRelayDialog(
         return binding.root
     }
 
-    private fun plusMeterDist(){
-        _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.plus(100)
-        Log.d(TAG, "plusMeterDist: ${createDistanceRelayDist.value}")
-        if (_createDistanceRelayDist.value!! %1000 == 0){
-            calendar.add(Calendar.DATE, 1)
-            binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
+    private fun plusMeterDist() {
+        if (_createDistanceRelayDist.value!! <= 9900) {
+            _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.plus(100)
+
+            if ( _createDistanceRelayDist.value!! % 1000 == 0) {
+                calendar.add(Calendar.DATE, 1)
+                binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
+            }
         }
     }
 
-    private fun minusMeterDist(){
-        if (_createDistanceRelayDist.value!! %1000 == 0){
-            calendar.add(Calendar.DATE, -1)
-            binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
-        }
-        if (_createDistanceRelayDist.value!! > 1000)
+    private fun minusMeterDist() {
+        if (_createDistanceRelayDist.value!! > 1000) {
             _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.minus(100)
+
+            if (_createDistanceRelayDist.value!! % 1000 == 900) {
+                calendar.add(Calendar.DATE, -1)
+                binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
+            }
+        }
     }
 
-    private fun plusKmDist(){
-        _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.plus(1000)
-        calendar.add(Calendar.DATE, 1)
+    private fun plusKmDist() {
+        if (_createDistanceRelayDist.value!! <= 9000) {
+            _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.plus(1000)
+            calendar.add(Calendar.DATE, 1)
+        }
         binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
     }
 
-    private fun minusKmDist(){
-        if (_createDistanceRelayDist.value!! > 2000)
+    private fun minusKmDist() {
+        if (_createDistanceRelayDist.value!! >= 2000) {
             _createDistanceRelayDist.value = _createDistanceRelayDist.value!!.minus(1000)
-        calendar.add(Calendar.DATE, -1)
+            calendar.add(Calendar.DATE, -1)
+        }
         binding.tvEndDate.text = dateFormatter.format(calendar.timeInMillis)
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
