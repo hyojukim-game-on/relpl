@@ -444,13 +444,14 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     }
 
     private fun initDistanceBottomSheetInfo(data: DistanceRelayInfo) {
+        val progress = 100 - ((data.remainDistance.toDouble() / data.totalDistance.toDouble())*100).toInt()
         bottomSheetDialog.findViewById<TextView>(R.id.tv_relay_name)?.text = data.projectName
         bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text =
             data.totalContributor.toString()
-        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress =
-            data.progress
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text =
-            "현재 ${data.progress}% 진행됐습니다"
+        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress = progress
+//            data.progress
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text = "현재 ${progress}% 진행됐습니다"
+//            "현재 ${data.progress}% 진행됐습니다"
         bottomSheetDialog.findViewById<TextView>(R.id.tv_total_distance)?.text = data.totalDistance.toStringDistance()
         bottomSheetDialog.findViewById<TextView>(R.id.tv_remain_distance)?.text =
             data.remainDistance.toStringDistance()
@@ -489,13 +490,14 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     }
 
     private fun initPathBottomSheetInfo(data: PathRelayInfo) {
+        val progress = 100 - ((data.remainDistance.toDouble() / data.totalDistance.toDouble())*100).toInt()
         bottomSheetDialog.findViewById<TextView>(R.id.tv_relay_name)?.text = data.projectName
         bottomSheetDialog.findViewById<TextView>(R.id.tv_people)?.text =
             data.totalContributor.toString()
-        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress =
-            data.progress
-        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text =
-            "현재 ${data.progress}% 진행됐습니다"
+        bottomSheetDialog.findViewById<LinearProgressIndicator>(R.id.pg_current)?.progress = progress
+//            data.progress
+        bottomSheetDialog.findViewById<TextView>(R.id.tv_progress)?.text = "현재 ${progress}% 진행됐습니다"
+//            "현재 ${data.progress}% 진행됐습니다"
         bottomSheetDialog.findViewById<TextView>(R.id.tv_total_distance)?.text = data.totalDistance.toStringDistance()
         bottomSheetDialog.findViewById<TextView>(R.id.tv_remain_distance)?.text =
             data.remainDistance.toStringDistance()

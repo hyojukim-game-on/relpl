@@ -42,4 +42,12 @@ class UnitTest {
         return (2* sqrt(s*(s-a)*(s-b)*(s-c))) / c
     }
 
+    @Test
+    fun progressCalc(){
+        val total = 1420
+        val remain = 832
+
+        println(100 - ((remain.toDouble() / total.toDouble())*100).toInt())
+    }
+
 }
