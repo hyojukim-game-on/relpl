@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.base.LoadingDialog
 import com.gdd.presentation.base.PrefManager
 import com.gdd.presentation.databinding.FragmentRelayStopPicMenoBinding
 import com.gdd.presentation.home.HomeFragment
@@ -37,6 +38,8 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
 
     private var photoFile: File? = null
 
+    private val loadingDialog = LoadingDialog()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,6 +53,7 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
         }
 
         binding.btnSubmit.setOnClickListener {
+            loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
             if (photoFile != null){
                 stopRelay()
             } else {
@@ -64,11 +68,13 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
                 showToast("릴레이 종료에 성공했습니다.")
                 relayStopInfoViewModel.clearRelayingData()
             } else {
+                loadingDialog.dismiss()
                 showToast(it.exceptionOrNull()?.message ?: "네트워트 에러")
             }
         }
 
         relayStopInfoViewModel.clearRelayingDataResult.observe(viewLifecycleOwner){
+            loadingDialog.dismiss()
             it.getContentIfNotHandled()?.let {
                 mainViewModel.reloadUserInfo(prefManager.getUserId())
                 parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,FragmentManager.POP_BACK_STACK_INCLUSIVE)

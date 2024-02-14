@@ -149,6 +149,11 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         naverMap.moveCamera(CameraUpdate.fitBounds(
             LatLngBounds.from(moveList)
         ).animate(CameraAnimation.Easing))
+        naverMap.addOnCameraIdleListener {
+            naverMap.moveCamera(CameraUpdate.fitBounds(
+                LatLngBounds.from(moveList)
+            ).animate(CameraAnimation.Easing))
+        }
         binding.btnNext.isEnabled = true
     }
 
@@ -183,7 +188,15 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         }
         naverMap.moveCamera(CameraUpdate.fitBounds(
             LatLngBounds.from(list.map { it.latLng })
-        ).animate(CameraAnimation.Easing))
+        ).animate(CameraAnimation.Easing)
+        )
+        naverMap.addOnCameraIdleListener {
+            naverMap.moveCamera(
+                CameraUpdate.fitBounds(
+                    LatLngBounds.from(list.map { it.latLng })
+                ).animate(CameraAnimation.Easing)
+            )
+        }
         binding.btnNext.isEnabled = true
     }
 
@@ -192,6 +205,11 @@ class RelayStopInfoFragment : BaseFragment<FragmentRelayStopInfoBinding>(
         naverMap = map
         val dp_20_px = dpToPx(20f)
         naverMap.setContentPadding(dp_20_px,dp_20_px,dp_20_px,dp_20_px)
+        naverMap.uiSettings.apply {
+            isTiltGesturesEnabled = false
+            isRotateGesturesEnabled = false
+            isZoomControlEnabled = false
+        }
         registerObserve()
         registerListener()
     }

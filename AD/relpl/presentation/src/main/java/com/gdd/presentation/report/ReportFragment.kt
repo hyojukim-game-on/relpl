@@ -16,6 +16,7 @@ import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
+import com.gdd.presentation.base.LoadingDialog
 import com.gdd.presentation.base.PermissionHelper
 import com.gdd.presentation.base.location.LocationProviderController
 import com.gdd.presentation.databinding.FragmentReportBinding
@@ -47,6 +48,8 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var naverMap: NaverMap
     private lateinit var locationProviderController: LocationProviderController
+
+    private val loadingDialog = LoadingDialog()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,6 +123,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
                         showSnackBar("위치정보 호출에 실패했습니다.")
                     }
                     binding.fabCurLocation.isEnabled = true
+                    loadingDialog.dismiss()
                 }
             }
         }
@@ -178,6 +182,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
                 childFragmentManager.beginTransaction().add(R.id.layout_map, it).commit()
             }
         mapFragment.getMapAsync(mapReadyCallback)
+        loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
     }
 
     private val locationPermissionDeniedListener: () -> Unit = {
