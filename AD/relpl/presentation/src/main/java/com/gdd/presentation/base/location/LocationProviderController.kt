@@ -16,6 +16,9 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private const val TAG = "LocationProviderControl_Genseong"
 @SuppressLint("MissingPermission")
@@ -23,6 +26,7 @@ class LocationProviderController(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner
 ) : DefaultLifecycleObserver {
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     private val fusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
@@ -60,9 +64,11 @@ class LocationProviderController(
     fun getCurrnetLocation(
         completeListener: (task: Task<Location>) -> Unit
     ) {
-        fusedLocationProviderClient
-            .getCurrentLocation(currentLocationRequest, cancellationToken.token)
-            .addOnCompleteListener(completeListener)
+        scope.launch {
+            fusedLocationProviderClient
+                .getCurrentLocation(currentLocationRequest, cancellationToken.token)
+                .addOnCompleteListener(completeListener)
+        }
     }
 
     /**
@@ -104,7 +110,7 @@ class LocationProviderController(
 
     private val currentLocationRequest =
         CurrentLocationRequest.Builder()
-            .setDurationMillis(5000)
+            .setDurationMillis(Long.MAX_VALUE)
             .setGranularity(Granularity.GRANULARITY_FINE)
             .setMaxUpdateAgeMillis(1000)
             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
