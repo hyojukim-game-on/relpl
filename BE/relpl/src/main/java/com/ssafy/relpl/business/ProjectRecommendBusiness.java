@@ -13,8 +13,6 @@ import com.ssafy.relpl.util.common.Info;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -163,12 +161,12 @@ public class ProjectRecommendBusiness {
             if (len == 0) len++;
 
             int report = roadInfo.getRoadInfoReport(); // n
-            if (report ==0) report++;
+            if (report == 0) report++;
 
-            double totalReport = Math.log(roadInfo.getRoadInfoTotalReport() + 2.72); // m
+            double totalReport = roadInfo.getRoadInfoTotalReport(); // m
             if (totalReport == 0) totalReport++;
 
-            double weight = Math.sqrt(len) / totalReport * 5 / report + 1; // 5/n * ln(d) / ln(m) + b
+            double weight = Math.sqrt(len * 10) / totalReport * 5 / report + 1; // 5/n * ln(d) / ln(m) + b
             if (cleanRoadSet.contains("road_"+roadInfos))weight += 25; // b
 
             edges[start].add(new Edge(end, len, roadInfo.getRoadHashId(), weight));

@@ -131,17 +131,18 @@ public class ProjectService {
             List<ProjectAllResponse> response = new ArrayList<>();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime now = LocalDateTime.now();
+            LocalDate now = LocalDate.now();
              // 안되면 취소하기
             for (Project project : projectList) {
                 if (project.isProjectIsDone() || project.isProjectIsPlogging()) continue;
-                LocalDateTime projectEndDateTime = LocalDateTime.parse(project.getProjectEndDate(), formatter);
+                LocalDate projectEndDateTime = LocalDate.parse(project.getProjectEndDate(), formatter);
                 if (now.isAfter(projectEndDateTime)) continue;
 
                 response.add(ProjectAllResponse.createProjectAllResponse(project));
             }
             return ResponseEntity.ok(responseService.getSingleResult(response, "프로젝트 전체 조회 성공", 200));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService.getFailResult(400, "프로젝트 전체 조회 실패 실패"));
         }
     }
@@ -360,7 +361,7 @@ public class ProjectService {
                     project.setProjectIsPlogging(false);        //플로깅 중인지 여부 = false
                     project.setProjectRemainingDistance(project.getProjectRemainingDistance() - request.getMoveDistance()); //현재 남은 프로젝트 거리
                     project.setProjectTotalContributer(project.getProjectTotalContributer() + 1);       // 프로젝트 참여 유저 수
-                    project.setProjectCoordinateTotalSize(request.getProjectCoordinateCurrentSize()); // 프로젝트 진행율을 위한 진행된 경로 정점 개수
+                    project.setProjectCoordinateCurrentSize(request.getProjectCoordinateCurrentSize()); // 프로젝트 진행율을 위한 진행된 경로 정점 개수
                     log.info("프로젝트 수정");
 
                     // 랭킹 업데이트
@@ -372,6 +373,7 @@ public class ProjectService {
 
                     // 프로젝트 완료
                     if(project.isProjectIsPath()) {
+                        log.info("current: " + project.getProjectCoordinateCurrentSize() + ", total: " + project.getProjectCoordinateTotalSize());
                         if(project.getProjectCoordinateCurrentSize() >= project.getProjectCoordinateTotalSize()) {
                             log.info("경로 기반 프로젝트 완료");
                             project.setProjectEndDate(simpleDateFormat.format(new Date()));
@@ -412,13 +414,13 @@ public class ProjectService {
 
     private void sendFCM(Long projectId) {
         // 해당 플로깅 참여한 유저 조회
-        List<Long> userIdList = userRouteRepository.findDistinctUserIdByProjectId(projectId);
+        List<UserRoute> userIdList = userRouteRepository.findDistinctUserIdByProjectId(projectId);
 
         // 토큰 수집
         fcmTokenService.clearTokens();
-        for(Long userId : userIdList) {
+        for(UserRoute userRoute : userIdList) {
             //유저 토큰 조회
-            Optional<FcmToken> selectedTokens = fcmTokenRepository.findByUserId(userId);
+            Optional<FcmToken> selectedTokens = fcmTokenRepository.findByUserId(userRoute.getUserId());
             if(selectedTokens.isPresent()) {
                 fcmTokenService.addTokens(selectedTokens.get().getFcmToken());
             } else {
@@ -428,7 +430,7 @@ public class ProjectService {
 
         // 메세지 전송
         try {
-            fcmTokenService.broadCastDataMessage("title", "body");
+            fcmTokenService.broadCastDataMessage("참여하신 플로깅이 완료되었습니다.", "projectId: " + projectId);
         } catch (Exception e) {
             log.info("FCM 메시지 전송 실패");
         }
