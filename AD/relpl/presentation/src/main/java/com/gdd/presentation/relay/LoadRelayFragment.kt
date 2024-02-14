@@ -460,6 +460,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
 
         bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
             mainActivity.showLoadingView() // 로딩 다이얼로그
+            it.isClickable = false
             locationProviderController.getCurrnetLocation { task ->
                 if (!task.isCanceled) {
                     if (task.isSuccessful) {
@@ -470,15 +471,17 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                                 isDistanceSelected = true // 참여하려는 릴레이 종류 저장
                                 viewModel.joinRelay(data.projectId)
                             }else{
+                                mainActivity.dismissLoadingView()
                                 showToast("릴레이 시작 지점과 10m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
                             }
                         }
                     }else{
-                        mainActivity.showLoadingView() // 로딩 다이얼로그
+                        mainActivity.dismissLoadingView() // 로딩 다이얼로그
                         showSnackBar("위치정보 호출에 실패했습니다.")
                     }
+                    it.isClickable = true
                 } else {
-                    mainActivity.showLoadingView() // 로딩 다이얼로그
+                    mainActivity.dismissLoadingView() // 로딩 다이얼로그
                     showSnackBar("위치정보 호출에 실패했습니다.")
                 }
             }
@@ -502,6 +505,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
 
         bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
             mainActivity.showLoadingView() // 로딩 다이얼로그
+            it.isClickable = false
             locationProviderController.getCurrnetLocation { task ->
                 if (!task.isCanceled) {
                     if (task.isSuccessful) {
@@ -511,15 +515,17 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                                 isPathSelected = true // 참여하려는 릴레이 종류 저장
                                 viewModel.joinRelay(data.projectId)
                             }else{
+                                mainActivity.dismissLoadingView()
                                 showToast("릴레이 시작 지점과 10m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
                             }
                         }
                     }else{
-                        mainActivity.showLoadingView() // 로딩 다이얼로그
+                        mainActivity.dismissLoadingView() // 로딩 다이얼로그
                         showSnackBar("위치정보 호출에 실패했습니다.")
                     }
+                    it.isClickable = true
                 } else {
-                    mainActivity.showLoadingView() // 로딩 다이얼로그
+                    mainActivity.dismissLoadingView() // 로딩 다이얼로그
                     showSnackBar("위치정보 호출에 실패했습니다.")
                 }
             }
