@@ -463,7 +463,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                                 isDistanceSelected = true // 참여하려는 릴레이 종류 저장
                                 viewModel.joinRelay(data.projectId)
                             }else{
-                                showToast("릴레이 시작 지점과 5m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
+                                showToast("릴레이 시작 지점과 10m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
                             }
                         }
                     }else{
@@ -501,7 +501,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                                 isPathSelected = true // 참여하려는 릴레이 종류 저장
                                 viewModel.joinRelay(data.projectId)
                             }else{
-                                showToast("릴레이 시작 지점과 5m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
+                                showToast("릴레이 시작 지점과 10m 내에 위치해야 합니다(현재 ${((data.stopCoordinate.toLatLng().distanceTo(cur)*100).toInt()/100.0)}m)")
                             }
                         }
                     }else{
