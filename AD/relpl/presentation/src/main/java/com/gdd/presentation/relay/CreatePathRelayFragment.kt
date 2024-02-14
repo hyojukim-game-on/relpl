@@ -314,7 +314,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                 result.getOrNull()?.let {
                     //여기서 화면 전환
                     viewModel.getPathRelayInfo(it)
-                    showToast("$it 번 프로젝트 참여 성공")
+//                    showToast("$it 번 프로젝트 참여 성공")
                 }
             } else {
                 result.exceptionOrNull()?.let {
