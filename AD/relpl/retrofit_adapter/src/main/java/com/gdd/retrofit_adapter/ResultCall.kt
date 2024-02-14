@@ -1,5 +1,6 @@
 package com.gdd.retrofit_adapter
 
+import android.util.Log
 import okhttp3.Request
 import okio.IOException
 import okio.Timeout
@@ -7,7 +8,9 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 
+private const val TAG = "ResultCall_Genseong"
 class ResultCall<T>(
     private val callDelegate: Call<T>
 ) : Call<Result<T>> {
@@ -34,9 +37,13 @@ class ResultCall<T>(
                     }
                 } else {
                     val errorBodyString = response.errorBody()?.string()
-                    val message = if (!errorBodyString.isNullOrBlank()){
-                        JSONObject(errorBodyString).getString("message")
-                    } else {
+                    val message = try {
+                        if (!errorBodyString.isNullOrBlank()) {
+                            JSONObject(errorBodyString).getString("message")
+                        } else {
+                            ""
+                        }
+                    } catch (e: Exception) {
                         ""
                     }
                     callback.onResponse(
