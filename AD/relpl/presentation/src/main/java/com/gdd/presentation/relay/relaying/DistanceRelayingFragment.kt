@@ -28,6 +28,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -48,7 +49,11 @@ class DistanceRelayingFragment : RelayingFragment() {
 
     override fun registerListener() {
         binding.btnStopRelay.setOnClickListener {
-            showStopDialog()
+            if (progressIsNotZero) {
+                showStopDialog()
+            } else {
+                showToast("진행 거리가 0m 일때는 종료할 수 없습니다!")
+            }
         }
     }
 
@@ -116,6 +121,9 @@ class DistanceRelayingFragment : RelayingFragment() {
                     Log.d(TAG, "registerUiObserve: $progressPercent")
                     binding.pgCurrent.progress = progressPercent
                     binding.tvProgress.text = "현재 ${progressPercent}% 진행됐습니다."
+                    if (!progressIsNotZero && progressDistance>0){
+                        progressIsNotZero = true
+                    }
                 }
             }
         }

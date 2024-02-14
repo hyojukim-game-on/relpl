@@ -53,6 +53,8 @@ abstract class RelayingFragment : BaseFragment<FragmentRelayingBinding>(
     protected abstract var naverMap: NaverMap?
     lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
+    protected var progressIsNotZero: Boolean = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity

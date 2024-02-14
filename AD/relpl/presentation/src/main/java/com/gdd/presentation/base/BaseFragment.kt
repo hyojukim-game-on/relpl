@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import com.gdd.presentation.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlin.reflect.jvm.jvmName
 
@@ -49,6 +50,7 @@ abstract class BaseFragment<B : ViewBinding>(
         val inputManager: InputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
+
 
     override fun onDestroyView() {
         _binding = null
@@ -90,6 +92,9 @@ abstract class BaseFragment<B : ViewBinding>(
     override fun onStop() {
         super.onStop()
         lifecycleObserve.onStateChanged(viewLifecycleOwner,Lifecycle.Event.ON_STOP)
+        if (_activity is MainActivity){
+            (_activity as MainActivity).dismissLoadingView()
+        }
     }
 
     override fun onDestroy() {

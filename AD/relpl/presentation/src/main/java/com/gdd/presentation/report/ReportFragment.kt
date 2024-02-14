@@ -49,8 +49,6 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
     private lateinit var naverMap: NaverMap
     private lateinit var locationProviderController: LocationProviderController
 
-    private val loadingDialog = LoadingDialog()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -123,7 +121,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
                         showSnackBar("위치정보 호출에 실패했습니다.")
                     }
                     binding.fabCurLocation.isEnabled = true
-                    loadingDialog.dismiss()
+                    mainActivity.dismissLoadingView()
                 }
             }
         }
@@ -182,7 +180,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
                 childFragmentManager.beginTransaction().add(R.id.layout_map, it).commit()
             }
         mapFragment.getMapAsync(mapReadyCallback)
-        loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+        mainActivity.showLoadingView()// 로딩 다이얼로그
     }
 
     private val locationPermissionDeniedListener: () -> Unit = {
@@ -251,5 +249,4 @@ class ReportFragment : BaseFragment<FragmentReportBinding>(
         bottomSheetBehavior.state = STATE_COLLAPSED
         binding.ivReportTargetMarker.visibility = View.VISIBLE
     }
-
 }

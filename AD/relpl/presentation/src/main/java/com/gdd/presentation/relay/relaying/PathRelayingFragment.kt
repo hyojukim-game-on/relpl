@@ -48,7 +48,11 @@ class PathRelayingFragment : RelayingFragment() {
 
     override fun registerListener() {
         binding.btnStopRelay.setOnClickListener {
-            showStopDialog()
+            if (progressIsNotZero){
+                showStopDialog()
+            } else {
+                showToast("진행 거리가 0m 일때는 종료할 수 없습니다!")
+            }
         }
     }
 
@@ -127,6 +131,9 @@ class PathRelayingFragment : RelayingFragment() {
                     val progress = (((totalDistance-remainDistance)/totalDistance.toDouble())*100).toInt()
                     binding.pgCurrent.progress = progress
                     binding.tvProgress.text = "현재 ${progress}% 진행됐습니다."
+                    if (!progressIsNotZero && myDistance>0){
+                        progressIsNotZero = true
+                    }
                 }
             }
         }

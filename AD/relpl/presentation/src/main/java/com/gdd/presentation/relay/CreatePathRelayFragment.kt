@@ -57,9 +57,6 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
     private var startPointMarker: Marker = Marker()
     private var endPointMarker: Marker = Marker()
 
-    private lateinit var loading: LoadingDialog
-
-
     @Inject
     lateinit var prefManager: PrefManager
 
@@ -84,6 +81,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                 childFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
             }
         mapFragment.getMapAsync(mapReadyCallback)
+        mainActivity.showLoadingView()
 
         registerListener()
         registerObserver()
@@ -113,13 +111,13 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
                         showSnackBar("위치정보 호출에 실패했습니다.")
                     }
                     binding.fabCurLocation.isEnabled = true
+                    mainActivity.dismissLoadingView()
                 }
             }
         }
 
         binding.btnSetDestination.setOnClickListener {
-            loading = LoadingDialog()
-            loading.show(this.childFragmentManager, "")
+            mainActivity.showLoadingView()
 
             locationProviderController.getCurrnetLocation {task ->
                 if (!task.isCanceled){
@@ -235,7 +233,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
 
     private fun registerObserver(){
         viewModel.recommendedPathResult.observe(viewLifecycleOwner){ result ->
-            loading.dismiss()
+            mainActivity.dismissLoadingView()
             if (result.isSuccess){
                 result.getOrNull()?.let {
                     Log.d(TAG, "registerObserver: ${it.recommendPath.size}, ${it.shortestPath.size}")

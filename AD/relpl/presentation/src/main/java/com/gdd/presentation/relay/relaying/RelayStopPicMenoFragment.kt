@@ -13,6 +13,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
+import com.gdd.presentation.MainActivity
 import com.gdd.presentation.MainViewModel
 import com.gdd.presentation.R
 import com.gdd.presentation.base.BaseFragment
@@ -33,16 +34,15 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
     @Inject
     lateinit var prefManager: PrefManager
 
+    lateinit var mainActivity: MainActivity
     private val mainViewModel: MainViewModel by activityViewModels()
     private val relayStopInfoViewModel: RelayStopInfoViewModel by activityViewModels()
 
     private var photoFile: File? = null
 
-    private val loadingDialog = LoadingDialog()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mainActivity = _activity as MainActivity
         registerListener()
         registerObserve()
     }
@@ -53,7 +53,7 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
         }
 
         binding.btnSubmit.setOnClickListener {
-            loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+            mainActivity.showLoadingView() // 로딩 다이얼로그
             if (photoFile != null){
                 stopRelay()
             } else {
@@ -68,13 +68,13 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
                 showToast("릴레이 종료에 성공했습니다.")
                 relayStopInfoViewModel.clearRelayingData()
             } else {
-                loadingDialog.dismiss()
+                mainActivity.dismissLoadingView()
                 showToast(it.exceptionOrNull()?.message ?: "네트워트 에러")
             }
         }
 
         relayStopInfoViewModel.clearRelayingDataResult.observe(viewLifecycleOwner){
-            loadingDialog.dismiss()
+            mainActivity.dismissLoadingView()
             it.getContentIfNotHandled()?.let {
                 mainViewModel.reloadUserInfo(prefManager.getUserId())
                 parentFragmentManager.popBackStack(HomeFragment.HOME_FRAGMENT_BACKSTACK_NAME,FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -181,4 +181,9 @@ class RelayStopPicMenoFragment : BaseFragment<FragmentRelayStopPicMenoBinding>(
             showToast("릴레이 중단 중에 에러가 발생했습니다.")
         }
     }
+
+//    override fun onStop() {
+//        super.onStop()
+//        mainActivity.dismissLoadingView()
+//    }
 }

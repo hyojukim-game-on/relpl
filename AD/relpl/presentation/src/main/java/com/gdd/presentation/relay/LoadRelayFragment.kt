@@ -81,8 +81,6 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
     @Inject
     lateinit var prefManager: PrefManager
 
-    private val loadingDialog = LoadingDialog()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainActivity = _activity as MainActivity
@@ -153,7 +151,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                 childFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
             }
         mapFragment.getMapAsync(mapReadyCallback)
-        loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+        mainActivity.showLoadingView() // 로딩 다이얼로그
     }
 
     @SuppressLint("MissingPermission")
@@ -175,7 +173,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
             locationProviderController.getCurrnetLocation { task ->
                 if (!task.isCanceled) {
                     if (task.isSuccessful) {
-                        loadingDialog.dismiss() // 로딩 다이얼로그
+                        mainActivity.dismissLoadingView() // 로딩 다이얼로그
                         task.result.also {
                             val latLng = LatLng(it)
                             naverMap.moveCamera(
@@ -303,7 +301,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                     }
                 }
             }
-            loadingDialog.dismiss()
+            mainActivity.dismissLoadingView()
         }
 
         viewModel.pathRelayInfoResult.observe(viewLifecycleOwner) { result ->
@@ -335,7 +333,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                     }
                 }
             }
-            loadingDialog.dismiss()
+            mainActivity.dismissLoadingView()
         }
 
         /**
@@ -355,7 +353,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
 //                    showToast("$it 번 프로젝트 참여 성공")
                 }
             } else {
-                loadingDialog.dismiss()
+                mainActivity.dismissLoadingView()
                 isPathSelected = false
                 isDistanceSelected = false
                 result.exceptionOrNull()?.let {
@@ -461,7 +459,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         bottomSheetDialog.findViewById<TextView>(R.id.tv_memo)?.text = data.memo
 
         bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
-            loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+            mainActivity.showLoadingView() // 로딩 다이얼로그
             locationProviderController.getCurrnetLocation { task ->
                 if (!task.isCanceled) {
                     if (task.isSuccessful) {
@@ -476,11 +474,11 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                             }
                         }
                     }else{
-                        loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+                        mainActivity.showLoadingView() // 로딩 다이얼로그
                         showSnackBar("위치정보 호출에 실패했습니다.")
                     }
                 } else {
-                    loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+                    mainActivity.showLoadingView() // 로딩 다이얼로그
                     showSnackBar("위치정보 호출에 실패했습니다.")
                 }
             }
@@ -503,7 +501,7 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
         bottomSheetDialog.findViewById<TextView>(R.id.tv_memo)?.text = data.memo
 
         bottomSheetDialog.findViewById<MaterialCardView>(R.id.btn_join_relay)?.setOnClickListener {
-            loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+            mainActivity.showLoadingView() // 로딩 다이얼로그
             locationProviderController.getCurrnetLocation { task ->
                 if (!task.isCanceled) {
                     if (task.isSuccessful) {
@@ -517,11 +515,11 @@ class LoadRelayFragment : BaseFragment<FragmentLoadRelayBinding>(
                             }
                         }
                     }else{
-                        loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+                        mainActivity.showLoadingView() // 로딩 다이얼로그
                         showSnackBar("위치정보 호출에 실패했습니다.")
                     }
                 } else {
-                    loadingDialog.show(childFragmentManager,null) // 로딩 다이얼로그
+                    mainActivity.showLoadingView() // 로딩 다이얼로그
                     showSnackBar("위치정보 호출에 실패했습니다.")
                 }
             }

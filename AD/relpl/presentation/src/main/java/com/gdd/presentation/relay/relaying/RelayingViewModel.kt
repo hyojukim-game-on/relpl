@@ -26,8 +26,6 @@ class RelayingViewModel @Inject constructor(
     private val getLocationTrackingDataUseCaseFlow: GetLocationTrackingDataUseCaseFlow,
     private val getRelayInfoUseCase: GetRelayInfoUseCase
 ) : ViewModel() {
-    private var firstTime: Long? = null
-    private var elapsedTimeFlag = true
 
     val trackingStateFlow = getLocationTrackingDataUseCaseFlow()
         .shareIn(

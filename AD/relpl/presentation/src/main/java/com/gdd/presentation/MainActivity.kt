@@ -2,6 +2,7 @@ package com.gdd.presentation
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import com.gdd.domain.model.user.User
 import com.gdd.domain.usecase.fcm.RegistFcmUseCase
@@ -49,6 +50,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
                 Log.d(TAG, "registerObserver: !")
             }
         }
+    }
+
+    fun showLoadingView(){
+        binding.loadingView.visibility = View.VISIBLE
+    }
+
+    fun dismissLoadingView(){
+        binding.loadingView.visibility = View.GONE
     }
 
 }
