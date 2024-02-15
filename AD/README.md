@@ -65,37 +65,46 @@
 
 ## 기능, 동작 화면
 | ![](https://blog.kakaocdn.net/dn/cFQYGA/btsEQcVmwqk/XBAiK3PaIrOFFqdxnMO7n0/img.gif) | ![](https://blog.kakaocdn.net/dn/dc8LEm/btsENTIGM1o/iTlPzy48Uq02Kr9SSGea7K/img.gif) | ![](https://blog.kakaocdn.net/dn/ypeXN/btsES6T48Tp/M8ah0LfARY1H6s7ZZbHnw1/img.gif) |
-| :---------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: |
-|                                       홈화면                                        |                                      랭킹                                      |                                       제보하기                                       |
+| :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: |
+|                                       홈화면                                        |                                        랭킹                                         |                                      제보하기                                      |
 
 <br><br>
 
 | ![](https://blog.kakaocdn.net/dn/cObp2V/btsEQSCftHU/fKzMRsrRIyqg5VetYgkx10/img.gif) | ![](https://blog.kakaocdn.net/dn/bhwzJC/btsESn2O2GQ/XPNKrl8onodshuD7XKZKK1/img.gif) | ![](https://blog.kakaocdn.net/dn/bgjUve/btsEQK5koKr/J0pbZ0tSLTS9SIlkR5zoT1/img.gif) |
-| :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: |
-|                                     거리 릴레이 조회                                     |                                      경로 릴레이 조회                                      |                                      경로 찾기                                      |
+| :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+|                                  거리 릴레이 조회                                   |                                  경로 릴레이 조회                                   |                                      경로 찾기                                      |
 
 <br><br>
 
 | ![](https://blog.kakaocdn.net/dn/y0dVt/btsEVexSDrJ/3MWoHRnUvan9aKe8u0jvAK/img.gif) | ![](https://blog.kakaocdn.net/dn/KHHhM/btsEPKY2tjh/eUtYnUkTqsHEbfcdPtONXk/img.gif) | ![](https://blog.kakaocdn.net/dn/bUZxX9/btsERmb2KzY/uS7Gomk2Tf4ktrLOuMN9j1/img.gif) |
 | :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-|                                    릴레이 중단                                     |                                     릴레이 기록                                      |                                     릴레이 상세 기록                                     |
+|                                    릴레이 중단                                     |                                    릴레이 기록                                     |                                  릴레이 상세 기록                                   |
+
+<br/><br/><br/><br/><br/>
+
+## 모듈 구조
+
+![](https://blog.kakaocdn.net/dn/bZwEPB/btsETn92g33/p3AurXvRdgHGWxs5H7UJ4k/img.png)
 
 
-## 구조
-
-### 안드로이드
-
-![](https://blog.kakaocdn.net/dn/Q5E8J/btsAM4UlhGz/b1k1AlKxExEG5R1KUsjGu1/img.png)
-
-#### 기술
-- Android: <span style="color:yellowgreen"> Hilt, Jetpack AAC(ViewModel, Room, DataBinding), Forground Service </span>
+### 기술
+- Android: <span style="color:yellowgreen"> Hilt, Jetpack AAC(ViewModel, Room, DataBinding), Foreground Service </span>
 - Kotlin : <span style="color:blueviolet"> Coroutine, Flow </span>
 - Library : <span style="color:orange"> Retrofit, Glide, Naver Map, Google Location, Firebase(FCM, Auth), Zxing</span>
 - UI Library : <span style="color:skyblue"> StickyTimeLine, Pager Dots Indicator
 , Floating Action Button Speed Dial, Lottie </span>
 - Architecture : <span style="color:gray"> MVVM, MultiModule, CleanArchitecture</span>
- 
 
+<br/><br/><br/>
 
+### [피그마 링크](https://www.figma.com/file/TaVoVQpe1XfXl5K0w5JQ8f/%EB%B0%B8%EB%9F%B0%EC%8A%A4%EA%B2%8C%EC%9E%84?type=design&node-id=0%3A1&mode=design&t=pWdO1poXzxwOOz6e-1)
 
-#### [피그마 링크](https://www.figma.com/file/TaVoVQpe1XfXl5K0w5JQ8f/%EB%B0%B8%EB%9F%B0%EC%8A%A4%EA%B2%8C%EC%9E%84?type=design&node-id=0%3A1&mode=design&t=pWdO1poXzxwOOz6e-1)
+<br/><br/><br/>
+
+## 개발 환경
+
+- Android Studio : Giraffe 2022.3.1 Patch 2
+- Gradle JDK : jbr-17(JetBrains Runtime version 17.0.6)
+- Android Gradle Plugin Version : 8.1.3
+- Gradle Version : 8.1
+- Kotlin version : 1.8.0
