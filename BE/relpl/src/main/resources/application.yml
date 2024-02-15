@@ -5,8 +5,8 @@ spring:
   #postgres
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 30MB
+      max-file-size: 50MB
+      max-request-size: 100MB
   datasource:
     url: ENC(wuq/JNEohnF+fO3cbBiEvAzV1vDBthdTywA1Em/NZQnSd4Ia4P+Si6qi7uel+oMyGtzORun6UfYtAxXnMez7NA==)
     username: ENC(FXOIlq05aKyie1Eaei6MYiM/30DGWlU1)
