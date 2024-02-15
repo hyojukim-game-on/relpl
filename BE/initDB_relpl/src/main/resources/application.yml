@@ -1,0 +1,65 @@
+server:
+  port: 10201
+
+spring:
+  #postgres
+  mvc:
+    async:
+      request-timeout: -1
+  datasource:
+    url: ENC(wuq/JNEohnF+fO3cbBiEvAzV1vDBthdTywA1Em/NZQnSd4Ia4P+Si6qi7uel+oMyGtzORun6UfYtAxXnMez7NA==)
+    username: ENC(FXOIlq05aKyie1Eaei6MYiM/30DGWlU1)
+    password: ENC(lkIo4yXZo/W7voUPLr5NRpCxL6zCtPHHZ0+iP7a9jkQ=)
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect
+
+  data:
+    mongodb:
+      url: ENC(KcJ5FQHY4MxVzUNJ6pqxFT7JOUsoi/NlatlZCHbCM/0=)
+      host: ENC(vewwyQ0zMOe77WvwzphNSqF0vAjbkvGP+mkABZCw8to=)
+      port: ${MONGODB_PORT}
+      database: ENC(QYRSKr0uZOD+6mFChXcyMg==)
+  jpa:
+    hibernate:
+      generate-ddl: true
+      database: postgresql
+      database-platform: org.hibernate.spatial.dialect.
+
+tmap:
+  apiPassword: ENC(nyi1D6j6bWs25+ca+gXJ+XpwTXFK8tyU)
+  api:
+    key1: ENC(LWYqblI6wJLRaVTlZfDM9szPGHE2EZ21lIVhOYiFy3QBvYSTOm+l/Y3iyM9T8Bs/Gmo09b1NCvM=)
+    #sung
+
+    key2: ENC(Vou8Y4Y2eDpfNhplPSq4oOfqh0IsKosCGfNc/vl8Ym1Dc3vZrPnOIfJG9f3oUHzzTNyxDvWZKiw=)
+    #you
+
+    key3: ENC(xhYSzaPhUAd9TujTFBcLdny2hFhPkCcjxVw3/4Z9ugtTZlXDd4/KYvt7g7j7cbqCv8QBDHkdAk0=)
+    #steel
+
+    key4: ENC(sPMeO/QfxlCeCYcpQs57OcLcZtumQAz03xIP8fa/bIlT4tHkLD1caYmI7igRfFmwJnYlILxRG+E=)
+    #hyo
+
+    key5: ENC(wgB7LJNXtWdMo1KXv2EGQTV2umU8zZd3Ixa2XIFoaSQS7d082hsBUUgfSZ589UT7pYJhfbsb6bw=)
+    #min
+
+    key6: ENC(NlBgeuShNL3O+38XF4hbMhQcKOyTGtCSCpIKa9lmouyd4f5+48Jr10/rxtEbLj0ZnExqTm54Qys=)
+    #choe
+
+    key7: ENC(dQWks83Pnr42llyVbiI3tcGmgrTXOC/xnYvIRVdQewGCVYSGZ2vVF+YBjydf3jSucpGlLnkvcu8=)
+    #kimi
+
+    key8: ENC(n3zeLeJPbxmXwXR5qdwH4SGtA6UYFd7loi+9pM+67RSmhKcaZ7mn8r2rbW5cM/HpaZtK1Xkgk9c=)
+    #jee
+cloud:
+  aws:
+    s3:
+      bucket: ENC(D3WremaoJraLKEONkOC/jg==)
+      base-url: ENC(Uy/GzWij/acXMHP0+qXHxVBzv4UaNmzgWy/cm11ugTI5knpds9gNlgCeXUZ9WPNnxXJg+r8hp+s=)
+    credentials:
+      access-key: ENC(EZIkbuGlEWiYVEcqEWH7nis9QKLo7rhnsoRy16DwU1s=)
+      secret-key: ENC(TxoY84Jj/3l2kvMtq67vW1Ee2l6HlSR7N81MNWKZLJaBIoI4LMssLe9o3QBICPOe6uSF34UhXY0=)
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

@@ -1,49 +1,123 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
-stages:          # List of stages for jobs, and their order of execution
+stages:
   - build
-  - test
+  - package
   - deploy
 
-build-job:       # This job runs in the build stage, which runs first.
+build-main:
+  image: azul/zulu-openjdk:17-latest
   stage: build
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    - cat
+    - cd ./BE/relpl
+    - chmod +x ./gradlew
+    - ./gradlew clean
+    - ./gradlew build
+  artifacts:
+    paths:
+      - ./BE/relpl/build/libs/*.jar
+    expire_in: 10 min
+  only:
+    - be/develop
 
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+build-sub:
+  image: azul/zulu-openjdk:17-latest
+  stage: build
   script:
-    - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 60
-    - echo "Code coverage is 90%"
+    - cat
+    - cd ./BE/initDB_relpl
+    - chmod +x ./gradlew
+    - ./gradlew clean
+    - ./gradlew build
+  artifacts:
+    paths:
+      - ./BE/initDB_relpl/build/libs/*.jar
+    expire_in: 10 min
+  only:
+    - be/feat/tmap
+    
+package-main:
+  image: docker:latest
+  stage: package
+  variables:
+    IMAGE_NAME: vadeski/ksh-backend
+  services:
+    - name: docker:dind
+      command: ["--privileged=true", "--tls=false"]
+  before_script:
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
+    - echo "로그인 성공"
+  script:
+    - cd ./BE/relpl
+    - docker buildx create --use --name mybuilder
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
+    - echo "build complete"
+  after_script:
+    - docker logout
+  only:
+    - be/develop    
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
+package-sub:
+  image: docker:latest
+  stage: package
+  variables:
+    IMAGE_NAME: vadeski/backend_sub
+  services:
+    - name: docker:dind
+      command: ["--privileged=true", "--tls=false"]
+  before_script:
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
+    - echo "로그인 성공"
   script:
-    - echo "Linting code... This will take about 10 seconds."
-    - sleep 10
-    - echo "No lint issues found."
+    - cd ./BE/initDB_relpl
+    - docker buildx create --use --name mybuilder
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:$CI_PIPELINE_IID --push .
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest --push .
+    - echo "build complete"
+  after_script:
+    - docker logout
+  only:
+    - be/feat/tmap    
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
+deploy-was:
+  stage: deploy
+  variables:
+    IMAGE_NAME: vadeski/ksh-backend
+  tags:
+    - ksh-runner
+  before_script:
+#    - docker login --username $DOCKER_HUB_USER --password-stdin < $DOCKER_HUB_PW
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
+    #- echo "$DOCKER_HUB_PW" | docker login --username  --password-stdin
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - docker stop ksh-backend || true
+    - docker rm ksh-backend || true
+    - docker rmi $IMAGE_NAME || true
+    - docker pull $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -e REDIS_PASSWORD=$REDIS_PASSWORD -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONGODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_PORT:$SERVER_SPRING_PORT/tcp --name ksh-backend $IMAGE_NAME:latest
+  after_script:
+    - docker logout
+  when: on_success
+  only:
+    - be/develop
+    
+deploy-sub:
+  stage: deploy
+  variables:
+    IMAGE_NAME: vadeski/backend_sub
+  tags:
+    - ksh-runner
+  before_script:
+    - echo "$DOCKER_HUB_PW" | docker login --username $DOCKER_HUB_USER --password-stdin
+  script:
+    - docker stop ksh-backend-sub || true
+    - docker rm ksh-backend-sub || true
+    - docker rmi $IMAGE_NAME || true
+    - docker pull $IMAGE_NAME:latest
+    - docker run -d --restart always -e TZ=Asia/Seoul -e JASYPT_PASSWORD=$JASYPT_PASSWORD -e MONGODB_PORT=$MONGODB_PORT -e REDIS_PORT=$REDIS_PORT -p $SPRING_SUB_PORT:$SPRING_SUB_PORT/tcp --name ksh-backend-sub $IMAGE_NAME:latest
+  after_script:
+    - docker logout
+  when: on_success
+  only:
+    - be/feat/tmap 
