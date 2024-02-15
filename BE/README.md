@@ -1,8 +1,12 @@
-### relpl 프로젝트
+ <h1 align="center">
+릴플🍀
+</h1>
 
----
+<div align="center">
+<img src="https://blog.kakaocdn.net/dn/o6NbZ/btsEP7zFkus/EvoxawE97IKX8CEcse8zJ0/tfile.svg" width="400px">
+</div>
 
-#### 개요
+## 개요
 
 - 한 줄 요약 : *relpl* 프로젝트는 **위치 기반 릴레이 플로깅이 가능**한 **Android 모바일 어플리케이션**입니다.
 
@@ -25,36 +29,57 @@
 - 데모 시연 영상 : [D201 UCC (youtube.com)](https://www.youtube.com/watch?v=hv8uWsDKsy0)
 
 ---
+<br/><br/><br/>
 
-#### 설계
+## 설계
 
-- 사용한 기술 스택
+### 시스템 아키텍쳐
+![](https://blog.kakaocdn.net/dn/SIWQC/btsEVOToYqw/9lDCjOphFtE0zlKzCFSWBK/img.png)
 
-- 시스템 아키텍쳐
+### ERD 다이어그램
+![](https://blog.kakaocdn.net/dn/IV5N0/btsERlFbYuc/Du9wAf3ra1WO7tSL3uvfb0/img.png)
 
-- ERD 다이어그램
+- [요구사항 명세서](https://docs.google.com/spreadsheets/d/1ZayfMIxvD49W1cAYiXdvZzePvYK2iXs2G8KfIWohgio/edit?usp=sharing)
 
-- 요구사항 명세서
-
-- API 명세서
-
----
-
-#### 사용한 기술 (상세)
-
-- 사용한 라이브러리
-
-- 디렉토리 구조
-
-- 패키지 다이어그램
-
-- 인증 처리과정
+- [API 명세서](https://grand-check-7ba.notion.site/API-33f7e2f1f2e14a1683b82493a37beebd?pvs=4)
 
 ---
 
-##### Role & Responsibility (R&R)
+## 사용한 기술
 
-###### 김성훈
+### 사용한 라이브러리
+
+- Spring Boot Data JPA, MongoDB, Redis
+- Project Lombok
+- PostgreSQL JDBC Driver
+- Spring Boot Starter Test
+- Spring Security Test
+- SpringDoc OpenAPI
+- Hibernate Spatial
+- Jakarta Annotations & Persistence API
+- Spring Cloud AWS
+- Jasypt
+- Spring Boot Starter Security
+- JSON Web Token (JWT)
+- Spring Boot Starter Cache
+- Firebase Admin SDK
+- OkHttp
+
+### 디렉토리 구조
+![](https://blog.kakaocdn.net/dn/4igCf/btsERklWOxL/quhS0fCz2XSxIo3ZIkJ9J1/img.png)
+
+![](https://blog.kakaocdn.net/dn/tsVZV/btsES6AMKdH/gdLQvDmJSmXtwRswgXhDe1/img.png)
+
+
+### 인증 처리과정
+
+
+---
+
+<br/><br/><br/><br/><br/>
+## Back-End Role & Responsibility (R&R)
+
+#### 김성훈
 
 - 인프라 (CI/CD)
 
@@ -64,7 +89,7 @@
 
 - 경로 추천 기능
 
-###### 최재성
+#### 최재성
 
 - jwt , Spring Security 를 이용한 회원가입 API 개발
 
@@ -74,7 +99,7 @@
 
 - 릴레이 플로깅 중단 API 개발
 
-###### 김효주
+#### 김효주
 
 - Redis 를 활용한 실시칸 랭킹 API 개발
 
@@ -84,10 +109,12 @@
 
 - mongoDB, PostGreSQL, Spring Data 를 활용한 내 플로깅 기록 보기 API 개발
 
-###### 송민석
+#### 송민석
 
 - 포인트 관련 기능
 
 - 플로깅 장소 제보 기능
 
 - 릴레이 플로깅 정보 조회 기능
+
+
