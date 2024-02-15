@@ -49,6 +49,6 @@ public class SampleController {
 
     @GetMapping("/test")
     public String data() {
-        return tmapService.callTmapApi(36.111525, 128.421290).toString();
+        return tmapService.callTmapApi(128.421290, 36.111525).toString();
     }
 }
