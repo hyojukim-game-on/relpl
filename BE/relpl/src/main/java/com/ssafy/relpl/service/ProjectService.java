@@ -324,6 +324,7 @@ public class ProjectService {
                 if(!project.isProjectIsDone() && project.isProjectIsPlogging()) {
                     log.info("프로젝트 플로깅 중 확인");
 
+
                     //가장 가까운 도로 id 찾아서 map 에 넣기 (tmap api 호출) wait
                     HashMap<String, String> roadMap = performAsyncTasks(request.getUserMovePath());
                     log.info("가까운 도로 id 찾기");
@@ -477,11 +478,12 @@ public class ProjectService {
     }
 
     // 비동기 작업들을 수행하고 모든 작업이 완료될 때까지 기다리는 메서드
-    public HashMap<String, String> performAsyncTasks(List<org.springframework.data.geo.Point> coordinates) throws ExecutionException, InterruptedException {
+    public HashMap<String, String> performAsyncTasks(List<org.springframework.data.geo.Point> coordinates) {
         log.info("Tmap api 호출");
 
         List<CompletableFuture<TmapApiResponse>> futures = new ArrayList<>();
         HashMap<String, String> map = new HashMap<>();
+
 
         // 비동기 메서드 호출 및 CompletableFuture 객체 저장 (마지막 플로깅 장소 제외)
         for (int i = 0; i < coordinates.size() - 1; i++) {
@@ -496,10 +498,14 @@ public class ProjectService {
 
         // 결과를 처리
         for (CompletableFuture<TmapApiResponse> future : futures) {
-            TmapApiResponse response = future.get(); // 결과를 얻음
-            if (response != null) {
-                Long linkId = response.getResultData().getHeader().getLinkId();
-                map.put("road_" + linkId, "This road has already been plugged.");
+            try {
+                TmapApiResponse response = future.get(); // 결과를 얻음
+                if (response != null) {
+                    Long linkId = response.getResultData().getHeader().getLinkId();
+                    map.put("road_" + linkId, "This road has already been plugged.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
