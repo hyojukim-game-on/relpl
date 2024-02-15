@@ -303,7 +303,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ResponseEntity<?> stopRoute(ProjectStopRouteRequest request) throws ExecutionException, InterruptedException {
+    public ResponseEntity<?> stopRoute(ProjectStopRouteRequest request) {
         log.info("project stop route");
         log.info("request: " + request.toString());
 
@@ -356,7 +356,7 @@ public class ProjectService {
                     log.info("UserRoute 저장");
 
                     // 프로젝트 수정
-                    org.springframework.data.geo.Point lastPoint = request.getUserMovePath().get(request.getUserMovePath().size() - 2);
+                    org.springframework.data.geo.Point lastPoint = request.getUserMovePath().get(request.getUserMovePath().size() - 1);
                     GeometryFactory geometryFactory = new GeometryFactory();
                     Coordinate coordinate = new Coordinate(lastPoint.getX(), lastPoint.getY()); // x 좌표와 y 좌표
                     Point point = geometryFactory.createPoint(coordinate);
@@ -500,12 +500,13 @@ public class ProjectService {
         for (CompletableFuture<TmapApiResponse> future : futures) {
             try {
                 TmapApiResponse response = future.get(); // 결과를 얻음
-                if (response != null) {
+                if (response != null && response.getResultData().getHeader() != null) {
                     Long linkId = response.getResultData().getHeader().getLinkId();
                     map.put("road_" + linkId, "This road has already been plugged.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                log.info("");
             }
         }
 
