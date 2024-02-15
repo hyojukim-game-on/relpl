@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="12dp">
+
+    <TextView
+        android:id="@+id/tv_use_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_weight="1"
+        android:fontFamily="@font/font_wanted_sans_medium"
+        android:textColor="@color/text_gray"
+        tools:text="2024년01월24일" />
+
+    <TextView
+        android:id="@+id/tv_use_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/font_wanted_sans_medium"
+        tools:text="-100P" />
+
+    <TextView
+        android:id="@+id/tv_use_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:fontFamily="@font/font_wanted_sans_medium"
+        android:gravity="end"
+        android:maxLines="1"
+        android:textColor="@color/text_gray"
+        tools:text="플로깅 리워드" />
+
+</LinearLayout>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/item"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="15dp"
+    app:cardBackgroundColor="@color/sage_green_background"
+    app:strokeColor="@android:color/transparent"
+    app:cardElevation="3dp"
+    android:layout_margin="5dp">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="진평동 골목길 청소합시다!"
+            style="@style/Relpl.Text.SB.18"
+            android:textColor="@color/sage_green_text"/>
+
+        <TextView
+            android:id="@+id/tv_date_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024년 1월 8일 부터"
+            android:layout_gravity="end"
+            style="@style/Relpl.Text.R.16"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_date_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024년 1월 14일 까지"
+            android:layout_gravity="end"
+            style="@style/Relpl.Text.R.16"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 2km 130m의 길을"
+            android:layout_gravity="end"
+            style="@style/Relpl.Text.R.16"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_contributor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="네 분께서 깨끗하게 해주셨어요 :)"
+            android:layout_gravity="end"
+            style="@style/Relpl.Text.R.16"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_not_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#A85C5A5A"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/font_wanted_sans_semibold"
+            android:text="@string/history_item_project_not_done"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

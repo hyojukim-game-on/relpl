@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="pointUseViewModel"
+            type="com.gdd.presentation.point.PointUseViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="30dp"
+        tools:context=".point.PointUseFragment">
+
+        <TextView
+            android:id="@+id/tv_thanks"
+            style="@style/Relpl.Text.SB.20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지구를 깨끗하게 해주셔서 감사합니다 :)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_guide"
+            style="@style/Relpl.Text.M.16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="근처 행정복지센터에 방문해서\n100포인트로 종량제 봉투를 구매할 수 있어요"
+            android:textColor="@color/sage_green_text_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_thanks" />
+
+
+        <TextView
+            android:id="@+id/tv_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="38dp"
+            android:fontFamily="@font/font_wanted_sans_semibold"
+            android:text="@{(pointUseViewModel.point > -1 ? pointUseViewModel.point.toString() : `-`) + `P`}"
+            android:textColor="@color/black"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_guide"
+            tools:text="1230P" />
+
+
+        <TextView
+            android:id="@+id/tv_nickname_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/font_wanted_sans_medium"
+            android:text="@{pointUseViewModel.nickname + `님의 잔여 포인트입니다`}"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_point"
+            tools:text="SteelZoo님의 잔여 포인트입니다" />
+
+
+        <ImageView
+            android:id="@+id/iv_point_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_nickname_left"
+            tools:src="@drawable/img_barcode" />
+
+        <TextView
+            android:id="@+id/tv_center_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/font_wanted_sans_medium"
+            android:text="현재 위치와 가까운 행정 복지센터입니다"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_point_barcode" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/center_map"
+            android:name="com.naver.maps.map.MapFragment"
+            android:layout_width="0dp"
+            android:layout_height="220dp"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_center_guide" />
+
+        <TextView
+            android:id="@+id/tv_center_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:fontFamily="@font/font_wanted_sans_semibold"
+            android:text="진미동 행정복지센터"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@id/center_map"
+            app:layout_constraintTop_toBottomOf="@id/center_map" />
+
+        <ImageView
+            android:id="@+id/iv_center_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_location"
+            app:layout_constraintStart_toStartOf="@id/tv_center_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_center_name" />
+
+        <TextView
+            android:id="@+id/tv_center_location"
+            style="@style/Relpl.Text.Point.CenterInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="경북 구미시 이계북로 149 진미동사무소"
+            app:layout_constraintBottom_toBottomOf="@id/iv_center_location"
+            app:layout_constraintStart_toEndOf="@id/iv_center_location"
+            app:layout_constraintTop_toTopOf="@id/iv_center_location" />
+
+        <ImageView
+            android:id="@+id/iv_center_time"
+            style="@style/Relpl.Text.Point.CenterInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_pace"
+            app:layout_constraintStart_toStartOf="@id/iv_center_location"
+            app:layout_constraintTop_toBottomOf="@id/iv_center_location" />
+
+        <TextView
+            android:id="@+id/tv_center_time"
+            style="@style/Relpl.Text.Point.CenterInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="평일 09:00 ~ 18:00"
+            app:layout_constraintBottom_toBottomOf="@id/iv_center_time"
+            app:layout_constraintStart_toEndOf="@id/iv_center_time"
+            app:layout_constraintTop_toTopOf="@id/iv_center_time" />
+
+        <ImageView
+            android:id="@+id/iv_center_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_call"
+            app:layout_constraintStart_toStartOf="@id/iv_center_time"
+            app:layout_constraintTop_toBottomOf="@id/iv_center_time" />
+
+        <TextView
+            android:id="@+id/tv_center_call"
+            style="@style/Relpl.Text.Point.CenterInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="054-480-7896"
+            app:layout_constraintBottom_toBottomOf="@id/iv_center_call"
+            app:layout_constraintStart_toEndOf="@id/iv_center_call"
+            app:layout_constraintTop_toTopOf="@id/iv_center_call" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+

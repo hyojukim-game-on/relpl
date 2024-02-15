@@ -1,0 +1,224 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Relpl" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+         <item name="colorPrimary">@color/sage_green_dark</item>
+        <item name="colorOnPrimary">@color/sage_green_bright</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorSurfaceContainerHigh">@color/sage_cream</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="textAppearanceHeadlineSmall">@style/Relpl.Text.Signup.Main</item>
+        <item name="textAppearanceBodyMedium">@style/Relpl.Text</item>
+    </style>
+
+    <style name="Theme.Relpl" parent="Base.Theme.Relpl">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Relpl.Text.SB.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+    </style>
+
+    <style name="Relpl.Text.B.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_bold</item>
+    </style>
+
+    <style name="Relpl.Text.R.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_regular</item>
+    </style>
+
+    <style name="Relpl.Text.M.16" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
+    </style>
+
+
+    <style name="Relpl.Text.SB.14" parent="Relpl.Text.SB.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.SB.18" parent="Relpl.Text.SB.16">
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="Relpl.Text.SB.20" parent="Relpl.Text.SB.16">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
+    <style name="Relpl.Text.M.14" parent="Relpl.Text.M.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.M.18" parent="Relpl.Text.M.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.M.20" parent="Relpl.Text.M.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Relpl.Text.R.14" parent="Relpl.Text.R.16">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Relpl.Text.R.18" parent="Relpl.Text.R.16">
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="Relpl.Text.R.20" parent="Relpl.Text.R.16">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Relpl.Text.Rank.TabText" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
+
+
+
+
+
+    <style name="Relpl.Text.Logo" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_bold</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/sage_green_text_dark</item>
+    </style>
+
+    <style name="Relpl.Text" parent="Theme.Relpl">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Relpl.Text.Button" parent="Theme.Relpl">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Relpl.Text.FullButton" parent="Relpl.Text.Button">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Relpl.Text.Signup.Main" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_bold</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Relpl.Text.Signup.Content" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Relpl.Text.TextInput.Helper" parent="Relpl.Text">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/et_gray</item>
+    </style>
+
+    <style name="Relpl.Text.Profile.Category" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Relpl.Text.Dialog.Title" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/sage_green_text_dark</item>
+    </style>
+
+    <style name="Relpl.Text.Dialog.Button" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/sage_green_text_dark</item>
+    </style>
+
+    <style name="Relpl.Text.SB.16.Brown" parent="Theme.Relpl">
+        <item name="fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/sage_brown_text</item>
+    </style>
+
+    <style name="Relpl.Text.SB.18.Brown" parent="Theme.Relpl">
+        <item name="fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/sage_brown_text</item>
+    </style>
+
+    <style name="Relpl.Text.TextInput.Title" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Relpl.Text.Dialog.Content" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Relpl.Text.History.Item.Title" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/sage_green_text_dark</item>
+    </style>
+
+    <style name="Relpl.Text.History.Item.Content" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Relpl.Button.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon">
+        <item name="iconTint">@color/white</item>
+        <item name="android:textAppearance">@style/Relpl.Text.Button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/sage_green_dark</item>
+    </style>
+
+    <style name="Relpl.Text.Point.CenterInfo" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Relpl.Text.Report.Point" parent="Theme.Relpl">
+        <item name="android:fontFamily">@font/font_wanted_sans_regular</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Relpl.Text.Bold.16.Black" parent="Relpl.Text">
+        <item name="android:fontFamily">@font/font_wanted_sans_bold</item>
+    </style>
+
+
+
+    <style name="Relpl.Button" parent="Theme.Relpl">
+        <item name="android:textAppearance">@style/Relpl.Text.Button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+
+    <style name="Relpl.FullButton.Signin" parent="Theme.Relpl">
+        <item name="android:background">@drawable/bg_full_btn_sage_green_deep</item>
+        <item name="android:textAppearance">@style/Relpl.Text.FullButton</item>
+    </style>
+
+    <style name="Relpl.FullButton.Signup" parent="Theme.Relpl">
+        <item name="android:background">@drawable/bg_full_btn_sage_green_text</item>
+        <item name="android:textAppearance">@style/Relpl.Text.FullButton</item>
+    </style>
+
+    <style name="Relpl.FullButton" parent="Theme.Relpl">
+        <item name="android:background">@drawable/bg_full_btn_sage_green_dark</item>
+        <item name="android:textAppearance">@style/Relpl.Text.FullButton</item>
+    </style>
+
+
+    <style name="Relpl.TextInputLayout" parent="Theme.Relpl">
+        <item name="endIconMode">clear_text</item>
+        <item name="android:textAppearance">@style/Relpl.Text</item>
+        <item name="helperTextTextAppearance">@style/Relpl.Text.TextInput.Helper</item>
+        <item name="boxStrokeColor">@color/et_gray</item>
+        <item name="hintTextAppearance">@style/Relpl.Text</item>
+    </style>
+
+</resources>

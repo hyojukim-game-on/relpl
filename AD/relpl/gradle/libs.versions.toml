@@ -1,0 +1,135 @@
+[versions]
+# Android
+androidx-core = "1.10.0"
+androidx-appcompat = "1.6.1"
+android-material = "1.9.0"
+androidx-constraint-layout = "2.1.4"
+androidx-view-model = "2.4.1"
+androidx-fragment = "1.5.5"
+androidx-activity = "1.6.1"
+
+# Coroutine
+coroutine = "1.6.4"
+
+# Test
+junit = "4.13.2"
+androidx-junit = "1.1.5"
+androidx-espresso = "3.5.1"
+
+# Lottie
+lottie = "5.0.2"
+
+# Hilt
+hilt = "2.44"
+inject = "1"
+
+# Retrofit
+retrofit = "2.9.0"
+moshi-converter = "2.9.0"
+moshi-kotlin = "1.14.0"
+okhttp = "4.9.1"
+logging-interceptor = "4.8.0"
+
+# Room
+room = "2.5.2"
+
+# Firebase
+firebase-bom = "32.7.1"
+
+glide = "4.16.0"
+
+[libraries]
+# AndroidX Libraries
+androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "android-material" }
+androidx-constraint-layout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraint-layout" }
+androidx-view-model = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-view-model" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment" }
+androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
+
+# Coroutine
+coroutine = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine" }
+
+# Testing Libraries
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
+androidx-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso" }
+
+# Animation
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+
+# Dependency Injection
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+# Domain Inject
+inject = { group = "javax.inject", name = "javax.inject", version.ref = "inject" }
+
+# Networking
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+moshi-converter = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "moshi-converter" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi-kotlin" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logginginterceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "logging-interceptor" }
+
+# Local Database
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+# Indicator Lib (https://github.com/tommybuonomo/dotsindicator.git)
+custom-indicator = {group="com.tbuonomo", name ="dotsindicator", version = "5.0"}
+
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-auth = {group = "com.google.firebase", name = "firebase-auth-ktx"}
+
+#Glide
+glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
+
+#StickyTimeLine (https://github.com/sangcomz/StickyTimeLine)
+timeline = {group = "io.github.sangcomz", name = "StickyTimeLine", version = "1.0.0"}
+
+# zxing Barcode Library (https://github.com/journeyapps/zxing-android-embedded)
+zxing = {group = "com.journeyapps", name = "zxing-android-embedded", version = "4.3.0"}
+
+# Naver map SDK
+naver-mapsdk = { group = "com.naver.maps", name = "map-sdk", version = "3.17.0" }
+
+# FAB Speed Dial (https://github.com/leinardi/FloatingActionButtonSpeedDial)
+dial = {group = "com.leinardi.android", name = "speed-dial", version = "3.3.0"}
+
+# Google Location
+google-location = {group="com.google.android.gms", name = "play-services-location", version="21.1.0"}
+
+# fcm
+fcm =  {group = "com.google.firebase", name = "firebase-messaging-ktx"}
+
+[plugins]
+androidApplication = { id = "com.android.application", version = "8.1.3" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version = "1.8.0" }
+androidLibrary = { id = "com.android.library", version = "8.1.3" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version = "1.8.0" }
+daggerHilt = { id = "com.google.dagger.hilt.android", version = "2.44" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version = "1.8.0" }
+googleservice = {id ="com.google.gms.google-services" , version = "4.4.0"}
+
+
+[bundles]
+# AndroidX Bundle
+androidx = ["androidx-core", "androidx-appcompat", "android-material", "androidx-constraint-layout", "androidx-view-model", "androidx-fragment", "androidx-activity"]
+
+# Testing Bundle
+testing = ["junit", "androidx-junit", "androidx-espresso"]
+
+# Networking Bundle
+retrofit = ["retrofit", "moshi-converter", "moshi-kotlin", "okhttp", "okhttp-logginginterceptor"]
+
+# Hilt Bundle (Dependency Injection)
+hilt = ["hilt-android", "hilt-compiler"]
+
+# Room Database Bundle
+room = ["room-runtime", "room-compiler", "room-ktx"]
+
+# NaverMap, Google Location
+naverMap = ["naver-mapsdk","google-location"]

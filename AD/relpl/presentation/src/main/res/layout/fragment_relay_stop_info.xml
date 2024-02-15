@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".relay.relaying.RelayStopInfoFragment">
+
+    <TextView
+        android:id="@+id/tv_nickname"
+        style="@style/Relpl.Text.B.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="SteelZoo님" />
+
+    <TextView
+        android:id="@+id/tv_comment"
+        style="@style/Relpl.Text.M.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="지구를 깨끗하게 해주셔서 감사합니다 :)"
+        app:layout_constraintStart_toStartOf="@id/tv_nickname"
+        app:layout_constraintTop_toBottomOf="@id/tv_nickname" />
+
+    <TextView
+        android:id="@+id/view_relay_name"
+        style="@style/Relpl.Text.M.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="릴레이 이름"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toStartOf="@id/tv_relay_name"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_comment" />
+
+    <TextView
+        android:id="@+id/view_start_time"
+        style="@style/Relpl.Text.M.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="시작 시간"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toStartOf="@id/tv_start_time"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_relay_name" />
+
+    <TextView
+        android:id="@+id/view_end_time"
+        style="@style/Relpl.Text.M.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="종료 시간"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toStartOf="@id/tv_end_time"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_start_time" />
+
+    <TextView
+        android:id="@+id/view_elapsed_time"
+        style="@style/Relpl.Text.M.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="실시한 시간"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toStartOf="@id/tv_elapsed_time"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_end_time" />
+
+    <TextView
+        android:id="@+id/view_distance"
+        style="@style/Relpl.Text.M.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="거리"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toStartOf="@id/tv_distance"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_elapsed_time" />
+
+    <TextView
+        android:id="@+id/view_path"
+        style="@style/Relpl.Text.M.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="경로"
+        android:textColor="@color/text_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_distance" />
+
+    <TextView
+        android:id="@+id/tv_relay_name"
+        style="@style/Relpl.Text.SB.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_relay_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_relay_name"
+        app:layout_constraintTop_toTopOf="@id/view_relay_name"
+        tools:text="플로깅 합시다 다들" />
+
+    <TextView
+        android:id="@+id/tv_start_time"
+        style="@style/Relpl.Text.SB.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_start_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_start_time"
+        app:layout_constraintTop_toTopOf="@id/view_start_time"
+        tools:text="2024년 1월 17일 17:40" />
+
+    <TextView
+        android:id="@+id/tv_end_time"
+        style="@style/Relpl.Text.SB.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_end_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_end_time"
+        app:layout_constraintTop_toTopOf="@id/view_end_time"
+        tools:text="2024년 1월 17일 18:21" />
+
+    <TextView
+        android:id="@+id/tv_elapsed_time"
+        style="@style/Relpl.Text.SB.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_elapsed_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_elapsed_time"
+        app:layout_constraintTop_toTopOf="@id/view_elapsed_time"
+        tools:text="41분" />
+
+    <TextView
+        android:id="@+id/tv_distance"
+        style="@style/Relpl.Text.SB.16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_distance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_distance"
+        app:layout_constraintTop_toTopOf="@id/view_distance"
+        tools:text="1km 712m" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/layout_map"
+        android:name="com.naver.maps.map.MapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_path" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_next"
+        style="@style/Relpl.FullButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="20dp"
+        android:text="다음"
+        android:textAppearance="@style/Relpl.Text.SB.16"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
