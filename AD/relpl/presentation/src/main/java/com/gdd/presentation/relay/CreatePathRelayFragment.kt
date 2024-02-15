@@ -289,7 +289,7 @@ class CreatePathRelayFragment : BaseFragment<FragmentCreatePathRelayBinding>(
         viewModel.createPathRelayResult.observe(viewLifecycleOwner){ result ->
             if (result.isSuccess){
                 result.getOrNull()?.let {
-                    showSnackBar(it.toString())
+//                    showSnackBar(it.toString())
                   viewModel.joinRelay(it)
                 }
             }else {
