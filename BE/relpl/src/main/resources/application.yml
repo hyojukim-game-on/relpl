@@ -31,7 +31,7 @@ tmap:
 
 jwt:
   token:
-    secret: ssafy10thgumi2classd201choegossafy10thgumi2classd201choegossafy10thgumi2classd201choegossafy10thgumi2classd201choego
+    secret: ENC(lmJzRIHGpaOr4n/F3pQZOtS38/chsswL9txKR96MNZKswdJnwp2KEit0oD7tkWiCwwxeH4XiNErkNZ6i3V4a81YVq7PgyWuArF+5V9HDoxTrCTmmhsyxk7lCcMOX8MGu31h6Jhwi67v3ri6/N4fJBgOvhqolRbtvrRO00u7ooOE=)
     access-expiration-time: 3600000 #1시간
     refresh-expiration-time: 86400000 #24시간
 
