@@ -1,7 +1,8 @@
 # 팀 GDD (D201)
+
 <br><br><br>
 
- <h1 align="center">
+<h1 align="center">
 릴플🍀
 </h1>
 
@@ -10,7 +11,7 @@
 </div>
 
 <div>
-<h4>🏃‍♂️ 플로깅을 함께 해요<h4> 
+<h4>🏃‍♂️ 플로깅을 함께 해요<h4>
 
 <h4>🎯 목표 거리, 목표 경로를 바탕으로 플로깅 릴레이를 생성 할 수 있습니다<h4>
 
@@ -23,26 +24,28 @@
 ## 개요
 
 - 한 줄 요약 : *relpl* 프로젝트는 **위치 기반 릴레이 플로깅이 가능**한 **Android 모바일 어플리케이션**입니다.
-
+  
 - 기획의도 : 효율적인 플로깅이 가능하도록 돕고, 지속적인 플로깅을 위한 동기 부여가 가능하도록 하고자 했습니다.
-
+  
 - 개발 인원 및 기간
   
   - 개발 인원 : Android 2명, BackEnd 4명
-  
+    
   - 개발 기간 : 2024.01.03 ~ 2024.02.16 (총 45일, Business Day 31일)
-
+    
 - 주요 기능
   
   - 유저 관련 기능
-  
+    
   - 릴레이 플로깅 관련 기능
-  
+    
   - 제보, 보상 관련 기능
-
+    
 - 데모 시연 영상 : [D201 UCC (youtube.com)](https://www.youtube.com/watch?v=hv8uWsDKsy0)
+  
 
 ---
+
 <br/><br/><br/>
 
 ## 팀원소개
@@ -60,7 +63,7 @@
     <td style="text-align: center;">🍜 김성훈</td>
   </tr>
 
-  <tr>
+<tr>
     <td style="text-align: center;">App(Android)</td>
     <td style="text-align: center;">App(Android)</td>
     <td style="text-align: center;">Back-End(Spring)</td>
@@ -78,7 +81,7 @@
     <td style="text-align: center;">⚽ 최재성</td>
   </tr>
 
-  <tr>
+<tr>
     <td style="text-align: center;">Back-End(Spring)</td>
     <td style="text-align: center;">Back-End(Spring)</td>
     <td style="text-align: center;">Back-End(Spring)</td>
@@ -88,24 +91,214 @@
 <br/><br/><br/><br/><br/><br/>
 
 ## 기능, 동작 화면
+
 | ![](https://blog.kakaocdn.net/dn/cFQYGA/btsEQcVmwqk/XBAiK3PaIrOFFqdxnMO7n0/img.gif) | ![](https://blog.kakaocdn.net/dn/dc8LEm/btsENTIGM1o/iTlPzy48Uq02Kr9SSGea7K/img.gif) | ![](https://blog.kakaocdn.net/dn/ypeXN/btsES6T48Tp/M8ah0LfARY1H6s7ZZbHnw1/img.gif) |
-| :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: |
-|                                       홈화면                                        |                                        랭킹                                         |                                      제보하기                                      |
+| --- | --- | --- |
+| 홈화면 | 랭킹  | 제보하기 |
 
 <br><br>
 
 | ![](https://blog.kakaocdn.net/dn/cObp2V/btsEQSCftHU/fKzMRsrRIyqg5VetYgkx10/img.gif) | ![](https://blog.kakaocdn.net/dn/bhwzJC/btsESn2O2GQ/XPNKrl8onodshuD7XKZKK1/img.gif) | ![](https://blog.kakaocdn.net/dn/bgjUve/btsEQK5koKr/J0pbZ0tSLTS9SIlkR5zoT1/img.gif) |
-| :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-|                                  거리 릴레이 조회                                   |                                  경로 릴레이 조회                                   |                                      경로 찾기                                      |
+| --- | --- | --- |
+| 거리 릴레이 조회 | 경로 릴레이 조회 | 경로 찾기 |
 
 <br><br>
 
 | ![](https://blog.kakaocdn.net/dn/y0dVt/btsEVexSDrJ/3MWoHRnUvan9aKe8u0jvAK/img.gif) | ![](https://blog.kakaocdn.net/dn/KHHhM/btsEPKY2tjh/eUtYnUkTqsHEbfcdPtONXk/img.gif) | ![](https://blog.kakaocdn.net/dn/bUZxX9/btsERmb2KzY/uS7Gomk2Tf4ktrLOuMN9j1/img.gif) |
-| :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-|                                    릴레이 중단                                     |                                    릴레이 기록                                     |                                  릴레이 상세 기록                                   |
+| --- | --- | --- |
+| 릴레이 중단 | 릴레이 기록 | 릴레이 상세 기록 |
 
 <br/><br/><br/><br/><br/>
- <h1 align="center">
+
+<h1 align="center">
+백엔드
+</h1>
+
+## 설계
+
+### 시스템 아키텍쳐
+
+### ERD 다이어그램
+
+- [요구사항 명세서](https://docs.google.com/spreadsheets/d/1ZayfMIxvD49W1cAYiXdvZzePvYK2iXs2G8KfIWohgio/edit?usp=sharing)
+  
+- [API 명세서](https://grand-check-7ba.notion.site/API-33f7e2f1f2e14a1683b82493a37beebd?pvs=4)
+  
+- [피그마 링크](https://www.figma.com/file/CNQG7GcXmt00S7lykwbBrp/GDD?type=design&node-id=0-1&mode=design)
+  
+
+---
+
+## 사용한 기술
+
+### 사용한 라이브러리
+
+- Spring Boot
+- Spring Security & JWT
+- JPA & Hibernate
+- AWS
+- Jasypt
+- Firebase
+
+### 사용한 데이터베이스
+
+- MongoDB
+- PostgreSQL(PostGIS)
+- Redis
+
+### 디렉토리 구조
+
+### relpl
+
+```bash
+├── business
+│   ├── ProjectCreateRouteBusiness.java
+│   └── ProjectRecommendBusiness.java
+├── config
+│   ├── AWSS3Config.java
+│   ├── FCMConfig.java
+│   ├── GeomFactoryConfig.java
+│   ├── JasyptConfig.java
+│   ├── SecurityConfig.java
+│   └── SwaggerConfig.java
+├── controller.rest
+│   ├── CoinController.java
+│   ├── FcmTokencontroller.java
+│   ├── FileUploadController.java
+│   ├── MypageController.java
+│   ├── ProjectController.java
+│   ├── RankingController.java
+│   ├── ReportController.java
+│   └── UserController.java
+├── db
+│   ├── mongo
+│   │   ├── entity
+│   │   │   └── ...
+│   │   └── repository
+│   │       └── ...
+│   ├── postgre
+│   │   ├── entity
+│   │   │   └── ...
+│   │   └── repository
+│   │       └── ...
+│   └── redis
+│       └── entity
+│           └── ...
+├── dto
+│   ├── request
+│   │   └── ...
+│   └── response
+│       └── ...
+├── service
+│   └── ...
+└── util
+    ├── annotation
+    │   └── Business.java
+    ├── common
+    │   ├── Edge.java
+    │   ├── Info.java
+    │   ├── RankingEntry.java
+    │   └── UserHistoryDetailEntry.java
+    └── jwt
+        ├── CustomUserDetails.java
+        ├── ExceptionResponseHandler.java
+        ├── JwtAccessDeniedHandler.java
+        ├── JwtAuthenticationEntryPoint.java
+        ├── JwtConstants.java
+        ├── JwtFilter.java
+        └── JwtTokenProvider.java
+```
+
+### initDB_relpl
+
+```bash
+├── config
+│   ├── JasyptConfig.java
+├── controller.rest
+│   └── TmapController.kt
+├── db
+│   ├── mongo
+│   │   ├── entity
+│   │   │   └── TmapRoad.java
+│   │   └── repository
+│   │       └── TmapRoadRepositroy.java
+│   └── postgre
+│       ├── entity
+│       │   ├── PointHash.java
+│       │   ├── PointHash.java
+│       │   └── RoadInfo.java
+│       └── repository
+│           ├── PointHashRepositroy.java
+│           ├── PointHashRepositroy.java
+│           └── RoadInfoRepositroy.java
+├── dto
+│   ├── request
+│   │   ├── InsertRoadRequestDto.kt
+│   │   ├── TimesRoadRequestDto.kt
+│   │   └── RoadRequest.java
+│   └── response
+│       └── TmapApiResponseDTO.java
+├── service
+│   └── TmapService.kt
+└── util
+    └── common
+        ├── RoadData.kt
+        └── TmapData.kt
+```
+
+## Back-End Role & Responsibility (R&R)
+
+#### 김성훈
+
+- 인프라
+  
+- 백엔드 초기 환경 구축
+  
+- 백엔드 구조 설계
+  
+- 데이터베이스 설계
+  
+- Tmap API 를 활용한 초기 도로 DB 구축(InitDB)
+  
+- 릴레이 플로깅 생성 API
+  
+- 플로깅 경로 추천 기능
+  
+
+#### 최재성
+
+- jwt, Spring Security 를 이용한 회원가입 API
+  
+- jwt, Spring Security 를 이용한 로그인 API
+  
+- 릴레이 플로깅 참여 API
+  
+- 릴레이 플로깅 중단 API
+  
+
+#### 김효주
+
+- Redis 를 활용한 실시칸 랭킹 API
+  
+- 사진 업로드 및 프로필 설정 API
+  
+- 마이페이지 API
+  
+- 내 플로깅 기록 보기 API
+  
+
+#### 송민석
+
+- 포인트 관련 기능
+  
+- 플로깅 장소 제보 기능
+  
+- 릴레이 플로깅 정보 조회 기능
+  
+
+<br/><br/><br/><br/><br/>
+
+<h1 align="center">
 안드로이드
 </h1>
 
@@ -113,18 +306,14 @@
 
 ![](https://blog.kakaocdn.net/dn/bZwEPB/btsETn92g33/p3AurXvRdgHGWxs5H7UJ4k/img.png)
 
-
 ### 기술
+
 - Android: <span style="color:yellowgreen"> Hilt, Jetpack AAC(ViewModel, Room, DataBinding), Foreground Service </span>
 - Kotlin : <span style="color:blueviolet"> Coroutine, Flow </span>
 - Library : <span style="color:orange"> Retrofit, Glide, Naver Map, Google Location, Firebase(FCM, Auth), Zxing</span>
 - UI Library : <span style="color:skyblue"> StickyTimeLine, Pager Dots Indicator
-, Floating Action Button Speed Dial, Lottie </span>
+  , Floating Action Button Speed Dial, Lottie </span>
 - Architecture : <span style="color:gray"> MVVM, MultiModule, CleanArchitecture</span>
-
-<br/><br/><br/>
-
-### [피그마 링크](https://www.figma.com/file/CNQG7GcXmt00S7lykwbBrp/GDD?type=design&node-id=0-1&mode=design&t=pp32LdGi1K6QexgG-0)
 
 <br/><br/><br/>
 
@@ -135,9 +324,12 @@
 - Android Gradle Plugin Version : 8.1.3
 - Gradle Version : 8.1
 - Kotlin version : 1.8.0
-## Android Role & Responsibility (R&R)
+  
+  ## Android Role & Responsibility (R&R)
+  
 
 #### 정철주
+
 - 앱 구조 구성, 모듈화
 - 릴레이 진행, 중단
   - 포그라운드 서비스 활용 위치 추적
@@ -147,6 +339,7 @@
 - JWT 토큰 대응
 
 #### 홍유준
+
 - 앱 디자인
 - 회원가입
 - 거리, 경로 릴레이 조회
@@ -155,88 +348,3 @@
   - 프로필, 회원정보 수정
 - 내 플로깅 기록, 상세 기록
 - JWT 토큰 대응
-
-<br/><br/><br/><br/><br/>
-
- <h1 align="center">
-백엔드
-</h1>
-
-## 설계
-
-### 시스템 아키텍쳐
-![](https://blog.kakaocdn.net/dn/SIWQC/btsEVOToYqw/9lDCjOphFtE0zlKzCFSWBK/img.png)
-
-### ERD 다이어그램
-![](https://blog.kakaocdn.net/dn/IV5N0/btsERlFbYuc/Du9wAf3ra1WO7tSL3uvfb0/img.png)
-
-- [요구사항 명세서](https://docs.google.com/spreadsheets/d/1ZayfMIxvD49W1cAYiXdvZzePvYK2iXs2G8KfIWohgio/edit?usp=sharing)
-
-- [API 명세서](https://grand-check-7ba.notion.site/API-33f7e2f1f2e14a1683b82493a37beebd?pvs=4)
-
----
-
-## 사용한 기술
-
-### 사용한 라이브러리
-
-- Spring Boot Data JPA, MongoDB, Redis
-- Project Lombok
-- PostgreSQL JDBC Driver
-- Spring Boot Starter Test
-- Spring Security Test
-- SpringDoc OpenAPI
-- Hibernate Spatial
-- Jakarta Annotations & Persistence API
-- Spring Cloud AWS
-- Jasypt
-- Spring Boot Starter Security
-- JSON Web Token (JWT)
-- Spring Boot Starter Cache
-- Firebase Admin SDK
-- OkHttp
-
-### 디렉토리 구조
-![](https://blog.kakaocdn.net/dn/4igCf/btsERklWOxL/quhS0fCz2XSxIo3ZIkJ9J1/img.png)
-
-![](https://blog.kakaocdn.net/dn/tsVZV/btsES6AMKdH/gdLQvDmJSmXtwRswgXhDe1/img.png)
-
-## Back-End Role & Responsibility (R&R)
-
-#### 김성훈
-
-- 인프라 (CI/CD)
-
-- 릴레이 플로깅 생성 기능
-
-- Tmap API 를 활용한 초기 도로 DB 구축
-
-- 경로 추천 기능
-
-#### 최재성
-
-- jwt , Spring Security 를 이용한 회원가입 API 개발
-
-- jwt , Spring Security 를 이용한 로그인 API 개발
-
-- 릴레이 플로깅 참여 API 개발
-
-- 릴레이 플로깅 중단 API 개발
-
-#### 김효주
-
-- Redis 를 활용한 실시칸 랭킹 API 개발
-
-- PostGreSQL 활용하여 Amazon S3 사진 업로드 가능한 프로필 설정 API 개발
-
-- PostGreSQL 활용하여 프로필 사진 변경이 가능한 마이페이지 API 개발
-
-- mongoDB, PostGreSQL, Spring Data 를 활용한 내 플로깅 기록 보기 API 개발
-
-#### 송민석
-
-- 포인트 관련 기능
-
-- 플로깅 장소 제보 기능
-
-- 릴레이 플로깅 정보 조회 기능
